@@ -2,7 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Annotation profile for Unknown" enabled="true">
+      <profile name="Annotation profile for gen.data.test" enabled="true">
         <sourceOutputDir name="../generated-sources/annotations" />
         <sourceTestOutputDir name="../generated-test-sources/test-annotations" />
         <module name="gen.data.test" />
