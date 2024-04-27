@@ -1,14 +1,13 @@
-package org.example;
+package org.example.helper;
 
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 
 public class DownloadFile {
-    public static void downloadFileStatus( String fileURL) {
+    public static void downloadFileStatus( String fileURL,String folderDownload) {
         try {
-            downloadFile(fileURL, Constant.ZIP_FOLDER_PATH);
-            System.out.println("File downloaded successfully!");
+            downloadFile(fileURL, folderDownload);
         } catch (IOException e) {
             System.out.println("Error downloading the file: " + e.getMessage());
             e.printStackTrace();

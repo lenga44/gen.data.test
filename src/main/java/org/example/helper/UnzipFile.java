@@ -1,4 +1,4 @@
-package org.example;
+package org.example.helper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,8 +37,9 @@ public class UnzipFile {
     }
 
     private static void extractFile(ZipInputStream zipInputStream, String filePath) throws IOException {
+        System.out.println(filePath);
         BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
-        byte[] bytesIn = new byte[4096];
+        byte[] bytesIn = new byte[1024];
         int read;
         while ((read = zipInputStream.read(bytesIn)) != -1) {
             bos.write(bytesIn, 0, read);
