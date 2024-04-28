@@ -8,6 +8,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import org.example.helper.FileHelpers;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -23,6 +24,21 @@ public class JsonHandle {
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
         String id = JsonPath.read(document, jsonPath).toString();
         return id;
+    }
+    public static<T> T getValue(JsonObject document,String jsonPath){
+        return JsonPath.read(document, jsonPath);
+    }
+    public static boolean jsonObjectContainKey(JsonObject document, String key){
+        return document.has(key);
+    }
+    public static JSONArray getJsonArray(String json,String jsonPath){
+        String array = getValue(json,jsonPath);
+        JSONArray jsonArr = new JSONArray(array);
+        return jsonArr;
+    }
+    public static JSONArray converStringTOJsonArray(String json){
+        JSONArray jsonArr = new JSONArray(json);
+        return jsonArr;
     }
     public static String getObjectInJsonData(int index,String objects) {
         JSONArray jsonArr = new JSONArray(objects);
@@ -58,5 +74,10 @@ public class JsonHandle {
                 .map(i -> i.getKey())
                 .collect(Collectors.toCollection(ArrayList::new));
         return keys;
+    }
+    public static JSONArray addJsonObjectInJsonArray(JSONObject jsonObject){
+        JSONArray jsonArray=new JSONArray();
+        jsonArray.put(jsonObject.toString());
+        return jsonArray;
     }
 }

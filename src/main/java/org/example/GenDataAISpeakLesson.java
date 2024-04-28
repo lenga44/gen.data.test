@@ -2,6 +2,7 @@ package org.example;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.example.common.Common;
 import org.example.common.Constant;
 import org.example.helper.FileHelpers;
@@ -55,7 +56,6 @@ public class GenDataAISpeakLesson {
                             String gameId = getValueFromJson(actElement.toString(),"$.g_i");
                             String resource = getValueFromJson(actElement.toString(),"$.f");
                             String error = downloadAct(resource);
-
                             break;
                         }
                         break;
@@ -113,12 +113,60 @@ public class GenDataAISpeakLesson {
         Activity activity = new Activity(gameID,turn,file_zip,error);
         return activity.createActivity();
     }
-    private static JSONObject genTurnData(JSONArray word,String right){
-        Turn turn = new Turn(word,right);
-        return turn.createActivity();
+    private static JSONObject genTurnData(String folderAct,JsonElement turn){
+        String right = "";
+        JSONArray word = new JSONArray();
+        if(JsonHandle.jsonObjectContainKey(turn.getAsJsonObject(),"answer_w")) {
+            int word_id = Integer.parseInt(JsonHandle.getValue(turn.getAsJsonObject(), "$.answer_w"));
+            word.put(getWord(folderAct,word_id, Constant.ANSWER_TYPE).toString());
+        }else if(JsonHandle.jsonObjectContainKey(turn.getAsJsonObject(),"question_data")){
+            int word_id = Integer.parseInt(JsonHandle.getValue(turn.getAsJsonObject(), "$.answer_w"));
+            word.put(getWord(folderAct,word_id, Constant.QUESTION_TYPE).toString());
+        }
+        if(JsonHandle.jsonObjectContainKey(turn.getAsJsonObject(),"right_answer")) {
+            right= String.valueOf(JsonHandle.getValue(turn.getAsJsonObject(), "$.right_answer"));
+
+        }
+        Turn newTurn = new Turn(word,right);
+        return newTurn.createActivity();
     }
-    private static JSONObject genWordData(int word_id, String text, String type,String path, JSONArray images, JSONArray audios){
+    private static JSONObject genWordData(int word_id, String folder,String type,String path){
+        String wordJson = getWordIdJsonFile(folder,word_id);
+        String text = JsonHandle.getValue(wordJson,"$.text");
+        JSONArray images = JsonHandle.getJsonArray(wordJson,"$.image");
+        JSONArray audios = JsonHandle.getJsonArray(wordJson,"$.audio.file_path");
         Word word = new Word(word_id,text,type,path,images,audios);
         return word.createActivity();
+    }
+
+    private static JSONArray getTurnsData(String folder){
+        String json = getConfigJsonFile(folder);
+        return JsonHandle.getJsonArray(json,"$.question");
+    }
+    private static JSONObject getWord(String folder,int word_id,String type ){
+        String text,path;
+        String list_word = getListWordJsonFile(folder);
+        JsonArray array = JsonHandle.getJsonArray(list_word);
+        for(JsonElement document: array){
+            try {
+                if (Integer.valueOf(JsonHandle.getValue(document.getAsJsonObject(), "$.id")) == word_id) {
+                    path = String.valueOf(JsonHandle.getValue(document.getAsJsonObject(),"$.path"));
+                    downloadAndUnzipFileInFolder(Constant.WORD_INSTALL_URL,path,folder);
+                }
+            }catch (Exception E){
+                System.out.println("This object doesn't contain key 'id' ");
+            }
+        }
+        return null;
+    }
+    private static String getConfigJsonFile(String folder){
+        return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+folder+"/"+Constant.CONFIG_FILE);
+    }
+    private static String getListWordJsonFile(String folder){
+        return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+folder+"/"+Constant.LIST_WORD_FILE);
+    }
+    private static String getWordIdJsonFile(String folder,int word_id){
+        return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+folder+"/"+word_id+".json");
+
     }
 }

@@ -33,4 +33,14 @@ public class Common {
         FileHelpers.createFolder(Constant.UNZIP_FOLDER_PATH+"/"+file.replace(".zip",""));
         unzipFile(Constant.ZIP_FOLDER_PATH + "/" + file, Constant.UNZIP_FOLDER_PATH+"/"+file.replace(".zip",""));
     }
+    public static void downloadAndUnzipFileInFolder(String domain, String fileName,String folderUnZip) throws IOException{
+        DownloadFile.downloadFileStatus(domain + fileName, Constant.ZIP_FOLDER_PATH);
+        String folder = folderUnZip;
+        if (folderUnZip.contains("/")){
+            for (String str: Arrays.stream(fileName.split("/")).toList()) {
+                folder = str;
+            }
+        }
+        unzipFile(Constant.ZIP_FOLDER_PATH + "/" + fileName, Constant.UNZIP_FOLDER_PATH+"/"+folder);
+    }
 }

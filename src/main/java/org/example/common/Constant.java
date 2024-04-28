@@ -29,10 +29,11 @@ public class Constant {
     public static final String GAME_LIST = "src/main/data/list_game.json";
     public static final String QUESTION_TYPE = "question";
     public static final String ANSWER_TYPE = "answer";
+    public static final String PROJECT_PATH = "src/main/";
     @Description("cho biết game sẽ chơi từ nào")
     public static final String CONFIG_FILE = "config.json";
     @Description("list_word là dùng để download word về")
-    public static final String LIST_WORD_FILE ="list_word_rule.json";
+    public static final String LIST_WORD_FILE ="list_word.json";
     @Description("word: cho biết word chơi ảnh, audio, video, text là gì")
     public static final String WORD_FILE = "word.json";
 }
