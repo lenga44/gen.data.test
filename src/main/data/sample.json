@@ -1,0 +1,36 @@
+[
+  {
+    "lesson": "lesson1",
+    "topic": "Hello!",
+    "category": "Greeting 1",
+    "level": "A",
+    "act": [
+      {
+        "game_id":1,
+        "game_name": "Intro Dialog",
+        "file_zip":"1.zip",
+        "turn":[
+          {
+            "right_answer":1234,
+            "word":[
+              {
+                "word_id": 2,
+                "text": "hi",
+                "type": "question",
+                "path": "2.zip",
+                "image":[
+                  "21.png",
+                  "22.png"
+                ],
+                "audio": [
+                  "21.mp3",
+                  "22.mp4"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

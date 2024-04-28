@@ -18,7 +18,7 @@ public class Lesson {
         this.act = act;
     }
 
-    private JSONObject createLesson(){
+    public JSONObject createLesson(){
         JSONObject json = new JSONObject();
         json.put("lesson", lesson);
         json.put("topic", topic);

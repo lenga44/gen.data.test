@@ -2,17 +2,21 @@ package org.example;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import org.example.common.Common;
 import org.example.common.Constant;
 import org.example.helper.FileHelpers;
 import org.example.helper.JsonHandle;
 import org.example.helper.RequestEx;
 import org.example.lesson_structure.Activity;
+import org.example.lesson_structure.Lesson;
+import org.example.lesson_structure.Turn;
+import org.example.lesson_structure.Word;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
-import static org.example.common.Common.downloadAndUnzipFile;
+import static org.example.common.Common.downloadAndUnzipFileInFolder;
 
 public class GenDataAISpeakLesson {
     private static String content = "";
@@ -26,7 +30,7 @@ public class GenDataAISpeakLesson {
                 "app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=60&os=ios&profile_id=1&subversion=49.0.0";
         String json = RequestEx.request(url);
         String courseFile = getValueFromJson(json,"$.data.p_i.c.108.p");
-        downloadAndUnzipFile(courseFile);
+        Common.downloadAndUnzipFile(courseFile);
         //endregion
 
         //region downloadLesson
@@ -50,18 +54,31 @@ public class GenDataAISpeakLesson {
                         for (JsonElement actElement: getActArray(lessonElement.toString())) {
                             String gameId = getValueFromJson(actElement.toString(),"$.g_i");
                             String resource = getValueFromJson(actElement.toString(),"$.f");
-                            String error = "";
-                            try {
-                                downloadAndUnzipFile(Constant.DOMAIN_URL,resource.replace(".zip",""), resource);
-                            }catch (IOException e){
-                                error = e.getMessage();
-                            }
-                            System.out.println(error);
+                            String error = downloadAct(resource);
+
+                            break;
                         }
+                        break;
                     }
+                    break;
                 }
+                break;
             }
+            break;
         }
+    }
+    private static String downloadAct(String resource){
+        String error = null;
+        try {
+            downloadAndUnzipFileInFolder(Constant.DOMAIN_URL, resource);
+            error = "success";
+        }catch (IOException e){
+            error = e.getMessage();
+        }
+        return error;
+    }
+    private static void readAct(){
+
     }
     private static JsonArray getLevelArray(String json) {
         System.out.println("Step2: get all levels\n");
@@ -88,16 +105,20 @@ public class GenDataAISpeakLesson {
         String objects = getValueFromJson(json,"$.as");
         return JsonHandle.getJsonArray(objects);
     }
-    private static void genWordInTurn(String folderWord){
-
+    private static JSONObject genLessonData(String lessonName, String topic, String category, String level, JSONArray act){
+        Lesson lesson = new Lesson(lessonName,topic,category,level,act);
+        return lesson.createLesson();
     }
-    private static JSONObject genActData(String act, JSONArray turn,String error){
-        int gameID = Integer.valueOf(getValueFromJson(act,"$.g_i"));
-        String file_zip = getValueFromJson(act,"$.f");
+    private static JSONObject genActData(String act, JSONArray turn,String error,int gameID,String file_zip){
         Activity activity = new Activity(gameID,turn,file_zip,error);
         return activity.createActivity();
     }
-    private static JSONObject genTurnData(){
-        return null;
+    private static JSONObject genTurnData(JSONArray word,String right){
+        Turn turn = new Turn(word,right);
+        return turn.createActivity();
+    }
+    private static JSONObject genWordData(int word_id, String text, String type,String path, JSONArray images, JSONArray audios){
+        Word word = new Word(word_id,text,type,path,images,audios);
+        return word.createActivity();
     }
 }
