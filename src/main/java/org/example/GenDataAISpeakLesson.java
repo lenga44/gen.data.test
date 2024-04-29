@@ -1,8 +1,6 @@
 package org.example;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import org.example.common.Common;
 import org.example.common.Constant;
 import org.example.helper.FileHelpers;
@@ -16,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.example.common.Common.downloadAndUnzipFileInFolder;
 
@@ -26,12 +25,11 @@ public class GenDataAISpeakLesson {
     }
     public static void run() throws IOException, InterruptedException {
         //region Download course install
-        System.out.println("Step1: Download course install\n");
-        String url = "https://api.dev.monkeyuni.com/user/api/v4/account/load-update?" +
-                "app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=60&os=ios&profile_id=1&subversion=49.0.0";
+        /*System.out.println("Step1: Download course install\n");
+        String url = "https://api.dev.monkeyuni.com/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=60&os=ios&profile_id=1&subversion=49.0.0";
         String json = RequestEx.request(url);
         String courseFile = getValueFromJson(json,"$.data.p_i.c.108.p");
-        Common.downloadAndUnzipFile(courseFile);
+        Common.downloadAndUnzipFile(courseFile);*/
         //endregion
 
         //region downloadLesson
@@ -42,21 +40,21 @@ public class GenDataAISpeakLesson {
         return  JsonHandle.getValue(json,path);
     }
     private static void downloadLesson() {
-        String courseInstallJson = FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH +"//"+Constant.COURSE_INSTALL_FILE);
-        JsonArray levels = getLevelArray(courseInstallJson);
-        for (JsonElement levelElement: levels){
-            String level = getValueFromJson(levelElement.toString(),"$.n");
-            for (JsonElement categoryElement: getCategoryArray(levelElement.toString())) {
-                String category = getValueFromJson(categoryElement.toString(),"$.n");
-                for (JsonElement topicElement: getTopicArray(categoryElement.toString())) {
-                    String topic = getValueFromJson(topicElement.toString(),"$.t");
-                    for (JsonElement lessonElement: getLessonArray(topicElement.toString())) {
-                        String lessonName = getValueFromJson(lessonElement.toString(),"$.t");
-                        for (JsonElement actElement: getActArray(lessonElement.toString())) {
-                            String gameId = getValueFromJson(actElement.toString(),"$.g_i");
-                            String resource = getValueFromJson(actElement.toString(),"$.f");
-                            String error = downloadAct(resource);
-                            break;
+        try {
+            JSONArray lessons = new JSONArray();
+            String courseInstallJson = FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH + "//" + Constant.COURSE_INSTALL_FILE);
+            JsonArray levels = getLevelArray(courseInstallJson);
+            for (JsonElement levelElement : levels) {
+                String level = getValueFromJson(levelElement.toString(), "$.n");
+                for (JsonElement categoryElement : getCategoryArray(levelElement.toString())) {
+                    String category = getValueFromJson(categoryElement.toString(), "$.n");
+                    for (JsonElement topicElement : getTopicArray(categoryElement.toString())) {
+                        String topic = getValueFromJson(topicElement.toString(), "$.t");
+                        for (JsonElement lessonElement : getLessonArray(topicElement.toString())) {
+                            String lessonName = getValueFromJson(lessonElement.toString(), "$.t");
+                            JSONArray acts = getActSData(lessonElement);
+                            JSONObject lesson = genLessonData(lessonName, topic, category, level, acts);
+                            lessons.put(lesson);
                         }
                         break;
                     }
@@ -64,8 +62,20 @@ public class GenDataAISpeakLesson {
                 }
                 break;
             }
-            break;
+            saveArrayToFile(lessons);
+        }catch (Exception e){
+            System.out.printf("downloadLesson "+e.getMessage());
+            e.printStackTrace();
         }
+    }
+    private static String getActResourceFolder(String path){
+        String file = path;
+        if (file.contains("/")){
+            for (String str: Arrays.stream(path.split("/")).toList()) {
+                file = str;
+            }
+        }
+        return file;
     }
     private static String downloadAct(String resource){
         String error = null;
@@ -76,9 +86,6 @@ public class GenDataAISpeakLesson {
             error = e.getMessage();
         }
         return error;
-    }
-    private static void readAct(){
-
     }
     private static JsonArray getLevelArray(String json) {
         System.out.println("Step2: get all levels\n");
@@ -105,68 +112,144 @@ public class GenDataAISpeakLesson {
         String objects = getValueFromJson(json,"$.as");
         return JsonHandle.getJsonArray(objects);
     }
+    private static JSONArray getTurnsData(String folder){
+        JSONArray turns = new JSONArray();
+        String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
+        JSONArray jsonArray = JsonHandle.getJsonArray(json,"$.question");
+        for(Object turn: jsonArray){
+            turns.put(genTurnData(folder, turn));
+        }
+        return turns;
+    }
+    private static JSONArray getTurnsData(String folder,String jsonPath){
+        JSONArray turns = new JSONArray();
+        String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
+        if(JsonHandle.jsonObjectContainKey(json,jsonPath.replace("$.",""))==true) {
+            JSONArray jsonArray = JsonHandle.getJsonArray(json, jsonPath);
+            for (Object turn : jsonArray) {
+                turns.put(genTurnData(folder, turn));
+            }
+        }
+        return turns;
+    }
+    private static JSONArray getActSData(JsonElement lessonElement){
+        JSONArray acts = new JSONArray();
+        for (JsonElement actElement: getActArray(lessonElement.toString())) {
+            int gameId = Integer.valueOf(JsonHandle.getValue(actElement.toString(),"$.g_i"));
+            String resource = getValueFromJson(actElement.toString(),"$.f");
+            String error = downloadAct(resource);
+            acts.put(genActData(getActResourceFolder(resource),error,gameId,resource));
+        }
+        return acts;
+    }
+
     private static JSONObject genLessonData(String lessonName, String topic, String category, String level, JSONArray act){
         Lesson lesson = new Lesson(lessonName,topic,category,level,act);
         return lesson.createLesson();
     }
-    private static JSONObject genActData(String act, JSONArray turn,String error,int gameID,String file_zip){
-        Activity activity = new Activity(gameID,turn,file_zip,error);
-        return activity.createActivity();
-    }
-    private static JSONObject genTurnData(String folderAct,JsonElement turn){
-        String right = "";
-        JSONArray word = new JSONArray();
-        if(JsonHandle.jsonObjectContainKey(turn.getAsJsonObject(),"answer_w")) {
-            int word_id = Integer.parseInt(JsonHandle.getValue(turn.getAsJsonObject(), "$.answer_w"));
-            word.put(getWord(folderAct,word_id, Constant.ANSWER_TYPE).toString());
-        }else if(JsonHandle.jsonObjectContainKey(turn.getAsJsonObject(),"question_data")){
-            int word_id = Integer.parseInt(JsonHandle.getValue(turn.getAsJsonObject(), "$.answer_w"));
-            word.put(getWord(folderAct,word_id, Constant.QUESTION_TYPE).toString());
+    private static JSONObject genActData(String folder, String error, int gameID, String file_zip){
+        JSONArray turns = getTurnsData(folder.replace(".zip",""),"$.question");
+        if(turns.length()<=0){
+            turns = getTurnsData(folder.replace(".zip",""),"$.data");
         }
-        if(JsonHandle.jsonObjectContainKey(turn.getAsJsonObject(),"right_answer")) {
-            right= String.valueOf(JsonHandle.getValue(turn.getAsJsonObject(), "$.right_answer"));
-
+        if(turns.length()>0) {
+            Activity activity = new Activity(gameID,getGameName(gameID), turns, file_zip, error);
+            return activity.createActivity();
         }
-        Turn newTurn = new Turn(word,right);
-        return newTurn.createActivity();
+        return null;
     }
-    private static JSONObject genWordData(int word_id, String folder,String type,String path){
-        String wordJson = getWordIdJsonFile(folder,word_id);
-        String text = JsonHandle.getValue(wordJson,"$.text");
-        JSONArray images = JsonHandle.getJsonArray(wordJson,"$.image");
-        JSONArray audios = JsonHandle.getJsonArray(wordJson,"$.audio.file_path");
-        Word word = new Word(word_id,text,type,path,images,audios);
-        return word.createActivity();
-    }
-
-    private static JSONArray getTurnsData(String folder){
-        String json = getConfigJsonFile(folder);
-        return JsonHandle.getJsonArray(json,"$.question");
-    }
-    private static JSONObject getWord(String folder,int word_id,String type ){
-        String text,path;
-        String list_word = getListWordJsonFile(folder);
-        JsonArray array = JsonHandle.getJsonArray(list_word);
-        for(JsonElement document: array){
-            try {
-                if (Integer.valueOf(JsonHandle.getValue(document.getAsJsonObject(), "$.id")) == word_id) {
-                    path = String.valueOf(JsonHandle.getValue(document.getAsJsonObject(),"$.path"));
-                    downloadAndUnzipFileInFolder(Constant.WORD_INSTALL_URL,path,folder);
-                }
-            }catch (Exception E){
-                System.out.println("This object doesn't contain key 'id' ");
+    private static String getGameName(int gameId){
+        String json = FileHelpers.readFile(Constant.GAME_LIST);
+        JsonArray array = JsonHandle.getJsonArray(json);
+        for (JsonElement game: array) {
+            int id = Integer.valueOf(JsonHandle.getValue(game.toString(), "$.id"));
+            if(id==gameId){
+                return JsonHandle.getValue(game.toString(), "$.game");
             }
         }
         return null;
     }
+    private static JSONObject genTurnData(String folderAct, Object turnObject){
+        JSONArray word = new JSONArray();
+        String turn = turnObject.toString();
+        getWordIdAndType(turn,"$.answer_w",word,folderAct,Constant.ANSWER_TYPE);
+        getWordIdAndType(turn,"$.work_bk",word,folderAct,Constant.WORD_BK_TYPE);
+        getWordIdAndType(turn,"$.question_data",word,folderAct,Constant.QUESTION_TYPE);
+        getWordIdAndType(turn,"$.question_info",word,folderAct,Constant.QUESTION_TYPE);
+        getWordIdAndType(turn,"$.question_answer",word,folderAct,Constant.QUESTION_ANSWER_TYPE);
+        getWordIdAndType(turn,"$.chunk[*].word_id",word,folderAct,Constant.QUESTION_TYPE);
+        getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
+        String right = getRightAnswer(turn,"$.right_ans","$.main_word");
+        Turn newTurn = new Turn(word,right);
+        return newTurn.createActivity();
+    }
+    private static void getWordIdAndType(String json,String jsonPath,JSONArray array,String folder,String type){
+        if(JsonHandle.jsonObjectContainKey(json,jsonPath.replace("$.",""))==true){
+            String word_id = String.valueOf(JsonHandle.getValue(json, jsonPath));
+            if(word_id.contains("[") && word_id.contains("]")|| word_id.contains(",")){
+                JSONArray array1 = JsonHandle.converStringToJSONArray(word_id);
+                for(Object id: array1){
+                    array.put(genWordData(Integer.valueOf(id.toString()), folder, type));
+                }
+            }else {
+                array.put(genWordData(Integer.valueOf(word_id), folder, type));
+            }
+        }
+    }
+    private static String getRightAnswer(String json,String... jsonPaths){
+        String right = "";
+        for (String jsonPath:jsonPaths) {
+            if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", "")) == true) {
+                right = String.valueOf(JsonHandle.getValue(json, jsonPath));
+            }
+            if (!right.equals("")) {
+                break;
+            }
+        }
+        return right;
+    }
+    private static JSONObject genWordData(int word_id, String folder, String type){
+        downloadWordZip(folder,word_id);
+        String wordJson = getWordIdJsonFile(folder,word_id);
+        String text = JsonHandle.getValue(wordJson,"$.text");
+        String path = JsonHandle.getValue(wordJson,"$.path_word");
+        JSONArray images = JsonHandle.getJsonArray(wordJson,"$.image");
+        JSONArray audios = JsonHandle.getJsonArray(wordJson,"$.audio");
+        Word word = new Word(word_id,text,type,path,images,audios);
+        return word.createActivity();
+    }
+
+    private static void downloadWordZip(String folder, int word_id){
+        String path;
+        String list_word = getListWordJsonFile(folder);
+        JsonArray array = JsonHandle.getJsonArray(list_word);
+        for(JsonElement document: array) {
+            try {
+                if (Integer.valueOf(JsonHandle.getValue(document.toString(), "$.id")) == word_id) {
+                    path = String.valueOf(JsonHandle.getValue(document.toString(), "$.path"));
+                    downloadAndUnzipFileInFolder(Constant.WORD_INSTALL_URL, path, folder);
+                }
+            } catch (Exception E) {
+                System.out.println("This object doesn't contain key 'id' ");
+            }
+        }
+    }
     private static String getConfigJsonFile(String folder){
-        return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+folder+"/"+Constant.CONFIG_FILE);
+        return FileHelpers.readFile(folder+"/"+Constant.CONFIG_FILE);
     }
     private static String getListWordJsonFile(String folder){
         return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+folder+"/"+Constant.LIST_WORD_FILE);
     }
-    private static String getWordIdJsonFile(String folder,int word_id){
+    private static String getWordIdJsonFile(String folder, int word_id){
         return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+folder+"/"+word_id+".json");
-
+    }
+    private String getListGameFile(){
+        return FileHelpers.readFile(Constant.GAME_LIST);
+    }
+    private String getCourseInstallFile(){
+        return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+Constant.COURSE_INSTALL_FILE);
+    }
+    private static void saveArrayToFile(JSONArray jsonArray){
+        FileHelpers.writeFile(jsonArray.toString(),Constant.LESSON_FILE);
     }
 }

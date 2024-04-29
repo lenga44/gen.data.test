@@ -22,5 +22,17 @@
   {
     "id": 1000102,
     "game":"VideoCall"
+  },
+  {
+    "id": 1000088,
+    "game": "BrickLayer.BE.RS01(Clone)"
+  },
+  {
+    "id": 1000081,
+    "game": "MC.RS01DienThe(Clone)"
+  },
+  {
+    "id": 1000090,
+    "game": "chua biet"
   }
 ]
