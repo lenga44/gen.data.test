@@ -28,7 +28,7 @@ public class Constant {
 
     public static final String GAME_LIST = "src/main/data/list_game.json";
     public static final String QUESTION_TYPE = "question";
-    public static final String QUESTION_ANSWER_TYPE = "question";
+    public static final String QUESTION_ANSWER_TYPE = "question_answer";
     public static final String ANSWER_TYPE = "answer";
     public static final String WORD_BK_TYPE = "word_bk";
     public static final String PROJECT_PATH = "src/main/";

@@ -25,11 +25,11 @@ public class GenDataAISpeakLesson {
     }
     public static void run() throws IOException, InterruptedException {
         //region Download course install
-        /*System.out.println("Step1: Download course install\n");
+        System.out.println("Step1: Download course install\n");
         String url = "https://api.dev.monkeyuni.com/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=60&os=ios&profile_id=1&subversion=49.0.0";
         String json = RequestEx.request(url);
         String courseFile = getValueFromJson(json,"$.data.p_i.c.108.p");
-        Common.downloadAndUnzipFile(courseFile);*/
+        Common.downloadAndUnzipFile(courseFile);
         //endregion
 
         //region downloadLesson
