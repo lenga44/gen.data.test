@@ -179,6 +179,7 @@ public class GenDataAISpeakLesson {
         getWordIdAndType(turn,"$.question_answer",word,folderAct,Constant.QUESTION_ANSWER_TYPE);
         getWordIdAndType(turn,"$.chunk[*].word_id",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
+        getWordIdAndType(turn,"$.main_word",word,folderAct,Constant.ANSWER_TYPE);
         String right = getRightAnswer(turn,"$.right_ans","$.main_word");
         Turn newTurn = new Turn(word,right);
         return newTurn.createActivity();
