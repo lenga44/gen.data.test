@@ -25,11 +25,11 @@ public class GenDataAISpeakLesson {
     }
     public static void run() throws IOException, InterruptedException {
         //region Download course install
-        System.out.println("Step1: Download course install\n");
+       /* System.out.println("Step1: Download course install\n");
         String url = "https://api.dev.monkeyuni.com/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=60&os=ios&profile_id=1&subversion=49.0.0";
         String json = RequestEx.request(url);
         String courseFile = getValueFromJson(json,"$.data.p_i.c.108.p");
-        Common.downloadAndUnzipFile(courseFile);
+        Common.downloadAndUnzipFile(courseFile);*/
         //endregion
 
         //region downloadLesson
@@ -177,7 +177,7 @@ public class GenDataAISpeakLesson {
         getWordIdAndType(turn,"$.question_data",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.question_info",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.question_answer",word,folderAct,Constant.QUESTION_ANSWER_TYPE);
-        getWordIdAndType(turn,"$.chunk[*].word_id",word,folderAct,Constant.QUESTION_TYPE);
+        getWordIdAndTypeChunk(turn,"$.chunk",word,folderAct,Constant.CHUNK_TYPE,"$.word_id","$.order");
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.main_word",word,folderAct,Constant.ANSWER_TYPE);
         String right = getRightAnswer(turn,"$.right_ans","$.main_word");
@@ -197,7 +197,32 @@ public class GenDataAISpeakLesson {
             }
         }
     }
-    private static String getRightAnswer(String json,String... jsonPaths){
+    private static void getWordIdAndTypeChunk(String json,String jsonPath,JSONArray array,String folder,String type,String... key) {
+        if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", "")) == true) {
+            String word_id = String.valueOf(JsonHandle.getValue(json, jsonPath));
+            if (word_id.contains("[") && word_id.contains("]") || word_id.contains(",")) {
+                JSONArray array1 = JsonHandle.converStringToJSONArray(word_id);
+                for (Object id : array1) {
+                    Gson gson = new Gson();
+                    String json1 = gson.toJsonTree(id.toString()).getAsString();
+                    int word =0;
+                    int order=0;
+                    for (int i = 0;i<key.length;i++) {
+                        System.out.println(json1);
+                        word = Integer.parseInt(JsonHandle.getValue(json1, Arrays.stream(key).toList().get(i)));
+                        i++;
+                        order =  Integer.parseInt(JsonHandle.getValue(json1, Arrays.stream(key).toList().get(i)));
+
+                    }
+                    array.put(genWordData(word, folder, type,order));
+                }
+            } else {
+                array.put(genWordData(Integer.valueOf(word_id), folder, type));
+            }
+        }
+    }
+
+        private static String getRightAnswer(String json,String... jsonPaths){
         String right = "";
         for (String jsonPath:jsonPaths) {
             if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", "")) == true) {
@@ -216,7 +241,17 @@ public class GenDataAISpeakLesson {
         String path = JsonHandle.getValue(wordJson,"$.path_word");
         JSONArray images = JsonHandle.getJsonArray(wordJson,"$.image");
         JSONArray audios = JsonHandle.getJsonArray(wordJson,"$.audio");
-        Word word = new Word(word_id,text,type,path,images,audios);
+        Word word = new Word(word_id,text,type,path,images,audios,0);
+        return word.createActivity();
+    }
+    private static JSONObject genWordData(int word_id, String folder, String type,int order){
+        downloadWordZip(folder,word_id);
+        String wordJson = getWordIdJsonFile(folder,word_id);
+        String text = JsonHandle.getValue(wordJson,"$.text");
+        String path = JsonHandle.getValue(wordJson,"$.path_word");
+        JSONArray images = JsonHandle.getJsonArray(wordJson,"$.image");
+        JSONArray audios = JsonHandle.getJsonArray(wordJson,"$.audio");
+        Word word = new Word(word_id,text,type,path,images,audios,order);
         return word.createActivity();
     }
 

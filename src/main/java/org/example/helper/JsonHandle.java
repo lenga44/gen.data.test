@@ -30,6 +30,11 @@ public class JsonHandle {
     public static<T> T getValue(JsonObject document,String jsonPath){
         return JsonPath.read(document, jsonPath);
     }
+    public static String getValue(Object document,String jsonPath){
+        Object result = JsonPath.read(document, jsonPath);
+        Gson gson = new Gson();
+        return gson.toJsonTree(result).getAsString();
+    }
     public static boolean jsonObjectContainKey(JsonObject document, String key){
         return document.has(key);
     }

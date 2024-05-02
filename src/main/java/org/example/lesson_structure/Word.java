@@ -12,14 +12,16 @@ public class Word {
     private String path;
     private JSONArray image;
     private JSONArray audio;
+    private int order;
 
-    public Word(int word_id, String text, String type,String path, JSONArray image, JSONArray audio) {
+    public Word(int word_id, String text, String type,String path, JSONArray image, JSONArray audio,int order) {
         this.word_id = word_id;
         this.text = text;
         this.type = type;
         this.path = path;
         this.image = image;
         this.audio = audio;
+        this.order = order;
     }
 
     public JSONObject createActivity(){
@@ -30,7 +32,7 @@ public class Word {
         json.put("path", path);
         json.put("image", image);
         json.put("audio", audio);
+        json.put("order", order);
         return json;
     }
-
 }
