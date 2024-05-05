@@ -113,4 +113,7 @@ public class JsonHandle {
         String jsonInString = new Gson().toJson(object);
         return new JSONObject(jsonInString);
     }
+    public static JSONObject convertStringToJSONObject(String json){
+        return new JSONObject(json);
+    }
 }

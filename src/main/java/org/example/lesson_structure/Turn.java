@@ -7,9 +7,9 @@ import java.util.List;
 
 public class Turn {
     private JSONArray word;
-    private String right_answer;
+    private JSONObject right_answer;
 
-    public Turn(JSONArray word, String right_answer) {
+    public Turn(JSONArray word, JSONObject right_answer) {
         this.word = word;
         this.right_answer = right_answer;
     }

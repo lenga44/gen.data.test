@@ -192,8 +192,8 @@ public class GenDataAISpeakLesson {
         getWordIdAndTypeChunk(turn,"$.chunk",word,folderAct,Constant.CHUNK_TYPE,"$.word_id","$.order");
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.main_word",word,getWordBk(folderAct),folderAct,Constant.ANSWER_TYPE);
-        String right = getRightAnswer(turn,"$.right_ans","$.main_word");
-        Turn newTurn = new Turn(word,right);
+        int right = getRightAnswer(turn,folderAct,"$.right_ans","$.main_word");
+        Turn newTurn = new Turn(word,getWordJsonFileByWordId(folderAct,right));
         return newTurn.createActivity();
     }
     private static void getWordIdAndType(String json,String jsonPath,JSONArray array,String folder,String type){
@@ -252,13 +252,13 @@ public class GenDataAISpeakLesson {
         }
     }
 
-        private static String getRightAnswer(String json,String... jsonPaths){
-        String right = "";
+        private static int getRightAnswer(String json,String folder,String... jsonPaths){
+        int right = 0;
         for (String jsonPath:jsonPaths) {
             if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", "")) == true) {
-                right = String.valueOf(JsonHandle.getValue(json, jsonPath));
+                right = Integer.valueOf(JsonHandle.getValue(json, jsonPath));
             }
-            if (!right.equals("")) {
+            if (right!=0) {
                 break;
             }
         }
@@ -305,6 +305,14 @@ public class GenDataAISpeakLesson {
     }
     private static String getListWordJsonFile(String folder){
         return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+folder+"/"+Constant.LIST_WORD_FILE);
+    }
+    private static JSONObject getWordJsonFileByWordId(String folder,int word_id){
+        /*JSONObject jsonObject = new JSONObject();*/
+        try {
+            return JsonHandle.convertStringToJSONObject(FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH + "/" + folder + "/" + word_id + ".json"));
+        }catch (Exception e){
+            return new JSONObject();
+        }
     }
     private static String getWordIdJsonFile(String folder, int word_id){
         return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+folder+"/"+word_id+".json");
