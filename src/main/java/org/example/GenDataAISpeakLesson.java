@@ -185,6 +185,7 @@ public class GenDataAISpeakLesson {
         JSONArray word = new JSONArray();
         String turn = turnObject.toString();
         getWordIdAndType(turn,"$.answer_w",word,folderAct,Constant.ANSWER_TYPE);
+        getWordIdAndType(turn,"$.answer_data",word,folderAct,Constant.ANSWER_DATA_TYPE);
         getWordIdAndType(turn,"$.work_bk",word,folderAct,Constant.WORD_BK_TYPE);
         getWordIdAndType(turn,"$.question_data",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.question_info",word,folderAct,Constant.QUESTION_TYPE);

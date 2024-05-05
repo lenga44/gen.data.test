@@ -31,6 +31,7 @@ public class Constant {
     public static final String CHUNK_TYPE = "chunk";
     public static final String QUESTION_ANSWER_TYPE = "question_answer";
     public static final String ANSWER_TYPE = "answer";
+    public static final String ANSWER_DATA_TYPE = "answer_data";
     public static final String WORD_BK_TYPE = "word_bk";
     public static final String RIGHT_ANSWER_TYPE = "right_answer";
     public static final String PROJECT_PATH = "src/main/";
