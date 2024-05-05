@@ -10,6 +10,7 @@ import org.example.lesson_structure.Activity;
 import org.example.lesson_structure.Lesson;
 import org.example.lesson_structure.Turn;
 import org.example.lesson_structure.Word;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -124,6 +125,7 @@ public class GenDataAISpeakLesson {
     private static JSONArray getTurnsData(String folder,String jsonPath){
         JSONArray turns = new JSONArray();
         String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
+        System.out.println(json);
         if(JsonHandle.jsonObjectContainKey(json,jsonPath.replace("$.",""))==true) {
             JSONArray jsonArray = JsonHandle.getJsonArray(json, jsonPath);
             for (Object turn : jsonArray) {
@@ -131,6 +133,13 @@ public class GenDataAISpeakLesson {
             }
         }
         return turns;
+    }
+    private static JSONArray getWordBKData(String folder,String jsonPath){
+        String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
+        if(JsonHandle.jsonObjectContainKey(json,jsonPath.replace("$.",""))==true) {
+            return JsonHandle.getJsonArray(json, jsonPath);
+        }
+        return null;
     }
     private static JSONArray getActSData(JsonElement lessonElement){
         JSONArray acts = new JSONArray();
@@ -169,6 +178,9 @@ public class GenDataAISpeakLesson {
         }
         return null;
     }
+    private static JSONArray getWordBk(String folder){
+        return getWordBKData(folder.replace(".zip",""),"$.work_bk");
+    }
     private static JSONObject genTurnData(String folderAct, Object turnObject){
         JSONArray word = new JSONArray();
         String turn = turnObject.toString();
@@ -179,7 +191,7 @@ public class GenDataAISpeakLesson {
         getWordIdAndType(turn,"$.question_answer",word,folderAct,Constant.QUESTION_ANSWER_TYPE);
         getWordIdAndTypeChunk(turn,"$.chunk",word,folderAct,Constant.CHUNK_TYPE,"$.word_id","$.order");
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
-        getWordIdAndType(turn,"$.main_word",word,folderAct,Constant.ANSWER_TYPE);
+        getWordIdAndType(turn,"$.main_word",word,getWordBk(folderAct),folderAct,Constant.ANSWER_TYPE);
         String right = getRightAnswer(turn,"$.right_ans","$.main_word");
         Turn newTurn = new Turn(word,right);
         return newTurn.createActivity();
@@ -194,6 +206,24 @@ public class GenDataAISpeakLesson {
                 }
             }else {
                 array.put(genWordData(Integer.valueOf(word_id), folder, type));
+            }
+        }
+    }
+    private static void getWordIdAndType(String json,String jsonPath,JSONArray array,JSONArray arrayBk,String folder,String type){
+        if(JsonHandle.jsonObjectContainKey(json,jsonPath.replace("$.",""))==true){
+            String word_id = String.valueOf(JsonHandle.getValue(json, jsonPath));
+            if(word_id.contains("[") && word_id.contains("]")|| word_id.contains(",")){
+                JSONArray array1 = JsonHandle.converStringToJSONArray(word_id);
+                for(Object id: array1){
+                    array.put(genWordData(Integer.valueOf(id.toString()), folder, type));
+                }
+            }else {
+                array.put(genWordData(Integer.valueOf(word_id), folder, type));
+            }
+            if (arrayBk.length()>0){
+                for (Object word: arrayBk) {
+                    array.put(genWordData(Integer.valueOf(word.toString()),folder,Constant.WORD_BK_TYPE));
+                }
             }
         }
     }
