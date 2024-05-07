@@ -1,4 +1,4 @@
-package org.example;
+import ai.speak.course.GenDataAISpeakLesson;
 
 import java.io.IOException;
 import java.util.Scanner;

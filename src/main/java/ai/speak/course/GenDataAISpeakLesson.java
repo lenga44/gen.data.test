@@ -1,23 +1,21 @@
-package org.example;
+package ai.speak.course;
 
+import ai.speak.course.common.Common;
+import ai.speak.course.common.Constant;
+import ai.speak.course.helper.FileHelpers;
+import ai.speak.course.helper.JsonHandle;
+import ai.speak.course.lesson_structure.Activity;
 import com.google.gson.*;
-import org.example.common.Common;
-import org.example.common.Constant;
-import org.example.helper.FileHelpers;
-import org.example.helper.JsonHandle;
-import org.example.helper.RequestEx;
-import org.example.lesson_structure.Activity;
-import org.example.lesson_structure.Lesson;
-import org.example.lesson_structure.Turn;
-import org.example.lesson_structure.Word;
-import org.jetbrains.annotations.NotNull;
+import ai.speak.course.lesson_structure.Lesson;
+import ai.speak.course.lesson_structure.Turn;
+import ai.speak.course.lesson_structure.Word;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Arrays;
 
-import static org.example.common.Common.downloadAndUnzipFileInFolder;
+import static ai.speak.course.common.Common.downloadAndUnzipFileInFolder;
 
 public class GenDataAISpeakLesson {
     private static String content = "";
@@ -81,7 +79,7 @@ public class GenDataAISpeakLesson {
     private static String downloadAct(String resource){
         String error = null;
         try {
-            downloadAndUnzipFileInFolder(Constant.DOMAIN_URL, resource);
+            Common.downloadAndUnzipFileInFolder(Constant.DOMAIN_URL, resource);
             error = "success";
         }catch (IOException e){
             error = e.getMessage();
@@ -294,7 +292,7 @@ public class GenDataAISpeakLesson {
             try {
                 if (Integer.valueOf(JsonHandle.getValue(document.toString(), "$.id")) == word_id) {
                     path = String.valueOf(JsonHandle.getValue(document.toString(), "$.path"));
-                    downloadAndUnzipFileInFolder(Constant.WORD_INSTALL_URL, path, folder);
+                    Common.downloadAndUnzipFileInFolder(Constant.WORD_INSTALL_URL, path, folder);
                 }
             } catch (Exception E) {
                 System.out.println("This object doesn't contain key 'id' ");

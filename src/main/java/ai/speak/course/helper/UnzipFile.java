@@ -1,4 +1,4 @@
-package org.example.helper;
+package ai.speak.course.helper;
 
 import java.io.File;
 import java.io.FileInputStream;

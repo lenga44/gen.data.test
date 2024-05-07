@@ -1,4 +1,4 @@
-package org.example.helper;
+package ai.speak.course.helper;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

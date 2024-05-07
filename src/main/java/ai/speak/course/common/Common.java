@@ -1,8 +1,8 @@
-package org.example.common;
+package ai.speak.course.common;
 
-import org.example.helper.DownloadFile;
-import org.example.helper.FileHelpers;
-import org.example.helper.UnzipFile;
+import ai.speak.course.helper.UnzipFile;
+import ai.speak.course.helper.DownloadFile;
+import ai.speak.course.helper.FileHelpers;
 
 import java.io.IOException;
 import java.util.Arrays;

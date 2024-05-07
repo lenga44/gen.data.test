@@ -1,4 +1,4 @@
-package org.example.helper;
+package ai.speak.course.helper;
 
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;

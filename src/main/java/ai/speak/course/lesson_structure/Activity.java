@@ -1,11 +1,5 @@
-package org.example.lesson_structure;
+package ai.speak.course.lesson_structure;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import org.example.common.Constant;
-import org.example.helper.FileHelpers;
-import org.example.helper.JsonHandle;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
