@@ -17,6 +17,9 @@ public class Lesson {
         this.level = level;
         this.act = act;
     }
+    public Lesson(String lesson) {
+        this.lesson = lesson;
+    }
 
     public JSONObject createLesson(){
         JSONObject json = new JSONObject();
@@ -25,6 +28,11 @@ public class Lesson {
         json.put("level", level);
         json.put("category", category);
         json.put("act", act);
+        return json;
+    }
+    public JSONObject createLessons(){
+        JSONObject json = new JSONObject();
+        json.put("lesson", lesson);
         return json;
     }
 

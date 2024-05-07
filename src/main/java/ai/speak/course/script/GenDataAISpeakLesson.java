@@ -1,4 +1,4 @@
-package ai.speak.course;
+package ai.speak.course.script;
 
 import ai.speak.course.common.Common;
 import ai.speak.course.common.Constant;
@@ -124,7 +124,7 @@ public class GenDataAISpeakLesson {
         JSONArray turns = new JSONArray();
         String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
         System.out.println(json);
-        if(JsonHandle.jsonObjectContainKey(json,jsonPath.replace("$.",""))==true) {
+        if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
             JSONArray jsonArray = JsonHandle.getJsonArray(json, jsonPath);
             for (Object turn : jsonArray) {
                 turns.put(genTurnData(folder, turn));
@@ -299,7 +299,7 @@ public class GenDataAISpeakLesson {
             }
         }
     }
-    private static String getConfigJsonFile(String folder){
+    public static String getConfigJsonFile(String folder){
         return FileHelpers.readFile(folder+"/"+Constant.CONFIG_FILE);
     }
     private static String getListWordJsonFile(String folder){

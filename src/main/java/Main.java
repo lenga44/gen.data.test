@@ -1,4 +1,4 @@
-import ai.speak.course.GenDataAISpeakLesson;
+import ai.speak.course.script.GenDataAISpeakLesson;
 
 import java.io.IOException;
 import java.util.Scanner;
