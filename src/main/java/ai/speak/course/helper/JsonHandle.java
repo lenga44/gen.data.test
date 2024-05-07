@@ -1,9 +1,8 @@
-package org.example.helper;
+package ai.speak.course.helper;
 
 import com.google.gson.*;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
-import org.example.helper.FileHelpers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

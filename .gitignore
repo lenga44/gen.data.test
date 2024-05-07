@@ -15,6 +15,6 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
-src/main/unZipFile
+src/main/java/ai/speak/course/unZipFile
 src/main/zipFile
 .zip

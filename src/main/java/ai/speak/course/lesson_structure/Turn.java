@@ -1,4 +1,4 @@
-package org.example.lesson_structure;
+package ai.speak.course.lesson_structure;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
