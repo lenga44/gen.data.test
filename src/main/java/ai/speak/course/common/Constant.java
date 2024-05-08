@@ -4,7 +4,7 @@ import jdk.jfr.Description;
 
 public class Constant {
     public static final String ZIP_FOLDER_PATH = "src/main/java/ai/speak/course/unZipFile";
-    public static final String UNZIP_FOLDER_PATH ="src/main/java/ai/speak/course/zipFile";
+    public static final String UNZIP_FOLDER_PATH ="src/main/java/ai/speak/course/unZipFile";
     public static final String COURSE_INSTALL_URL = "https://vnmedia2.monkeyuni.net/App/uploads/course_install/hdr/";
     public static final String LOAD_UPDATE_URL = "https://api.dev.monkeyuni.com/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=60&os=ios&profile_id=1&subversion=49.0.0";
     public static final String ACTIVITY_INSTALL_URL = "https://vnmedia2.monkeyuni.net/App/zip/activity/";
@@ -24,6 +24,7 @@ public class Constant {
     public static final String TURN_OF_GAME = "order";
     public static final String RIGHT_ANSWER = "right_ans";
     public static final String COURSE_INSTALL_FILE = "course_installation.json";
+    public static final String DATA_AI_FOLDER = "src/main/java/ai/speak/course/data";
 
     public static final String GAME_LIST = "src/main/java/ai/speak/course/data/list_game.json";
     public static final String QUESTION_TYPE = "question";

@@ -1,4 +1,4 @@
-package ai.speak.course;
+package ai.speak.course.script;
 
 import ai.speak.course.common.Common;
 import ai.speak.course.common.Constant;
@@ -14,8 +14,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Scanner;
 
 import static ai.speak.course.common.Common.downloadAndUnzipFileInFolder;
+import static ai.speak.course.script.TopicHasLesson.genLevelTopicLessonFile;
 
 public class GenDataAISpeakLesson {
     private static String content = "";
@@ -32,8 +34,9 @@ public class GenDataAISpeakLesson {
         //endregion
 
         //region downloadLesson
-        downloadLesson();
+        //downloadLesson();
         //endregion
+        genLevelTopicLessonFile();
     }
     private static String getValueFromJson(String json,String path){
         return  JsonHandle.getValue(json,path);
@@ -124,7 +127,7 @@ public class GenDataAISpeakLesson {
         JSONArray turns = new JSONArray();
         String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
         System.out.println(json);
-        if(JsonHandle.jsonObjectContainKey(json,jsonPath.replace("$.",""))==true) {
+        if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
             JSONArray jsonArray = JsonHandle.getJsonArray(json, jsonPath);
             for (Object turn : jsonArray) {
                 turns.put(genTurnData(folder, turn));
@@ -299,7 +302,7 @@ public class GenDataAISpeakLesson {
             }
         }
     }
-    private static String getConfigJsonFile(String folder){
+    public static String getConfigJsonFile(String folder){
         return FileHelpers.readFile(folder+"/"+Constant.CONFIG_FILE);
     }
     private static String getListWordJsonFile(String folder){
@@ -319,7 +322,7 @@ public class GenDataAISpeakLesson {
     private String getListGameFile(){
         return FileHelpers.readFile(Constant.GAME_LIST);
     }
-    private String getCourseInstallFile(){
+    public static String getCourseInstallFile(){
         return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+Constant.COURSE_INSTALL_FILE);
     }
     private static void saveArrayToFile(JSONArray jsonArray){
