@@ -14,8 +14,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Scanner;
 
 import static ai.speak.course.common.Common.downloadAndUnzipFileInFolder;
+import static ai.speak.course.script.TopicHasLesson.genLevelTopicLessonFile;
 
 public class GenDataAISpeakLesson {
     private static String content = "";
@@ -32,8 +34,9 @@ public class GenDataAISpeakLesson {
         //endregion
 
         //region downloadLesson
-        downloadLesson();
+        //downloadLesson();
         //endregion
+        genLevelTopicLessonFile();
     }
     private static String getValueFromJson(String json,String path){
         return  JsonHandle.getValue(json,path);
@@ -319,7 +322,7 @@ public class GenDataAISpeakLesson {
     private String getListGameFile(){
         return FileHelpers.readFile(Constant.GAME_LIST);
     }
-    private String getCourseInstallFile(){
+    public static String getCourseInstallFile(){
         return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+Constant.COURSE_INSTALL_FILE);
     }
     private static void saveArrayToFile(JSONArray jsonArray){
