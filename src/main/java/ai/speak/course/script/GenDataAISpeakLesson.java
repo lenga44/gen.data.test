@@ -27,7 +27,7 @@ public class GenDataAISpeakLesson {
     public static void run() throws IOException, InterruptedException {
         //region Download course install
         System.out.println("Step1: Download course install\n");
-        String url = "https://api.dev.monkeyuni.com/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=60&os=ios&profile_id=1&subversion=50.0.0";
+        String url = "https://app.monkeyuni.net/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=4793864&os=ios&profile_id=1&subversion=55";
         String json = RequestEx.request(url);
         String courseFile = getValueFromJson(json,"$.data.p_i.c.108.p");
         Common.downloadAndUnzipFile(courseFile);
@@ -223,29 +223,36 @@ public class GenDataAISpeakLesson {
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.main_word",word,getWordBk(folderAct),folderAct,Constant.ANSWER_TYPE);
         int right = getRightAnswer(turn,folderAct,"$.right_ans","$.main_word");
-        Turn newTurn = new Turn(word,getWordJsonFileByWordId(folderAct,right));
+        Turn newTurn = new Turn(word,getOder(turnObject.toString(),"$.order"),getWordJsonFileByWordId(folderAct,right));
         return newTurn.createActivity();
     }
+    private static int getOder(String json,String jsonPath){
+        int order = 0;
+        if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))){
+            order = Integer.parseInt(JsonHandle.getValue(json,jsonPath));
+        }
+        return order;
+    }
     private static void getWordIdAndType(String json,String jsonPath,JSONArray array,String folder,String type){
-        if(JsonHandle.jsonObjectContainKey(json,jsonPath.replace("$.",""))==true){
+        if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))){
             String word_id = String.valueOf(JsonHandle.getValue(json, jsonPath));
             if(word_id.contains("[") && word_id.contains("]")|| word_id.contains(",")){
                 JSONArray array1 = JsonHandle.converStringToJSONArray(word_id);
                 for(Object id: array1){
-                    array.put(genWordData(Integer.valueOf(id.toString()), folder, type));
+                    array.put(genWordData(Integer.parseInt(id.toString()), folder, type));
                 }
             }else {
-                array.put(genWordData(Integer.valueOf(word_id), folder, type));
+                array.put(genWordData(Integer.parseInt(word_id), folder, type));
             }
         }
     }
     private static void getWordIdAndType(String json,String jsonPath,JSONArray array,JSONArray arrayBk,String folder,String type){
-        if(JsonHandle.jsonObjectContainKey(json,jsonPath.replace("$.",""))==true){
+        if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))){
             String word_id = String.valueOf(JsonHandle.getValue(json, jsonPath));
             if(word_id.contains("[") && word_id.contains("]")|| word_id.contains(",")){
                 JSONArray array1 = JsonHandle.converStringToJSONArray(word_id);
                 for(Object id: array1){
-                    array.put(genWordData(Integer.valueOf(id.toString()), folder, type));
+                    array.put(genWordData(Integer.parseInt(id.toString()), folder, type));
                 }
             }else {
                 array.put(genWordData(Integer.valueOf(word_id), folder, type));
@@ -286,7 +293,7 @@ public class GenDataAISpeakLesson {
         int right = 0;
         for (String jsonPath:jsonPaths) {
             if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", "")) == true) {
-                right = Integer.valueOf(JsonHandle.getValue(json, jsonPath));
+                right = Integer.parseInt(JsonHandle.getValue(json, jsonPath));
             }
             if (right!=0) {
                 break;
