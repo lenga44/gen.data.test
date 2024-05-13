@@ -5,13 +5,10 @@ import ai.speak.course.helper.FileHelpers;
 import ai.speak.course.helper.JsonHandle;
 import ai.speak.course.lesson_structure.CategoryStructure;
 import ai.speak.course.lesson_structure.LevelStructure;
-import ai.speak.course.lesson_structure.StructureMap;
 import ai.speak.course.lesson_structure.TopicStructure;
-import com.google.gson.JsonElement;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import static ai.speak.course.script.GenDataAISpeakLesson.getConfigJsonFile;
 import static ai.speak.course.script.GenDataAISpeakLesson.getCourseInstallFile;
 
 public class TopicHasLesson {
@@ -32,8 +29,8 @@ public class TopicHasLesson {
     }
     private static JSONObject getTopic(Object topic){
         String topicName = JsonHandle.getValue(topic.toString(),"$.t");
-        String lessons = JsonHandle.getValue(topic.toString(),"$.ls[*].t");
-        TopicStructure topicStructure = new TopicStructure(topicName,JsonHandle.converStringToJSONArray(lessons));
+        String lessons = JsonHandle.getValue(topic.toString(),"$.ls[?(@.f==0)].t");
+        TopicStructure topicStructure = new TopicStructure(topicName, JsonHandle.converStringToJSONArray(lessons));
         return topicStructure.createTopicStructure();
     }
     private static JSONObject getCategory(Object category){

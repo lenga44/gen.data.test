@@ -15,11 +15,28 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class JsonHandle {
+    public static String getValue(String json,String jsonPath,String folder,int word_id){
+        try {
+            //$.Page[0].Id
+            Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
+            String id = JsonPath.read(document, jsonPath).toString();
+            return id;
+        }catch (Exception e){
+            System.out.println("download error "+folder);
+            System.out.println("download error "+word_id);
+            return null;
+        }
+    }
     public static String getValue(String json,String jsonPath){
-        //$.Page[0].Id
-        Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
-        String id = JsonPath.read(document, jsonPath).toString();
-        return id;
+        try {
+            //$.Page[0].Id
+            Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
+            String id = JsonPath.read(document, jsonPath).toString();
+            return id;
+        }catch (Exception e){
+
+            return null;
+        }
     }
     public static<T> T getValueJson(String json,String jsonPath){
         //$.Page[0].Id
@@ -45,9 +62,25 @@ public class JsonHandle {
             return false;
         }
     }
+    public static JSONArray getJsonArray(String json,String jsonPath,String folder,int word_id){
+        try {
+            String array = getValue(json, jsonPath);
+            return new JSONArray(array);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
     public static JSONArray getJsonArray(String json,String jsonPath){
-        String array = getValue(json,jsonPath);
-        return new JSONArray(array);
+        try {
+            String array = getValue(json, jsonPath);
+            return new JSONArray(array);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
     public static JSONArray getJsonArray(Object json,String jsonPath){
         String array = getValue(json,jsonPath).getAsString();

@@ -4,6 +4,7 @@ import ai.speak.course.common.Common;
 import ai.speak.course.common.Constant;
 import ai.speak.course.helper.FileHelpers;
 import ai.speak.course.helper.JsonHandle;
+import ai.speak.course.helper.RequestEx;
 import ai.speak.course.lesson_structure.Activity;
 import com.google.gson.*;
 import ai.speak.course.lesson_structure.Lesson;
@@ -13,8 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 import static ai.speak.course.common.Common.downloadAndUnzipFileInFolder;
 import static ai.speak.course.script.TopicHasLesson.genLevelTopicLessonFile;
@@ -26,26 +26,36 @@ public class GenDataAISpeakLesson {
     }
     public static void run() throws IOException, InterruptedException {
         //region Download course install
-       /* System.out.println("Step1: Download course install\n");
-        String url = "https://api.dev.monkeyuni.com/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=60&os=ios&profile_id=1&subversion=49.0.0";
+        System.out.println("Step1: Download course install\n");
+        String url = "https://api.dev.monkeyuni.com/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=60&os=ios&profile_id=1&subversion=50.0.0";
         String json = RequestEx.request(url);
         String courseFile = getValueFromJson(json,"$.data.p_i.c.108.p");
-        Common.downloadAndUnzipFile(courseFile);*/
+        Common.downloadAndUnzipFile(courseFile);
         //endregion
 
         //region downloadLesson
-        //downloadLesson();
-        //endregion
         genLevelTopicLessonFile();
+        String structure = FileHelpers.readFile(Constant.DATA_AI_FOLDER+"/structure.json");
+        Map<String,List<Object>> map = new HashMap<>();
+        List<Object> listTopic = new ArrayList<>();
+        List<Object> listLevel = JsonHandle.getJsonArray(structure,"$.lvs[*].level").toList();
+        for (Object level: listLevel){
+            listTopic = JsonHandle.getJsonArray(structure,"$.lvs[?(@.level=='"+level+"')].category[*].topic[*].name").toList();
+            map.put(level.toString(),listTopic);
+        }
+
+        downloadLesson(map);
+        //endregion
     }
     private static String getValueFromJson(String json,String path){
         return  JsonHandle.getValue(json,path);
     }
-    private static void downloadLesson() {
+    private static void downloadLesson(Map<String,List<Object>> map) {
         try {
             JSONArray lessons = new JSONArray();
             String courseInstallJson = FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH + "//" + Constant.COURSE_INSTALL_FILE);
             JsonArray levels = getLevelArray(courseInstallJson);
+            System.out.println("================"+levels.size());
             for (JsonElement levelElement : levels) {
                 String level = getValueFromJson(levelElement.toString(), "$.n");
                 for (JsonElement categoryElement : getCategoryArray(levelElement.toString())) {
@@ -54,21 +64,39 @@ public class GenDataAISpeakLesson {
                         String topic = getValueFromJson(topicElement.toString(), "$.t");
                         for (JsonElement lessonElement : getLessonArray(topicElement.toString())) {
                             String lessonName = getValueFromJson(lessonElement.toString(), "$.t");
-                            JSONArray acts = getActSData(lessonElement);
-                            JSONObject lesson = genLessonData(lessonName, topic, category, level, acts);
-                            lessons.put(lesson);
+                            String user = getValueFromJson(lessonElement.toString(),"$.f");
+                            //System.out.println("============= "+user);
+                            if(user.equals("0")) {
+                                JSONArray acts = getActSData(lessonElement);
+                                JSONObject lesson = genLessonData(lessonName, topic, category, level, acts,getMapIndex(map.get(level),topic));
+                                lessons.put(lesson);
+                            }
                         }
-                        break;
                     }
-                    break;
                 }
-                break;
             }
             saveArrayToFile(lessons);
         }catch (Exception e){
             System.out.printf("downloadLesson "+e.getMessage());
             e.printStackTrace();
         }
+    }
+    private static int getMapIndex(List<Object> listTopic,String topic){
+        int index = listTopic.indexOf(topic);
+        index = index+1;
+        int value = -1;
+        if(index==0||index ==1){
+            value = 0;
+        }else {
+            if (index % 3 != 0) {
+                if (index % 2 == 0) {
+                    value = 0;
+                }
+            } else {
+                value = 2;
+            }
+        }
+        return value;
     }
     private static String getActResourceFolder(String path){
         String file = path;
@@ -153,8 +181,8 @@ public class GenDataAISpeakLesson {
         return acts;
     }
 
-    private static JSONObject genLessonData(String lessonName, String topic, String category, String level, JSONArray act){
-        Lesson lesson = new Lesson(lessonName,topic,category,level,act);
+    private static JSONObject genLessonData(String lessonName, String topic, String category, String level, JSONArray act,int map){
+        Lesson lesson = new Lesson(lessonName,topic,category,level,act,map);
         return lesson.createLesson();
     }
     private static JSONObject genActData(String folder, String error, int gameID, String file_zip){
