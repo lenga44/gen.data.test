@@ -27,7 +27,7 @@ public class GenDataAISpeakLesson {
     public static void run() throws IOException, InterruptedException {
         //region Download course install
         System.out.println("Step1: Download course install\n");
-        String url = "https://app.monkeyuni.net/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=4793864&os=ios&profile_id=1&subversion=55";
+        String url = "https://app.monkeyuni.net/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=4793864&os=ios&profile_id=1&subversion=59";
         String json = RequestEx.request(url);
         String courseFile = getValueFromJson(json,"$.data.p_i.c.108.p");
         Common.downloadAndUnzipFile(courseFile);
@@ -83,7 +83,17 @@ public class GenDataAISpeakLesson {
     }
     private static int getMapIndex(List<Object> listTopic,String topic){
         int index = listTopic.indexOf(topic);
-        index = index+1;
+        int value = -1;
+        if(index%3==0){
+            value =0;
+        }
+        if(index%3==1){
+            value =1;
+        }
+        if (index%3==2){
+            value = 3;
+        }
+        /*index = index+1;
         int value = -1;
         if(index==0||index ==1){
             value = 0;
@@ -95,7 +105,7 @@ public class GenDataAISpeakLesson {
             } else {
                 value = 2;
             }
-        }
+        }*/
         return value;
     }
     private static String getActResourceFolder(String path){
