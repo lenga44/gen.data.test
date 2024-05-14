@@ -91,7 +91,7 @@ public class GenDataAISpeakLesson {
             value =1;
         }
         if (index%3==2){
-            value = 3;
+            value = 2;
         }
         /*index = index+1;
         int value = -1;
