@@ -27,7 +27,15 @@ public class FileHelpers {
         }
         return null;
     }
-
+    public static String getProjectPath() {
+        try {
+            File directory = new File("./").getCanonicalFile();
+            return directory.getPath();
+        }catch (Exception e){
+            e.printStackTrace();
+            return "";
+        }
+    }
     public static String convertPath(String path){
         return path.replace("\"","");
     }
