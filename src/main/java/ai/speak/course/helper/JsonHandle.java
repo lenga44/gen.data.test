@@ -38,6 +38,18 @@ public class JsonHandle {
             return null;
         }
     }
+    public static String getValueObject(String json,String jsonPath){
+        try {
+            String correctedJsonString = json
+                    .replace('=', ':')
+                    .replaceAll("([a-zA-Z_]+)", "\"$1\"");
+            Object document = Configuration.defaultConfiguration().jsonProvider().parse(correctedJsonString);
+            String id = JsonPath.read(document, jsonPath).toString();
+            return id;
+        }catch (Exception e){
+            return null;
+        }
+    }
     public static<T> T getValueJson(String json,String jsonPath){
         //$.Page[0].Id
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
@@ -148,5 +160,11 @@ public class JsonHandle {
     }
     public static JSONObject convertStringToJSONObject(String json){
         return new JSONObject(json);
+    }
+    public static JSONObject convertObjectToJSONObject(String data){
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(data);
+        JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
+        return new JSONObject(jsonObject.toString());
     }
 }

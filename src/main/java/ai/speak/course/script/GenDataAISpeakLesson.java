@@ -14,19 +14,20 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static ai.speak.course.common.Common.downloadAndUnzipFileInFolder;
 import static ai.speak.course.script.TopicHasLesson.genLevelTopicLessonFile;
 
 public class GenDataAISpeakLesson {
-    /*public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         run();
-    }*/
+    }
     public static void run() throws IOException, InterruptedException {
         //region Download course install
         System.out.println("Step1: Download course install\n");
-        String url = "https://app.monkeyuni.net/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=4793864&os=ios&profile_id=1&subversion=69";
+        String url = "https://app.monkeyuni.net/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=4793864&os=ios&profile_id=1&subversion=78";
         String json = RequestEx.request(url);
         String courseFile = getValueFromJson(json,"$.data.p_i.c.108.p");
         Common.downloadAndUnzipFile(courseFile);
@@ -62,10 +63,10 @@ public class GenDataAISpeakLesson {
                         String topic = getValueFromJson(topicElement.toString(), "$.t");
                         for (JsonElement lessonElement : getLessonArray(topicElement.toString())) {
                             String lessonName = getValueFromJson(lessonElement.toString(), "$.t");
-                            String user = getValueFromJson(lessonElement.toString(),"$.f");
-                            if(user.equals("0")) {
+                            String user = getValueFromJson(lessonElement.toString(), "$.f");
+                            if (user.equals("0")) {
                                 JSONArray acts = getActSData(lessonElement);
-                                JSONObject lesson = genLessonData(lessonName, topic, category, level, acts,getMapIndex(map.get(level),topic));
+                                JSONObject lesson = genLessonData(lessonName, topic, category, level, acts, getMapIndex(map.get(level), topic));
                                 lessons.put(lesson);
                             }
                         }
@@ -136,15 +137,7 @@ public class GenDataAISpeakLesson {
         String objects = getValueFromJson(json,"$.as");
         return JsonHandle.getJsonArray(objects);
     }
-    private static JSONArray getTurnsData(String folder){
-        JSONArray turns = new JSONArray();
-        String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
-        JSONArray jsonArray = JsonHandle.getJsonArray(json,"$.question");
-        for(Object turn: jsonArray){
-            turns.put(genTurnData(folder, turn));
-        }
-        return turns;
-    }
+
     private static JSONArray getTurnsData(String folder,String jsonPath){
         JSONArray turns = new JSONArray();
         String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
@@ -212,7 +205,7 @@ public class GenDataAISpeakLesson {
         getWordIdAndType(turn,"$.work_bk",word,folderAct,Constant.WORD_BK_TYPE);
         getWordIdAndType(turn,"$.question_data",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.question_info",word,folderAct,Constant.QUESTION_TYPE);
-        getWordIdAndType(turn,"$.question_answer",word,folderAct,Constant.QUESTION_ANSWER_TYPE);
+        getWordIdAndType(turn, "$.question_answer", word, folderAct, Constant.QUESTION_ANSWER_TYPE);
         getWordIdAndTypeChunk(turn,"$.chunk",word,folderAct,Constant.CHUNK_TYPE,"$.word_id","$.order");
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.main_word",word,getWordBk(folderAct),folderAct,Constant.ANSWER_TYPE);
@@ -229,12 +222,16 @@ public class GenDataAISpeakLesson {
     }
     private static void getWordIdAndType(String json,String jsonPath,JSONArray array,String folder,String type){
         if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))){
-            String word_id = String.valueOf(JsonHandle.getValue(json, jsonPath));
-            if(word_id.contains("[") && word_id.contains("]")|| word_id.contains(",")){
+            String word_id = JsonHandle.getValue(json, jsonPath);
+            if(word_id.startsWith("[") && word_id.endsWith("]")/*|| word_id.contains(",")*/){
                 JSONArray array1 = JsonHandle.converStringToJSONArray(word_id);
                 for(Object id: array1){
                     array.put(genWordData(Integer.parseInt(id.toString()), folder, type));
                 }
+            }else if(word_id.startsWith("{")&& word_id.endsWith("}")) {
+                array.put(genWordData(Integer.parseInt(JsonHandle.getValueObject(word_id, "$.answer")),
+                        folder, type));
+                System.out.println(array);
             }else {
                 array.put(genWordData(Integer.parseInt(word_id), folder, type));
             }
