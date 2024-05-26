@@ -37,7 +37,6 @@ public class UnzipFile {
     }
 
     private static void extractFile(ZipInputStream zipInputStream, String filePath) throws IOException {
-        System.out.println(filePath);
         BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
         byte[] bytesIn = new byte[1024];
         int read;

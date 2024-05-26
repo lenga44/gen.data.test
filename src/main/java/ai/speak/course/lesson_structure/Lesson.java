@@ -9,13 +9,15 @@ public class Lesson {
     private String category;
     private String level;
     private JSONArray act;
+    private int map;
 
-    public Lesson(String lesson, String topic, String category, String level, JSONArray act) {
+    public Lesson(String lesson, String topic, String category, String level, JSONArray act,int map) {
         this.lesson = lesson;
         this.topic = topic;
         this.category = category;
         this.level = level;
         this.act = act;
+        this.map = map;
     }
     public Lesson(String lesson) {
         this.lesson = lesson;
@@ -28,6 +30,7 @@ public class Lesson {
         json.put("level", level);
         json.put("category", category);
         json.put("act", act);
+        json.put("map",map);
         return json;
     }
     public JSONObject createLessons(){

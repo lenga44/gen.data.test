@@ -8,13 +8,15 @@ public class Activity {
     private String gameName;
     private JSONArray turn;
     private String file_zip;
+    private String background;
     private String download_error;
 
-    public Activity(int gameId,String gameName, JSONArray turn,String file_zip,String download_error) {
+    public Activity(int gameId,String gameName, JSONArray turn,String file_zip,String background,String download_error) {
         this.gameId = gameId;
         this.gameName = gameName;
         this.turn = turn;
         this.file_zip = file_zip;
+        this.background = background;
         this.download_error = download_error;
     }
 
@@ -24,6 +26,7 @@ public class Activity {
         json.put("game_name", gameName);
         json.put("file_zip", file_zip);
         json.put("download_error",download_error);
+        json.put("background",background);
         json.put("turn", turn);
         return json;
     }

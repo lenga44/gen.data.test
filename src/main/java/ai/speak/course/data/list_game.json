@@ -34,5 +34,29 @@
   {
     "id": 1000090,
     "game": "BE.PD01Dialogue(Clone)"
+  },
+  {
+	"id": 1000122,
+	"game":"Report_Egg cracking"
+  },
+  {
+	"id": 1000119,
+	"game":"Report_BE.GP06_SoundVocabMatching(Clone)"
+  },
+  {
+	"id": 1000123,
+	"game":"Report_BE.RP05MultipleChoice(Clone)"
+  },
+  {
+	"id": 1000092,
+	"game":""
+  },
+  {
+	"id": 1000060,
+	"game":"Report_BEGP01CarPhonic(Clone)"
+  },
+  {
+	"id": 1000124,
+	"game":"Report_BEPP01BlendingSound(Clone)"
   }
 ]

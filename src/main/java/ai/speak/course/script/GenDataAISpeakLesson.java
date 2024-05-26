@@ -4,6 +4,7 @@ import ai.speak.course.common.Common;
 import ai.speak.course.common.Constant;
 import ai.speak.course.helper.FileHelpers;
 import ai.speak.course.helper.JsonHandle;
+import ai.speak.course.helper.RequestEx;
 import ai.speak.course.lesson_structure.Activity;
 import com.google.gson.*;
 import ai.speak.course.lesson_structure.Lesson;
@@ -13,35 +14,43 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.lang.reflect.Array;
+import java.util.*;
 
 import static ai.speak.course.common.Common.downloadAndUnzipFileInFolder;
 import static ai.speak.course.script.TopicHasLesson.genLevelTopicLessonFile;
 
 public class GenDataAISpeakLesson {
-    private static String content = "";
     public static void main(String[] args) throws IOException, InterruptedException {
         run();
     }
     public static void run() throws IOException, InterruptedException {
         //region Download course install
-       /* System.out.println("Step1: Download course install\n");
-        String url = "https://api.dev.monkeyuni.com/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=60&os=ios&profile_id=1&subversion=49.0.0";
+        System.out.println("Step1: Download course install\n");
+        String url = "https://app.monkeyuni.net/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=4793864&os=ios&profile_id=1&subversion=78";
         String json = RequestEx.request(url);
         String courseFile = getValueFromJson(json,"$.data.p_i.c.108.p");
-        Common.downloadAndUnzipFile(courseFile);*/
+        Common.downloadAndUnzipFile(courseFile);
         //endregion
 
         //region downloadLesson
-        //downloadLesson();
-        //endregion
         genLevelTopicLessonFile();
+        String structure = FileHelpers.readFile(Constant.DATA_AI_FOLDER+"/structure.json");
+        Map<String,List<Object>> map = new HashMap<>();
+        List<Object> listTopic = new ArrayList<>();
+        List<Object> listLevel = JsonHandle.getJsonArray(structure,"$.lvs[*].level").toList();
+        for (Object level: listLevel){
+            listTopic = JsonHandle.getJsonArray(structure,"$.lvs[?(@.level=='"+level+"')].category[*].topic[*].name").toList();
+            map.put(level.toString(),listTopic);
+        }
+
+        downloadLesson(map);
+        //endregion
     }
     private static String getValueFromJson(String json,String path){
         return  JsonHandle.getValue(json,path);
     }
-    private static void downloadLesson() {
+    private static void downloadLesson(Map<String,List<Object>> map) {
         try {
             JSONArray lessons = new JSONArray();
             String courseInstallJson = FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH + "//" + Constant.COURSE_INSTALL_FILE);
@@ -54,21 +63,35 @@ public class GenDataAISpeakLesson {
                         String topic = getValueFromJson(topicElement.toString(), "$.t");
                         for (JsonElement lessonElement : getLessonArray(topicElement.toString())) {
                             String lessonName = getValueFromJson(lessonElement.toString(), "$.t");
-                            JSONArray acts = getActSData(lessonElement);
-                            JSONObject lesson = genLessonData(lessonName, topic, category, level, acts);
-                            lessons.put(lesson);
+                            String user = getValueFromJson(lessonElement.toString(), "$.f");
+                            if (user.equals("0")) {
+                                JSONArray acts = getActSData(lessonElement);
+                                JSONObject lesson = genLessonData(lessonName, topic, category, level, acts, getMapIndex(map.get(level), topic));
+                                lessons.put(lesson);
+                            }
                         }
-                        break;
                     }
-                    break;
                 }
-                break;
             }
             saveArrayToFile(lessons);
         }catch (Exception e){
             System.out.printf("downloadLesson "+e.getMessage());
             e.printStackTrace();
         }
+    }
+    private static int getMapIndex(List<Object> listTopic,String topic){
+        int index = listTopic.indexOf(topic);
+        int value = -1;
+        if(index%3==0){
+            value =0;
+        }
+        if(index%3==1){
+            value =1;
+        }
+        if (index%3==2){
+            value = 2;
+        }
+        return value;
     }
     private static String getActResourceFolder(String path){
         String file = path;
@@ -114,19 +137,10 @@ public class GenDataAISpeakLesson {
         String objects = getValueFromJson(json,"$.as");
         return JsonHandle.getJsonArray(objects);
     }
-    private static JSONArray getTurnsData(String folder){
-        JSONArray turns = new JSONArray();
-        String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
-        JSONArray jsonArray = JsonHandle.getJsonArray(json,"$.question");
-        for(Object turn: jsonArray){
-            turns.put(genTurnData(folder, turn));
-        }
-        return turns;
-    }
+
     private static JSONArray getTurnsData(String folder,String jsonPath){
         JSONArray turns = new JSONArray();
         String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
-        System.out.println(json);
         if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
             JSONArray jsonArray = JsonHandle.getJsonArray(json, jsonPath);
             for (Object turn : jsonArray) {
@@ -148,22 +162,23 @@ public class GenDataAISpeakLesson {
             int gameId = Integer.valueOf(JsonHandle.getValue(actElement.toString(),"$.g_i"));
             String resource = getValueFromJson(actElement.toString(),"$.f");
             String error = downloadAct(resource);
-            acts.put(genActData(getActResourceFolder(resource),error,gameId,resource));
+            String background = JsonHandle.getValue(actElement.toString(),"$.g_c.b");
+            acts.put(genActData(getActResourceFolder(resource),error,gameId,resource,background));
         }
         return acts;
     }
 
-    private static JSONObject genLessonData(String lessonName, String topic, String category, String level, JSONArray act){
-        Lesson lesson = new Lesson(lessonName,topic,category,level,act);
+    private static JSONObject genLessonData(String lessonName, String topic, String category, String level, JSONArray act,int map){
+        Lesson lesson = new Lesson(lessonName,topic,category,level,act,map);
         return lesson.createLesson();
     }
-    private static JSONObject genActData(String folder, String error, int gameID, String file_zip){
+    private static JSONObject genActData(String folder, String error, int gameID, String file_zip,String background){
         JSONArray turns = getTurnsData(folder.replace(".zip",""),"$.question");
         if(turns.length()<=0){
             turns = getTurnsData(folder.replace(".zip",""),"$.data");
         }
         if(turns.length()>0) {
-            Activity activity = new Activity(gameID,getGameName(gameID), turns, file_zip, error);
+            Activity activity = new Activity(gameID,getGameName(gameID), turns, file_zip,background,error);
             return activity.createActivity();
         }
         return null;
@@ -190,34 +205,45 @@ public class GenDataAISpeakLesson {
         getWordIdAndType(turn,"$.work_bk",word,folderAct,Constant.WORD_BK_TYPE);
         getWordIdAndType(turn,"$.question_data",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.question_info",word,folderAct,Constant.QUESTION_TYPE);
-        getWordIdAndType(turn,"$.question_answer",word,folderAct,Constant.QUESTION_ANSWER_TYPE);
+        getWordIdAndType(turn, "$.question_answer", word, folderAct, Constant.QUESTION_ANSWER_TYPE);
         getWordIdAndTypeChunk(turn,"$.chunk",word,folderAct,Constant.CHUNK_TYPE,"$.word_id","$.order");
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.main_word",word,getWordBk(folderAct),folderAct,Constant.ANSWER_TYPE);
         int right = getRightAnswer(turn,folderAct,"$.right_ans","$.main_word");
-        Turn newTurn = new Turn(word,getWordJsonFileByWordId(folderAct,right));
+        Turn newTurn = new Turn(word,getOder(turnObject.toString(),"$.order"),getWordJsonFileByWordId(folderAct,right));
         return newTurn.createActivity();
     }
+    private static int getOder(String json,String jsonPath){
+        int order = 0;
+        if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))){
+            order = Integer.parseInt(JsonHandle.getValue(json,jsonPath));
+        }
+        return order;
+    }
     private static void getWordIdAndType(String json,String jsonPath,JSONArray array,String folder,String type){
-        if(JsonHandle.jsonObjectContainKey(json,jsonPath.replace("$.",""))==true){
-            String word_id = String.valueOf(JsonHandle.getValue(json, jsonPath));
-            if(word_id.contains("[") && word_id.contains("]")|| word_id.contains(",")){
+        if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))){
+            String word_id = JsonHandle.getValue(json, jsonPath);
+            if(word_id.startsWith("[") && word_id.endsWith("]")/*|| word_id.contains(",")*/){
                 JSONArray array1 = JsonHandle.converStringToJSONArray(word_id);
                 for(Object id: array1){
-                    array.put(genWordData(Integer.valueOf(id.toString()), folder, type));
+                    array.put(genWordData(Integer.parseInt(id.toString()), folder, type));
                 }
+            }else if(word_id.startsWith("{")&& word_id.endsWith("}")) {
+                array.put(genWordData(Integer.parseInt(JsonHandle.getValueObject(word_id, "$.answer")),
+                        folder, type));
+                System.out.println(array);
             }else {
-                array.put(genWordData(Integer.valueOf(word_id), folder, type));
+                array.put(genWordData(Integer.parseInt(word_id), folder, type));
             }
         }
     }
     private static void getWordIdAndType(String json,String jsonPath,JSONArray array,JSONArray arrayBk,String folder,String type){
-        if(JsonHandle.jsonObjectContainKey(json,jsonPath.replace("$.",""))==true){
+        if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))){
             String word_id = String.valueOf(JsonHandle.getValue(json, jsonPath));
             if(word_id.contains("[") && word_id.contains("]")|| word_id.contains(",")){
                 JSONArray array1 = JsonHandle.converStringToJSONArray(word_id);
                 for(Object id: array1){
-                    array.put(genWordData(Integer.valueOf(id.toString()), folder, type));
+                    array.put(genWordData(Integer.parseInt(id.toString()), folder, type));
                 }
             }else {
                 array.put(genWordData(Integer.valueOf(word_id), folder, type));
@@ -240,7 +266,6 @@ public class GenDataAISpeakLesson {
                     int word =0;
                     int order=0;
                     for (int i = 0;i<key.length;i++) {
-                        System.out.println(json1);
                         word = Integer.parseInt(JsonHandle.getValue(json1, Arrays.stream(key).toList().get(i)));
                         i++;
                         order =  Integer.parseInt(JsonHandle.getValue(json1, Arrays.stream(key).toList().get(i)));
@@ -258,7 +283,7 @@ public class GenDataAISpeakLesson {
         int right = 0;
         for (String jsonPath:jsonPaths) {
             if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", "")) == true) {
-                right = Integer.valueOf(JsonHandle.getValue(json, jsonPath));
+                right = Integer.parseInt(JsonHandle.getValue(json, jsonPath));
             }
             if (right!=0) {
                 break;
