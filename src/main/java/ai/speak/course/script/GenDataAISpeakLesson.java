@@ -1,10 +1,10 @@
 package ai.speak.course.script;
 
-import ai.speak.course.common.Common;
-import ai.speak.course.common.Constant;
-import ai.speak.course.helper.FileHelpers;
-import ai.speak.course.helper.JsonHandle;
-import ai.speak.course.helper.RequestEx;
+import common.Common;
+import common.Constant;
+import helper.FileHelpers;
+import helper.JsonHandle;
+import helper.RequestEx;
 import ai.speak.course.lesson_structure.Activity;
 import com.google.gson.*;
 import ai.speak.course.lesson_structure.Lesson;
@@ -14,10 +14,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
-import static ai.speak.course.common.Common.downloadAndUnzipFileInFolder;
+import static common.Common.downloadAndUnzipFileInFolder;
 import static ai.speak.course.script.TopicHasLesson.genLevelTopicLessonFile;
 
 public class GenDataAISpeakLesson {
@@ -30,7 +29,7 @@ public class GenDataAISpeakLesson {
         String url = "https://app.monkeyuni.net/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=4793864&os=ios&profile_id=1&subversion=78";
         String json = RequestEx.request(url);
         String courseFile = getValueFromJson(json,"$.data.p_i.c.108.p");
-        Common.downloadAndUnzipFile(courseFile);
+        Common.downloadAndUnzipFileCourseInstall(courseFile);
         //endregion
 
         //region downloadLesson
@@ -38,9 +37,9 @@ public class GenDataAISpeakLesson {
         String structure = FileHelpers.readFile(Constant.DATA_AI_FOLDER+"/structure.json");
         Map<String,List<Object>> map = new HashMap<>();
         List<Object> listTopic = new ArrayList<>();
-        List<Object> listLevel = JsonHandle.getJsonArray(structure,"$.lvs[*].level").toList();
+        List<Object> listLevel = JsonHandle.getJSONArray(structure,"$.lvs[*].level").toList();
         for (Object level: listLevel){
-            listTopic = JsonHandle.getJsonArray(structure,"$.lvs[?(@.level=='"+level+"')].category[*].topic[*].name").toList();
+            listTopic = JsonHandle.getJSONArray(structure,"$.lvs[?(@.level=='"+level+"')].category[*].topic[*].name").toList();
             map.put(level.toString(),listTopic);
         }
 
@@ -115,34 +114,34 @@ public class GenDataAISpeakLesson {
     private static JsonArray getLevelArray(String json) {
         System.out.println("Step2: get all levels\n");
         String objects = getValueFromJson(json,"$.lvs");
-        return JsonHandle.getJsonArray(objects);
+        return JsonHandle.getJSONArray(objects);
     }
     private static JsonArray getCategoryArray(String json){
         System.out.println("Step3: get all category in level\n");
         String objects = getValueFromJson(json,"$.cs");
-        return JsonHandle.getJsonArray(objects);
+        return JsonHandle.getJSONArray(objects);
     }
     private static JsonArray getLessonArray(String json){
         System.out.println("Step4: get all lesson in category\n");
         String objects = getValueFromJson(json,"$.ls");
-        return JsonHandle.getJsonArray(objects);
+        return JsonHandle.getJSONArray(objects);
     }
     private static JsonArray getTopicArray(String json){
         System.out.println("Step4: get all lesson in topic\n");
         String objects = getValueFromJson(json,"$.us");
-        return JsonHandle.getJsonArray(objects);
+        return JsonHandle.getJSONArray(objects);
     }
     private static JsonArray getActArray(String json){
         System.out.println("Step4: get all activity in lesson\n");
         String objects = getValueFromJson(json,"$.as");
-        return JsonHandle.getJsonArray(objects);
+        return JsonHandle.getJSONArray(objects);
     }
 
     private static JSONArray getTurnsData(String folder,String jsonPath){
         JSONArray turns = new JSONArray();
         String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
         if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
-            JSONArray jsonArray = JsonHandle.getJsonArray(json, jsonPath);
+            JSONArray jsonArray = JsonHandle.getJSONArray(json, jsonPath);
             for (Object turn : jsonArray) {
                 turns.put(genTurnData(folder, turn));
             }
@@ -152,7 +151,7 @@ public class GenDataAISpeakLesson {
     private static JSONArray getWordBKData(String folder,String jsonPath){
         String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
         if(JsonHandle.jsonObjectContainKey(json,jsonPath.replace("$.",""))==true) {
-            return JsonHandle.getJsonArray(json, jsonPath);
+            return JsonHandle.getJSONArray(json, jsonPath);
         }
         return null;
     }
@@ -178,19 +177,8 @@ public class GenDataAISpeakLesson {
             turns = getTurnsData(folder.replace(".zip",""),"$.data");
         }
         if(turns.length()>0) {
-            Activity activity = new Activity(gameID,getGameName(gameID), turns, file_zip,background,error);
+            Activity activity = new Activity(gameID,Common.getGameName(gameID), turns, file_zip,background,error);
             return activity.createActivity();
-        }
-        return null;
-    }
-    private static String getGameName(int gameId){
-        String json = FileHelpers.readFile(Constant.GAME_LIST);
-        JsonArray array = JsonHandle.getJsonArray(json);
-        for (JsonElement game: array) {
-            int id = Integer.valueOf(JsonHandle.getValue(game.toString(), "$.id"));
-            if(id==gameId){
-                return JsonHandle.getValue(game.toString(), "$.game");
-            }
         }
         return null;
     }
@@ -296,8 +284,8 @@ public class GenDataAISpeakLesson {
         String wordJson = getWordIdJsonFile(folder,word_id);
         String text = JsonHandle.getValue(wordJson,"$.text");
         String path = JsonHandle.getValue(wordJson,"$.path_word");
-        JSONArray images = JsonHandle.getJsonArray(wordJson,"$.image");
-        JSONArray audios = JsonHandle.getJsonArray(wordJson,"$.audio");
+        JSONArray images = JsonHandle.getJSONArray(wordJson,"$.image");
+        JSONArray audios = JsonHandle.getJSONArray(wordJson,"$.audio");
         Word word = new Word(word_id,text,type,path,images,audios,0);
         return word.createActivity();
     }
@@ -306,8 +294,8 @@ public class GenDataAISpeakLesson {
         String wordJson = getWordIdJsonFile(folder,word_id);
         String text = JsonHandle.getValue(wordJson,"$.text");
         String path = JsonHandle.getValue(wordJson,"$.path_word");
-        JSONArray images = JsonHandle.getJsonArray(wordJson,"$.image");
-        JSONArray audios = JsonHandle.getJsonArray(wordJson,"$.audio");
+        JSONArray images = JsonHandle.getJSONArray(wordJson,"$.image");
+        JSONArray audios = JsonHandle.getJSONArray(wordJson,"$.audio");
         Word word = new Word(word_id,text,type,path,images,audios,order);
         return word.createActivity();
     }
@@ -315,7 +303,7 @@ public class GenDataAISpeakLesson {
     private static void downloadWordZip(String folder, int word_id){
         String path;
         String list_word = getListWordJsonFile(folder);
-        JsonArray array = JsonHandle.getJsonArray(list_word);
+        JsonArray array = JsonHandle.getJSONArray(list_word);
         for(JsonElement document: array) {
             try {
                 if (Integer.valueOf(JsonHandle.getValue(document.toString(), "$.id")) == word_id) {

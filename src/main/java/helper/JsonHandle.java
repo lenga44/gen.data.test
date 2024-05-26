@@ -1,4 +1,4 @@
-package ai.speak.course.helper;
+package helper;
 
 import com.google.gson.*;
 import com.jayway.jsonpath.Configuration;
@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -74,7 +73,7 @@ public class JsonHandle {
             return false;
         }
     }
-    public static JSONArray getJsonArray(String json,String jsonPath,String folder,int word_id){
+    public static JSONArray getJSONArray(String json, String jsonPath, String folder, int word_id){
         try {
             String array = getValue(json, jsonPath);
             return new JSONArray(array);
@@ -84,7 +83,7 @@ public class JsonHandle {
             return null;
         }
     }
-    public static JSONArray getJsonArray(String json,String jsonPath){
+    public static JSONArray getJSONArray(String json, String jsonPath){
         try {
             String array = getValue(json, jsonPath);
             return new JSONArray(array);
@@ -94,7 +93,17 @@ public class JsonHandle {
             return null;
         }
     }
-    public static JSONArray getJsonArray(Object json,String jsonPath){
+    public static JsonArray getJsonArray(String json, String jsonPath){
+        try {
+            String array = getValue(json, jsonPath);
+            return getJSONArray(array);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static JSONArray getJSONArray(Object json, String jsonPath){
         String array = getValue(json,jsonPath).getAsString();
         return new JSONArray(array);
     }
@@ -123,7 +132,7 @@ public class JsonHandle {
         return JsonParser.parseString(json).getAsJsonObject();
     }
     @Deprecated
-    public static JsonArray getJsonArray(String json){
+    public static JsonArray getJSONArray(String json){
         JsonParser parser = new JsonParser();
         JsonElement tradeElement = parser.parse(json);
         return  tradeElement.getAsJsonArray();

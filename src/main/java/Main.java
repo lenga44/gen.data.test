@@ -1,4 +1,5 @@
 import ai.speak.course.script.GenDataAISpeakLesson;
+import m_go.script.GenDataGameMgo;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -17,6 +18,9 @@ public class Main {
             switch (number) {
                 case 1:
                     GenDataAISpeakLesson.run();
+                    break;
+                case 2:
+                    GenDataGameMgo.run();
                     break;
                 default:
                     System.out.println("Invalid choice!");

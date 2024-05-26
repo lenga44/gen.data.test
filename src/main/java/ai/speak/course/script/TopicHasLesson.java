@@ -1,8 +1,8 @@
 package ai.speak.course.script;
 
-import ai.speak.course.common.Constant;
-import ai.speak.course.helper.FileHelpers;
-import ai.speak.course.helper.JsonHandle;
+import common.Constant;
+import helper.FileHelpers;
+import helper.JsonHandle;
 import ai.speak.course.lesson_structure.CategoryStructure;
 import ai.speak.course.lesson_structure.LevelStructure;
 import ai.speak.course.lesson_structure.TopicStructure;
@@ -15,7 +15,7 @@ public class TopicHasLesson {
     public static void genLevelTopicLessonFile(){
         try {
             String aiStruct = getCourseInstallFile();
-            JSONArray array = JsonHandle.getJsonArray(aiStruct, "$.lvs");
+            JSONArray array = JsonHandle.getJSONArray(aiStruct, "$.lvs");
             JSONArray levels = new JSONArray();
             for (Object level : array) {
                 levels.put(getLevel(level));
@@ -35,7 +35,7 @@ public class TopicHasLesson {
     }
     private static JSONObject getCategory(Object category){
         String categoryName = JsonHandle.getValue(category.toString(),"$.n");
-        JSONArray topics = JsonHandle.getJsonArray(category.toString(),"$.us");
+        JSONArray topics = JsonHandle.getJSONArray(category.toString(),"$.us");
         JSONArray topicArray = new JSONArray();
         for(Object topic: topics){
             topicArray.put(getTopic(topic));
@@ -46,7 +46,7 @@ public class TopicHasLesson {
     private static JSONObject getLevel(Object level){
         JSONArray categorys = new JSONArray();
         String levelName = JsonHandle.getValue(level.toString(),"$.n");
-        JSONArray array = JsonHandle.getJsonArray(level.toString(),"$.cs");
+        JSONArray array = JsonHandle.getJSONArray(level.toString(),"$.cs");
         for(Object category: array){
             categorys.put(getCategory(category));
         }
