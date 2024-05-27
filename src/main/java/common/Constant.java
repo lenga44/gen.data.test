@@ -24,6 +24,6 @@ public class Constant {
     @Description("list_word là dùng để download word về")
     public static final String LIST_WORD_FILE ="list_word.json";
     public static final String LESSON_FILE = FileHelpers.getProjectPath()+"/src/main/java/ai/speak/course/data/lesson.json";
-    public static final String GAME_M_GO_FILE = FileHelpers.getProjectPath() + "\\src\\main\\java\\ai\\speak\\course\\data\\game_m_go.json";
+    public static final String GAME_M_GO_FILE = FileHelpers.getProjectPath() + "\\src\\main\\java\\ai\\speak\\course\\data\\";
     public static String DATA_ACTIVITY_BY_GAME_URL = "https://api.dev.monkeyuni.com/platform_go/api/v1/activity?course_id=201&game_ids=";
 }

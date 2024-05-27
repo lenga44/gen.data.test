@@ -47,7 +47,7 @@ public class GenDataGameMgo {
             Activity activity = new Activity(id,gameName,getTurns(resourceFolder,"$.data"),fileName,"");
             acts.put(activity.createActivity());
         }
-        saveArrayToFile(acts);
+        saveArrayToFile(acts,id);
     }
     private static JSONArray getTurns(String folder,String jsonPath){
         JSONArray turns = new JSONArray();
@@ -160,7 +160,7 @@ public class GenDataGameMgo {
         }
         return right;
     }
-    private static void saveArrayToFile(JSONArray jsonArray){
-        FileHelpers.writeFile(jsonArray.toString(),Constant.GAME_M_GO_FILE);
+    private static void saveArrayToFile(JSONArray jsonArray,int id){
+        FileHelpers.writeFile(jsonArray.toString(),Constant.GAME_M_GO_FILE+id+".json");
     }
 }
