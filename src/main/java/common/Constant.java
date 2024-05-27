@@ -4,15 +4,15 @@ import helper.FileHelpers;
 import jdk.jfr.Description;
 
 public class Constant {
-    public static final String ZIP_FOLDER_PATH = FileHelpers.getProjectPath()+"/src/main/zipFile";
-    public static final String UNZIP_FOLDER_PATH =FileHelpers.getProjectPath()+"/src/main/unZipFile";
+    public static final String ZIP_FOLDER_PATH = FileHelpers.getProjectPath()+"/src/main/java/unZipFile";
+    public static final String UNZIP_FOLDER_PATH =FileHelpers.getProjectPath()+"/src/main/java/unZipFile";
     public static final String COURSE_INSTALL_URL = "https://vnmedia2.monkeyuni.net/App/uploads/course_install/hdr/";
     public static final String DOMAIN_URL = "https://vnmedia2.monkeyuni.net/";
     public static final String WORD_INSTALL_URL = "https://vnmedia2.monkeyuni.net/App/zip/hdr/word/";
     public static final String COURSE_INSTALL_FILE = "course_installation.json";
     public static final String DATA_AI_FOLDER = FileHelpers.getProjectPath()+"/src/main/java/ai/speak/course/data";
 
-    public static final String GAME_LIST = FileHelpers.getProjectPath()+"/src/main/java/ai/speak/course/data/list_game.json";
+    public static final String GAME_LIST = FileHelpers.getProjectPath()+"/src/main/data/list_game.json";
     public static final String QUESTION_TYPE = "question";
     public static final String CHUNK_TYPE = "chunk";
     public static final String QUESTION_ANSWER_TYPE = "question_answer";

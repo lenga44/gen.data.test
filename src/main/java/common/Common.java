@@ -1,11 +1,14 @@
 package common;
 
+import ai.speak.course.lesson_structure.Word;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import helper.JsonHandle;
 import helper.UnzipFile;
 import helper.DownloadFile;
 import helper.FileHelpers;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Arrays;

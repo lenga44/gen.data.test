@@ -199,7 +199,7 @@ public class GenDataAISpeakLesson {
         getWordIdAndType(turn,"$.main_word",word,getWordBk(folderAct),folderAct,Constant.ANSWER_TYPE);
         int right = getRightAnswer(turn,folderAct,"$.right_ans","$.main_word");
         Turn newTurn = new Turn(word,getOder(turnObject.toString(),"$.order"),getWordJsonFileByWordId(folderAct,right));
-        return newTurn.createActivity();
+        return newTurn.createTurns();
     }
     private static int getOder(String json,String jsonPath){
         int order = 0;
@@ -267,7 +267,7 @@ public class GenDataAISpeakLesson {
         }
     }
 
-        private static int getRightAnswer(String json,String folder,String... jsonPaths){
+    private static int getRightAnswer(String json,String folder,String... jsonPaths){
         int right = 0;
         for (String jsonPath:jsonPaths) {
             if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", "")) == true) {
