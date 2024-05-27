@@ -1,22 +1,21 @@
 package m_go.script;
 
-import ai.speak.course.lesson_structure.Turn;
-import ai.speak.course.lesson_structure.Word;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import common.Common;
 import common.Constant;
-import helper.FileHelpers;
-import helper.JsonHandle;
-import helper.LogicHandle;
-import helper.RequestEx;
+import helper.*;
 import m_go.lesson_structure.Activity;
+import m_go.lesson_structure.Turn;
+import m_go.lesson_structure.Word;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static common.Common.unzipFile;
 
 public class GenDataGameMgo {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -39,15 +38,16 @@ public class GenDataGameMgo {
        String json = RequestEx.request(Constant.DATA_ACTIVITY_BY_GAME_URL+id);
         List<JsonElement> listAct = JsonHandle.getJsonArray(json,"$.data").asList();
         String gameName = Common.getGameName(id);
+        JSONArray acts = new JSONArray();
         for (JsonElement act: listAct) {
             String path = JsonHandle.getValue(act.toString(),"$.f").toString();
             String fileName = LogicHandle.getFileName(path);
             String resourceFolder = id+"/"+fileName.replace(".zip","");
             Common.downloadAndUnzipFile(Constant.DOMAIN_URL+path,fileName,String.valueOf(id));
             Activity activity = new Activity(id,gameName,getTurns(resourceFolder,"$.data"),fileName,"");
-            activity.createActivity();
-            System.out.println(activity);
+            acts.put(activity.createActivity());
         }
+        saveArrayToFile(acts);
     }
     private static JSONArray getTurns(String folder,String jsonPath){
         JSONArray turns = new JSONArray();
@@ -71,7 +71,7 @@ public class GenDataGameMgo {
         getWordIdAndType(turn, "$.question_answer", word, folderAct, Constant.QUESTION_ANSWER_TYPE);
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
         int right = getRightAnswer(turn,folderAct,"$.right_ans","$.main_word");
-        ai.speak.course.lesson_structure.Turn newTurn = new Turn(word,getOder(turnObject.toString(),"$.order"),getWordJsonFileByWordId(folderAct,right));
+        Turn newTurn = new Turn(word,getOder(turnObject.toString(),"$.order"),getWordJsonFileByWordId(folderAct,right));
         return newTurn.createTurns();
     }
     private static JsonArray getDataJsonElement(JsonElement json){
@@ -111,13 +111,36 @@ public class GenDataGameMgo {
         return order;
     }
     private static JSONObject genWordData(int word_id, String folder, String type){
+        downloadWordZip(folder,word_id);
         String wordJson = getWordIdJsonFile(folder,word_id);
         String text = JsonHandle.getValue(wordJson,"$.text");
         String path = JsonHandle.getValue(wordJson,"$.path_word");
         JSONArray images = JsonHandle.getJSONArray(wordJson,"$.image");
         JSONArray audios = JsonHandle.getJSONArray(wordJson,"$.audio");
         Word word = new Word(word_id,text,type,path,images,audios,0);
-        return word.createActivity();
+        return word.createWord();
+    }
+    private static void downloadWordZip(String folder, int word_id){
+        String path;
+        String list_word = getListWordJsonFile(folder);
+        JsonArray array = JsonHandle.getJSONArray(list_word);
+        for(JsonElement document: array) {
+            try {
+                if (Integer.valueOf(JsonHandle.getValue(document.toString(), "$.id")) == word_id) {
+                    path = String.valueOf(JsonHandle.getValue(document.toString(), "$.path"));
+                    downloadAndUnzipFileInFolder(Constant.WORD_INSTALL_URL, path, folder);
+                }
+            } catch (Exception E) {
+                System.out.println("This object doesn't contain key 'id' ");
+            }
+        }
+    }
+    private static void downloadAndUnzipFileInFolder(String domain, String fileName,String folderUnZip) throws IOException{
+        DownloadFile.downloadFileStatus(domain + fileName, Constant.ZIP_FOLDER_PATH);
+        unzipFile(Constant.ZIP_FOLDER_PATH + "/" + fileName, Constant.UNZIP_FOLDER_PATH+"/"+folderUnZip);
+    }
+    private static String getListWordJsonFile(String folder){
+        return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+folder+"/"+Constant.LIST_WORD_FILE);
     }
     private static String getWordIdJsonFile(String folder, int word_id){
         return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+folder+"/"+word_id+".json");
@@ -138,6 +161,6 @@ public class GenDataGameMgo {
         return right;
     }
     private static void saveArrayToFile(JSONArray jsonArray){
-        FileHelpers.writeFile(jsonArray.toString(),Constant.LESSON_FILE);
+        FileHelpers.writeFile(jsonArray.toString(),Constant.GAME_M_GO_FILE);
     }
 }

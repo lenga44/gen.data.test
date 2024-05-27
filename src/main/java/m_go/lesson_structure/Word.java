@@ -22,7 +22,7 @@ public class Word {
         this.order = order;
     }
 
-    public JSONObject createActivity(){
+    public JSONObject createWord(){
         JSONObject json = new JSONObject();
         json.put("word_id", word_id);
         json.put("text", text);

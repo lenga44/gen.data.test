@@ -14,7 +14,7 @@ public class Turn {
         this.order = order;
     }
 
-    public JSONObject createActivity(){
+    public JSONObject createTurns(){
         JSONObject json = new JSONObject();
         json.put("word", word);
         json.put("right_answer", right_answer);

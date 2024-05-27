@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class Common {
-    private static void unzipFile(String zipFilePath, String destDir) throws IOException {
+    public static void unzipFile(String zipFilePath, String destDir) throws IOException {
         UnzipFile.unzip(zipFilePath,destDir);
     }
     private static void downloadFile(String zipFilePath, String destDir) throws IOException {
