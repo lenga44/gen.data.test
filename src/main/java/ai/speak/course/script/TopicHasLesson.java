@@ -9,7 +9,7 @@ import ai.speak.course.lesson_structure.TopicStructure;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import static ai.speak.course.script.GenDataAISpeakLesson.getCourseInstallFile;
+import static ai.speak.course.script.GenDataAISpeakLessonActual.getCourseInstallFile;
 
 public class TopicHasLesson {
     public static void genLevelTopicLessonFile(){

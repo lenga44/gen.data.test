@@ -19,7 +19,7 @@ import java.util.*;
 import static common.Common.downloadAndUnzipFileInFolder;
 import static ai.speak.course.script.TopicHasLesson.genLevelTopicLessonFile;
 
-public class GenDataAISpeakLesson {
+public class GenDataAISpeakLessonActual {
     public static void main(String[] args) throws IOException, InterruptedException {
         run();
     }

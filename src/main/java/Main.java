@@ -1,4 +1,5 @@
-import ai.speak.course.script.GenDataAISpeakLesson;
+import ai.speak.course.script.GenDataAISpeakLessonActual;
+import ai.speak.course.script.GenDataAISpeakLessonExpect;
 import m_go.script.GenDataGameMgo;
 
 import java.io.IOException;
@@ -17,7 +18,8 @@ public class Main {
             int number = 1;
             switch (number) {
                 case 1:
-                    GenDataAISpeakLesson.run();
+                    GenDataAISpeakLessonActual.run();
+                    GenDataAISpeakLessonExpect.run();
                     break;
                 case 2:
                     GenDataGameMgo.run();
