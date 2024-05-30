@@ -16,4 +16,16 @@ public class LogicHandle {
         }
         return result;
     }
+    public static String removeString(String str,String replace){
+        if(str.contains(replace)){
+            str = str.replace(replace,"");
+        }
+        return str;
+    }
+    public static String splitString(String str,String splitStr){
+        if(str.contains(splitStr)){
+            str = Arrays.stream(str.split(splitStr)).toList().get(0);
+        }
+        return str;
+    }
 }
