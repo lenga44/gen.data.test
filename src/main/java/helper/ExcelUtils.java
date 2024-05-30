@@ -1,12 +1,8 @@
 package helper;
 
-import m_go.script.data_expect.ConstantMGo;
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
-import java.math.BigDecimal;
-import java.util.List;
 
 public class ExcelUtils {
     public static Sheet ExcelSheet;
@@ -22,13 +18,13 @@ public class ExcelUtils {
             System.out.println("Method setExcelFile: " +path);
         }
     }
-    public static int getStartValue(String sheetName,int unit) {
+    public static int getStartValue(String sheetName,int colum,String unit) {
         try{
             int row = 0;
             for(;row< getRowCount(sheetName);row++){
-                String value =getValueInCell(sheetName,ConstantMGo.UNIT_COLUM,row);
+                String value =getValueInCell(sheetName,row,colum);
                 if(!value.equals("")){
-                    if(value.equals(String.valueOf(unit))){
+                    if(value.equals(unit)){
                         break;
                     }
                 }
@@ -39,11 +35,11 @@ public class ExcelUtils {
         }
         return 0;
     }
-    public static String getValueInCell(String sheetName, int colum,int row){
+    public static String getValueInCell(String sheetName, int row,int colum){
         try {
             String result;
             ExcelSheet = ExcelBook.getSheet(sheetName);
-            Cell = ExcelSheet.getRow(colum).getCell(row);
+            Cell = ExcelSheet.getRow(row).getCell(colum);
             switch (Cell.getCellType()) {
                 case STRING:
                     result = Cell.getStringCellValue();
@@ -70,6 +66,18 @@ public class ExcelUtils {
         }
         return "";
     }
+    public static int getNumberValueInCell(String sheetName, int row, int colum){
+        try {
+            ExcelSheet = ExcelBook.getSheet(sheetName);
+            Cell = ExcelSheet.getRow(row).getCell(colum);
+            return (int) Cell.getNumericCellValue();
+        }catch (Exception e){
+            System.out.println(row);
+            System.out.println("getValueInCell "+e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
     public static int getRowCount(String sheetName){
         int iMumber = 0;
         try{
@@ -79,5 +87,43 @@ public class ExcelUtils {
             System.out.println("getRowCount "+e.getMessage());
         }
         return iMumber;
+    }
+    public static int getTestStepCount(String sheetName,int colum, String unit, int startTestStep) {
+        try{
+            for (int i = startTestStep;i< ExcelUtils.getRowCount(sheetName);i++){
+                String value = ExcelUtils.getValueInCell(sheetName,i,colum);
+                if(!unit.equals(value)){
+                    int number = i;
+                    return number;
+                }
+            }
+            ExcelSheet = ExcelBook.getSheet(sheetName);
+            int number = ExcelSheet.getLastRowNum();
+            return number;
+        }catch (Throwable e){
+            System.out.println("Method getTestStepCount | Exception desc : " + e.getMessage());
+            e.printStackTrace();
+            return 0;
+        }
+    }
+    public static int getValueCountExceptionSpace(String sheetName,int colum, String unit, int startTestStep) {
+        try{
+            for (int i = startTestStep;i< ExcelUtils.getRowCount(sheetName);i++){
+                String value = ExcelUtils.getValueInCell(sheetName,i,colum);
+                if(!value.equals("")) {
+                    if (!unit.equals(value)) {
+                        int number = i;
+                        return number;
+                    }
+                }
+            }
+            ExcelSheet = ExcelBook.getSheet(sheetName);
+            int number = ExcelSheet.getLastRowNum();
+            return number;
+        }catch (Throwable e){
+            System.out.println("Method getTestStepCount | Exception desc : " + e.getMessage());
+            e.printStackTrace();
+            return 0;
+        }
     }
 }

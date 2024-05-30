@@ -5,9 +5,9 @@ import com.google.gson.JsonElement;
 import common.Common;
 import common.Constant;
 import helper.*;
-import m_go.lesson_structure.Activity;
-import m_go.lesson_structure.Turn;
-import m_go.lesson_structure.Word;
+import m_go.lesson_structure.game.Activity;
+import m_go.lesson_structure.game.Turn;
+import m_go.lesson_structure.game.Word;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
