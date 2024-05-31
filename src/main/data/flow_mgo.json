@@ -1,0 +1,40 @@
+[
+  {
+    "flow": 1,
+    "word_type":"Phonics",
+    "lesson": [
+      {
+        "lesson_name": 1,
+        "act": [
+          {
+            "game": [
+              "Report_Egg.cracking",
+              "Report_Sound.vocab.matching"
+            ]
+          },
+          {
+            "game": [
+              "interactive"
+            ]
+          }
+        ]
+      },
+      {
+        "lesson_name": 2,
+        "act": [
+          {
+            "game": [
+              "Report_Egg.cracking",
+              "Report_Sound.vocab.matching"
+            ]
+          },
+          {
+            "game": [
+              "interactive"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

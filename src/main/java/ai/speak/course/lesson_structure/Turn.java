@@ -3,8 +3,6 @@ package ai.speak.course.lesson_structure;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.List;
-
 public class Turn {
     private JSONArray word;
     private JSONObject right_answer;
@@ -16,7 +14,7 @@ public class Turn {
         this.order = order;
     }
 
-    public JSONObject createActivity(){
+    public JSONObject createTurns(){
         JSONObject json = new JSONObject();
         json.put("word", word);
         json.put("right_answer", right_answer);
