@@ -20,9 +20,7 @@ import static common.Common.downloadAndUnzipFileInFolder;
 import static ai.speak.course.script.TopicHasLesson.genLevelTopicLessonFile;
 
 public class GenDataAISpeakLessonActual {
-    public static void main(String[] args) throws IOException, InterruptedException {
-        run();
-    }
+
     public static void run() throws IOException, InterruptedException {
         //region Download course install
         System.out.println("Step1: Download course install\n");

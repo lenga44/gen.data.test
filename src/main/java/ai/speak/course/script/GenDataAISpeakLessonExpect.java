@@ -24,9 +24,7 @@ import java.util.*;
 import static ai.speak.course.script.TopicHasLesson.genLevelTopicLessonFile;
 
 public class GenDataAISpeakLessonExpect {
-    public static void main(String[] args) {
-        run();
-    }
+
     public static void run() {
     }
 }

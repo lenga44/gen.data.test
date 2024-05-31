@@ -8,6 +8,7 @@ import helper.*;
 import m_go.lesson_structure.game.Activity;
 import m_go.lesson_structure.game.Turn;
 import m_go.lesson_structure.game.Word;
+import m_go.script.data_expect.ConstantMGo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -18,11 +19,11 @@ import java.util.List;
 import static common.Common.unzipFile;
 
 public class GenDataGameMgoActual {
-    public static void main(String[] args) throws IOException, InterruptedException {
+    /*public static void main(String[] args) throws IOException, InterruptedException {
         run();
-    }
-    public static void run() throws IOException, InterruptedException {
-        List<Integer> gameIDs = getListGameID(1000091);
+    }*/
+    public static void run(int idGame) throws IOException, InterruptedException {
+        List<Integer> gameIDs = getListGameID(idGame);
         for (int id: gameIDs) {
             downLoadDataActivity(id);
         }
@@ -161,6 +162,6 @@ public class GenDataGameMgoActual {
         return right;
     }
     private static void saveArrayToFile(JSONArray jsonArray,int id){
-        FileHelpers.writeFile(jsonArray.toString(),Constant.GAME_M_GO_FILE+id+".json");
+        FileHelpers.writeFile(jsonArray.toString(), ConstantMGo.DATA_GAME_FOLDER +id+".json");
     }
 }

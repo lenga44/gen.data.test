@@ -12,17 +12,20 @@ public class Main {
     private static void run() throws IOException {
         try {
             System.out.println("Nhập 1 để chạy GenDataAISpeakLesson");
+            System.out.println("Nhập 2 để chạy game monkey go");
             System.out.println("Nhập mã file để run: ");
             Scanner scanner = new Scanner(System.in);
-            //int number = scanner.nextInt();
-            int number = 1;
+            int number = scanner.nextInt();
             switch (number) {
                 case 1:
                     GenDataAISpeakLessonActual.run();
                     GenDataAISpeakLessonExpect.run();
                     break;
                 case 2:
-                    GenDataGameMgoActual.run();
+                    System.out.println("Nhập game id: ");
+                    Scanner scanner2 = new Scanner(System.in);
+                    int id = scanner2.nextInt();
+                    GenDataGameMgoActual.run(id);
                     break;
                 default:
                     System.out.println("Invalid choice!");
