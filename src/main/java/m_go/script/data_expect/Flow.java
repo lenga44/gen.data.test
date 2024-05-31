@@ -22,11 +22,12 @@ public class Flow {
         for (int i = first;i<last;i++){
             String name = ExcelUtils.getValueInCell(ConstantMGo.DATA_MGO_SHEET,i,ConstantMGo.STORY_COLUM);
             System.out.println(name);
-            if(!name.equals("Video")){
+            if(name.equals("Story")){
                 story = true;
                 break;
             }
         }
+        System.out.println("is story "+story);
         return story;
     }
 }

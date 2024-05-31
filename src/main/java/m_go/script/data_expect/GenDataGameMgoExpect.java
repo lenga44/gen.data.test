@@ -43,7 +43,7 @@ public class GenDataGameMgoExpect {
     }
     private static JSONArray getUnits(int level) throws IOException {
         int firstIndexLeve = ExcelUtils.getStartValue(ConstantMGo.DATA_MGO_SHEET,ConstantMGo.LEVEL_COLUM,String.valueOf(level));
-        int lastIndexLevel = ExcelUtils.getValueCountExceptionSpace(ConstantMGo.DATA_MGO_SHEET,ConstantMGo.LEVEL_COLUM,String.valueOf(level),firstIndexLeve);
+        int lastIndexLevel = ExcelUtils.getValueCountExceptionSpace(ConstantMGo.DATA_MGO_SHEET,ConstantMGo.LEVEL_COLUM,String.valueOf(level),firstIndexLeve)-1;
         JSONArray units = new JSONArray();
         List<Integer> list = new ArrayList<>();
         for (int row = firstIndexLeve;row<=lastIndexLevel;row++){
@@ -62,20 +62,19 @@ public class GenDataGameMgoExpect {
         return unitStructure.createUnit();
     }
     private static JSONArray getTopics(int unit) throws IOException {
-        int first = ExcelUtils.getStartValue(ConstantMGo.DATA_MGO_SHEET,ConstantMGo.LEVEL_COLUM,String.valueOf(unit));
-        int last = ExcelUtils.getValueCountExceptionSpace(ConstantMGo.DATA_MGO_SHEET,ConstantMGo.LEVEL_COLUM,String.valueOf(unit),first);
+        int first = ExcelUtils.getStartValue(ConstantMGo.DATA_MGO_SHEET,ConstantMGo.UNIT_COLUM,String.valueOf(unit));
+        int last = ExcelUtils.getTestStepCount(ConstantMGo.DATA_MGO_SHEET,ConstantMGo.UNIT_COLUM,String.valueOf(unit),first)-1;
+        System.out.println("----- "+unit);
         JSONArray topics = new JSONArray();
         for (int row = first;row<=last;row++){
             String topic = ExcelUtils.getValueInCell(ConstantMGo.DATA_MGO_SHEET,row,ConstantMGo.TOPIC_COLUM);
             if(!topic.equals("")){
                 topics.put(getTopic(topic,unit));
             }
-            System.out.println(topic);
         }
         return topics;
     }
     private static JSONObject getTopic(String topic,int unit) throws IOException {
-        System.out.println("unit "+unit);
         int flow = Flow.getFlow(path,unit);
         TopicStructure topicStructure = new TopicStructure(topic,flow);
         return topicStructure.createFLowTopicStructure();
