@@ -20,8 +20,6 @@ public class GenDataGameMgoExpect {
         run();
     }
     public static void run() throws IOException {
-        /*int flow = Flow.getFlow("D:\\gen.data.test\\src\\main\\java\\m_go\\data\\Monkey Go (BE) - Data.xlsx",1);
-        System.out.println(flow);*/
         ExcelUtils.setExcelFile(path);
         JSONArray levels = new JSONArray();
         for (int level: getLevelHasUnit()) {
