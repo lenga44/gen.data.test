@@ -10,6 +10,7 @@ public class Activity {
     private String file_zip;
     private String background;
     private String download_error;
+    private int actId;
 
     public Activity(int gameId,String gameName, JSONArray turn,String file_zip,String background,String download_error) {
         this.gameId = gameId;

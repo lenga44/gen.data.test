@@ -45,8 +45,9 @@ public class GenDataGameMgoActual {
             String fileName = LogicHandle.getFileName(path);
             String resourceFolder = id+"/"+fileName.replace(".zip","");
             Common.downloadAndUnzipFile(Constant.DOMAIN_URL+path,fileName,String.valueOf(id));
-            Activity activity = new Activity(id,gameName,getTurns(resourceFolder,"$.data"),fileName,"");
-            acts.put(activity.createActivity());
+            int actID =Integer.parseInt(LogicHandle.splitString(fileName,"-"));
+            Activity activity = new Activity(id,gameName,getTurns(resourceFolder,"$.data"),fileName,"",actID);
+            acts.put(activity.createActivityGame());
         }
         saveArrayToFile(acts,id);
     }
@@ -98,7 +99,6 @@ public class GenDataGameMgoActual {
             }else if(word_id.startsWith("{")&& word_id.endsWith("}")) {
                 array.put(genWordData(Integer.parseInt(JsonHandle.getValueObject(word_id, "$.answer")),
                         folder, type));
-                System.out.println(array);
             }else {
                 array.put(genWordData(Integer.parseInt(word_id), folder, type));
             }
