@@ -27,6 +27,10 @@ public class GenDataGameMgoActual {
         for (int id: gameIDs) {
             downLoadDataActivity(id);
         }
+        genDataGamesFile();
+    }
+    private static void genDataGamesFile(){
+
     }
     private static List<Integer> getListGameID(int... ids){
         List<Integer> gameIDs = new ArrayList<>();
