@@ -50,10 +50,10 @@ public class GenDataGameMgoActual {
             String resourceFolder = id+"/"+fileName.replace(".zip","");
             Common.downloadAndUnzipFile(Constant.DOMAIN_URL+path,fileName,String.valueOf(id));
             int actID =Integer.parseInt(LogicHandle.splitString(fileName,"-"));
-            if(JsonHandle.jsonObjectContainKey(json,"story_name")) {
-                JSONObject name_story = getWordJsonFileByWordId(resourceFolder, getWordIDInJsonConfigBy(json, resourceFolder, "$.story_name"));
-                JSONObject thumb_start = getWordJsonFileByWordId(resourceFolder, getWordIDInJsonConfigBy(json, resourceFolder, "$.thumb_start"));
-                JSONObject thumb_end = getWordJsonFileByWordId(resourceFolder, getWordIDInJsonConfigBy(json, resourceFolder, "$.thumb_end"));
+            if(JsonHandle.getValue(json,"$.data[0].n").contains("story")) {
+                JSONObject name_story = getWordJsonFileByWordId(resourceFolder, getWordID(resourceFolder,"$.story_name"));
+                JSONObject thumb_start = getWordJsonFileByWordId(resourceFolder, getWordID(resourceFolder,"$.thumb_start"));
+                JSONObject thumb_end = getWordJsonFileByWordId(resourceFolder, getWordID(resourceFolder,"$.thumb_end"));
                 Activity activity = new Activity(id, gameName, getTurns(resourceFolder, "$.data"), fileName, "", actID, name_story, thumb_start, thumb_end);
                 acts.put(activity.createActivityGameTypeStory());
             }else {
@@ -73,6 +73,16 @@ public class GenDataGameMgoActual {
             }
         }
         return turns;
+    }
+    private static int getWordID(String folder,String jsonPath){
+        String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
+        jsonPath =jsonPath.replace("$.", "");
+        int id = 0;
+        if(JsonHandle.jsonObjectContainKey(json, jsonPath)) {
+            id = Integer.valueOf(JsonHandle.getValue(json,jsonPath));
+            downloadWordZip(folder,id);
+        }
+        return id;
     }
     private static JSONObject genTurnData(String json,String folderAct, Object turnObject){
         JSONArray word = new JSONArray();
