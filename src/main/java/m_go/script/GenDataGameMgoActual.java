@@ -50,8 +50,16 @@ public class GenDataGameMgoActual {
             String resourceFolder = id+"/"+fileName.replace(".zip","");
             Common.downloadAndUnzipFile(Constant.DOMAIN_URL+path,fileName,String.valueOf(id));
             int actID =Integer.parseInt(LogicHandle.splitString(fileName,"-"));
-            Activity activity = new Activity(id,gameName,getTurns(resourceFolder,"$.data"),fileName,"",actID);
-            acts.put(activity.createActivityGame());
+            if(JsonHandle.jsonObjectContainKey(json,"story_name")) {
+                JSONObject name_story = getWordJsonFileByWordId(resourceFolder, getWordIDInJsonConfigBy(json, resourceFolder, "$.story_name"));
+                JSONObject thumb_start = getWordJsonFileByWordId(resourceFolder, getWordIDInJsonConfigBy(json, resourceFolder, "$.thumb_start"));
+                JSONObject thumb_end = getWordJsonFileByWordId(resourceFolder, getWordIDInJsonConfigBy(json, resourceFolder, "$.thumb_end"));
+                Activity activity = new Activity(id, gameName, getTurns(resourceFolder, "$.data"), fileName, "", actID, name_story, thumb_start, thumb_end);
+                acts.put(activity.createActivityGameTypeStory());
+            }else {
+                Activity activity = new Activity(id,gameName,getTurns(resourceFolder,"$.data"),fileName,"",actID);
+                acts.put(activity.createActivityGame());
+            }
         }
         saveArrayToFile(acts,id);
     }
@@ -61,11 +69,7 @@ public class GenDataGameMgoActual {
         if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
             JSONArray jsonArray = JsonHandle.getJSONArray(json, jsonPath);
             for (Object turn : jsonArray) {
-                if(JsonHandle.jsonObjectContainKey(json,"story_name")){
-                    turns.put(genTurnDataStory(json,folder,turn));
-                }else {
-                    turns.put(genTurnData(json, folder, turn));
-                }
+                turns.put(genTurnData(json, folder, turn));
             }
         }
         return turns;

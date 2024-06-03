@@ -10,6 +10,22 @@ public class Activity {
     private String file_zip;
     private String background;
     private int actID;
+    private JSONObject story_name;
+    private JSONObject thumb_start;
+    private JSONObject thumb_end;
+
+    public Activity(int id, String gameName, JSONArray turn, String file_zip, String background,
+                    int actID, JSONObject story_name, JSONObject thumb_start, JSONObject thumb_end) {
+        this.id = id;
+        this.gameName = gameName;
+        this.turn = turn;
+        this.file_zip = file_zip;
+        this.background = background;
+        this.actID = actID;
+        this.story_name = story_name;
+        this.thumb_start = thumb_start;
+        this.thumb_end = thumb_end;
+    }
 
     public Activity(int id, String gameName, JSONArray turn, String file_zip, String background) {
         this.id = id;
@@ -44,6 +60,19 @@ public class Activity {
         json.put("file_zip", file_zip);
         json.put("background",background);
         json.put("act_id",actID);
+        json.put("turn", turn);
+        return json;
+    }
+    public JSONObject createActivityGameTypeStory(){
+        JSONObject json = new JSONObject();
+        json.put("id", id);
+        json.put("name", gameName);
+        json.put("file_zip", file_zip);
+        json.put("background",background);
+        json.put("act_id",actID);
+        json.put("story_name", story_name);
+        json.put("thumb_start", thumb_start);
+        json.put("thumb_end", thumb_end);
         json.put("turn", turn);
         return json;
     }
