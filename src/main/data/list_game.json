@@ -32,14 +32,6 @@
     "game": "MC.RS01DienThe(Clone)"
   },
   {
-    "id": 1000090,
-    "game": "BE.PD01Dialogue(Clone)"
-  },
-  {
-	"id": 1000122,
-	"game":"Report_Egg cracking"
-  },
-  {
 	"id": 1000119,
 	"game":"Report_BE.GP06_SoundVocabMatching(Clone)"
   },
@@ -58,5 +50,9 @@
   {
 	"id": 1000124,
 	"game":"Report_BEPP01BlendingSound(Clone)"
+  },
+  {
+    "id": 1000096,
+    "game":"Report_BE.IST01ReadTheStory(Clone)"
   }
 ]

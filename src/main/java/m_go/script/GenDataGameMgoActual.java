@@ -61,7 +61,11 @@ public class GenDataGameMgoActual {
         if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
             JSONArray jsonArray = JsonHandle.getJSONArray(json, jsonPath);
             for (Object turn : jsonArray) {
-                turns.put(genTurnData(json,folder, turn));
+                if(JsonHandle.jsonObjectContainKey(json,"story_name")){
+                    turns.put(genTurnDataStory(json,folder,turn));
+                }else {
+                    turns.put(genTurnData(json, folder, turn));
+                }
             }
         }
         return turns;
@@ -79,9 +83,20 @@ public class GenDataGameMgoActual {
         int right = getRightAnswer(turn,folderAct,"$.right_ans","$.main_word");
         Turn newTurn = new Turn(word,getOder(turnObject.toString(),"$.order"),
                 getWordJsonFileByWordId(folderAct,right),
-                getWordJsonFileByWordId(folderAct,getPhonic(json,folderAct,"$.phonic")));
+                getWordJsonFileByWordId(folderAct,getWordIDInJsonConfigBy(json,folderAct,"$.phonic")));
         return newTurn.createTurns();
     }
+    private static JSONObject genTurnDataStory(String json,String folderAct, Object turnObject){
+        JSONArray word = new JSONArray();
+        String turn = turnObject.toString();
+        getWordIdAndType(turn,"$.question_data",word,folderAct,Constant.QUESTION_TYPE);
+
+        Turn newTurn = new Turn(word, getWordJsonFileByWordId(folderAct,getWordIDInJsonConfigBy(json,folderAct,"$.story_name"))
+                ,getWordJsonFileByWordId(folderAct,getWordIDInJsonConfigBy(json,folderAct,"$.thumb_start"))
+                ,getWordJsonFileByWordId(folderAct,getWordIDInJsonConfigBy(json,folderAct,"$.thumb_end")));
+        return newTurn.createTurnsHasStory();
+    }
+
     private static JsonArray getDataJsonElement(JsonElement json){
         String objects = JsonHandle.getValue(json.toString(),"");
         return JsonHandle.getJSONArray(objects);
@@ -167,7 +182,7 @@ public class GenDataGameMgoActual {
         }
         return right;
     }
-    private static int getPhonic(String json,String folder,String... jsonPaths){
+    private static int getWordIDInJsonConfigBy(String json,String folder,String... jsonPaths){
         int right = 0;
         for (String jsonPath:jsonPaths) {
             if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", "")) == true) {
@@ -177,7 +192,6 @@ public class GenDataGameMgoActual {
                 break;
             }
         }
-        System.out.println(right);
         downloadWordZip(folder,right);
         return right;
     }
