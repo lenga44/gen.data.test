@@ -57,12 +57,12 @@ public class GenDataGameMgoActual {
         if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
             JSONArray jsonArray = JsonHandle.getJSONArray(json, jsonPath);
             for (Object turn : jsonArray) {
-                turns.put(genTurnData(folder, turn));
+                turns.put(genTurnData(json,folder, turn));
             }
         }
         return turns;
     }
-    private static JSONObject genTurnData(String folderAct, Object turnObject){
+    private static JSONObject genTurnData(String json,String folderAct, Object turnObject){
         JSONArray word = new JSONArray();
         String turn = turnObject.toString();
         getWordIdAndType(turn,"$.answer_w",word,folderAct,Constant.ANSWER_TYPE);
@@ -73,7 +73,9 @@ public class GenDataGameMgoActual {
         getWordIdAndType(turn, "$.question_answer", word, folderAct, Constant.QUESTION_ANSWER_TYPE);
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
         int right = getRightAnswer(turn,folderAct,"$.right_ans","$.main_word");
-        Turn newTurn = new Turn(word,getOder(turnObject.toString(),"$.order"),getWordJsonFileByWordId(folderAct,right));
+        Turn newTurn = new Turn(word,getOder(turnObject.toString(),"$.order"),
+                getWordJsonFileByWordId(folderAct,right),
+                getWordJsonFileByWordId(folderAct,getPhonic(json,folderAct,"$.phonic")));
         return newTurn.createTurns();
     }
     private static JsonArray getDataJsonElement(JsonElement json){
@@ -159,6 +161,20 @@ public class GenDataGameMgoActual {
                 break;
             }
         }
+        return right;
+    }
+    private static int getPhonic(String json,String folder,String... jsonPaths){
+        int right = 0;
+        for (String jsonPath:jsonPaths) {
+            if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", "")) == true) {
+                right = Integer.parseInt(JsonHandle.getValue(json, jsonPath));
+            }
+            if (right!=0) {
+                break;
+            }
+        }
+        System.out.println(right);
+        downloadWordZip(folder,right);
         return right;
     }
     private static void saveArrayToFile(JSONArray jsonArray,int id){
