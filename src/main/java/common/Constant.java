@@ -17,6 +17,7 @@ public class Constant {
     public static final String CHUNK_TYPE = "chunk";
     public static final String QUESTION_ANSWER_TYPE = "question_answer";
     public static final String ANSWER_TYPE = "answer";
+    public static final String LETTER_TYPE = "letter";
     public static final String ANSWER_DATA_TYPE = "answer_data";
     public static final String WORD_BK_TYPE = "word_bk";
     @Description("cho biết game sẽ chơi từ nào")

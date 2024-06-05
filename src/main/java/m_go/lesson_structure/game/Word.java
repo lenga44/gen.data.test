@@ -11,8 +11,9 @@ public class Word {
     private JSONArray image;
     private JSONArray audio;
     private int order;
+    private JSONArray video;
 
-    public Word(int word_id, String text, String type, String path, JSONArray image, JSONArray audio, int order) {
+    public Word(int word_id, String text, String type, String path, JSONArray image, JSONArray audio, int order,JSONArray video) {
         this.word_id = word_id;
         this.text = text;
         this.type = type;
@@ -20,6 +21,7 @@ public class Word {
         this.image = image;
         this.audio = audio;
         this.order = order;
+        this.video = video;
     }
 
     public JSONObject createWord(){
@@ -31,6 +33,7 @@ public class Word {
         json.put("image", image);
         json.put("audio", audio);
         json.put("order", order);
+        json.put("video", video);
         return json;
     }
 }

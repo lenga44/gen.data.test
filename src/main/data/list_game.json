@@ -33,11 +33,11 @@
   },
   {
 	"id": 1000119,
-	"game":"Report_BE.GP06_SoundVocabMatching(Clone)"
+	"game":"BE.GP06_SoundVocabMatching(Clone)"
   },
   {
 	"id": 1000123,
-	"game":"Report_BE.RP05MultipleChoice(Clone)"
+	"game":"BE.RP05MultipleChoice(Clone)"
   },
   {
 	"id": 1000092,
@@ -45,14 +45,34 @@
   },
   {
 	"id": 1000060,
-	"game":"Report_GS01LetterFishing(Clone)"
+	"game":"GS01LetterFishing(Clone)"
   },
   {
 	"id": 1000124,
-	"game":"Report_BEPP01BlendingSound(Clone)"
+	"game":"BEPP01BlendingSound(Clone)"
   },
   {
     "id": 1000096,
-    "game":"Report_BE.IST01ReadTheStory(Clone)"
+    "game":"BE.IST01ReadTheStory(Clone)"
+  },
+  {
+    "id": 1000137,
+    "game":"BE.RS02WordMachine(Clone)"
+  },
+  {
+    "id": 1000121,
+    "game":"MG.VD01(Clone)"
+  },
+  {
+    "id": 1000125,
+    "game":"BE.GV05 - Match the card(Clone)"
+  },
+  {
+    "id": 1000122,
+    "game":"BE.IP02(Clone)"
+  },
+  {
+    "id": 1000126,
+    "game":"BEPV04DragLetters(Clone)"
   }
 ]

@@ -85,11 +85,13 @@ public class JsonHandle {
     }
     public static JSONArray getJSONArray(String json, String jsonPath){
         try {
+            JSONArray jsonArray = new JSONArray();
             String array = getValue(json, jsonPath);
+            jsonArray.put(array);
             return new JSONArray(array);
         }catch (Exception e){
             System.out.println(e.getMessage());
-            e.printStackTrace();
+            /*e.printStackTrace();*/
             return null;
         }
     }
@@ -112,6 +114,10 @@ public class JsonHandle {
     }
     public static JsonObject converStringToJsonObject(String json){
         return new Gson().fromJson(json, JsonObject.class);
+    }
+    public static JsonElement convertStringToJsonElement(String json){
+        JsonElement element = new JsonPrimitive(json);
+        return element.getAsJsonObject();
     }
     public static String getObjectInJsonData(int index,String objects) {
         JSONArray jsonArr = new JSONArray(objects);

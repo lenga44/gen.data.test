@@ -41,7 +41,7 @@ public class GenDataGameMgoActual {
     }
     private static void downLoadDataActivity(int id) throws IOException, InterruptedException {
        String json = RequestEx.request(Constant.DATA_ACTIVITY_BY_GAME_URL+id);
-        List<JsonElement> listAct = JsonHandle.getJsonArray(json,"$.data").asList();
+        List<JsonElement> listAct = JsonHandle.getJsonArray(json, "$.data").asList();
         String gameName = Common.getGameName(id);
         JSONArray acts = new JSONArray();
         for (JsonElement act: listAct) {
@@ -56,18 +56,44 @@ public class GenDataGameMgoActual {
                 JSONObject thumb_end = getWordJsonFileByWordId(resourceFolder, getWordID(resourceFolder,"$.thumb_end"));
                 Activity activity = new Activity(id, gameName, getTurns(resourceFolder, "$.data"), fileName, "", actID, name_story, thumb_start, thumb_end);
                 acts.put(activity.createActivityGameTypeStory());
-            }else {
-                Activity activity = new Activity(id,gameName,getTurns(resourceFolder,"$.data"),fileName,"",actID);
+            }else if(JsonHandle.getValue(json,"$.data[0].n").contains("letters")){
+                JSONArray turns = getTurns(resourceFolder,"$.data");
+                JSONArray letters = genLetterArray(resourceFolder,"$.letter");
+                Activity activity = new Activity(id,gameName,turns,fileName,"",actID,letters);
+                acts.put(activity.createActivityHasLetter());
+            }else  {
+                JSONArray turns = getTurns(resourceFolder,"$.data");
+                if(turns.length()==0){
+                    turns = getTurns(resourceFolder,"$.question_data");
+                }
+                Activity activity = new Activity(id,gameName,turns,fileName,"",actID);
                 acts.put(activity.createActivityGame());
             }
         }
         saveArrayToFile(acts,id);
     }
+    private static JSONArray genLetterArray(String folder,String jsonPath){
+        JSONArray letters = new JSONArray();
+        String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
+        if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
+            JSONArray jsonArray= JsonHandle.getJSONArray(json, jsonPath);
+            System.out.println(jsonArray);
+            for (Object word_id: jsonArray){
+                System.out.println(word_id);
+                letters.put(genWordData(Integer.parseInt(word_id.toString()),folder,Constant.LETTER_TYPE));
+            }
+        }
+        return letters;
+    }
     private static JSONArray getTurns(String folder,String jsonPath){
         JSONArray turns = new JSONArray();
         String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
         if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
-            JSONArray jsonArray = JsonHandle.getJSONArray(json, jsonPath);
+            JSONArray jsonArray= JsonHandle.getJSONArray(json, jsonPath);
+            if(jsonArray==null){
+                jsonArray = new JSONArray();
+                jsonArray.put(json);
+            }
             for (Object turn : jsonArray) {
                 turns.put(genTurnData(json, folder, turn));
             }
@@ -95,6 +121,9 @@ public class GenDataGameMgoActual {
         getWordIdAndType(turn, "$.question_answer", word, folderAct, Constant.QUESTION_ANSWER_TYPE);
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
         int right = getRightAnswer(turn,folderAct,"$.right_ans","$.main_word");
+        if(right==0){
+            right = getRightAnswer(turn,folderAct,"$.right_w");
+        }
         Turn newTurn = new Turn(word,getOder(turnObject.toString(),"$.order"),
                 getWordJsonFileByWordId(folderAct,right),
                 getWordJsonFileByWordId(folderAct,getWordIDInJsonConfigBy(json,folderAct,"$.phonic")));
@@ -153,7 +182,8 @@ public class GenDataGameMgoActual {
         String path = JsonHandle.getValue(wordJson,"$.path_word");
         JSONArray images = JsonHandle.getJSONArray(wordJson,"$.image");
         JSONArray audios = JsonHandle.getJSONArray(wordJson,"$.audio");
-        Word word = new Word(word_id,text,type,path,images,audios,0);
+        JSONArray videos = JsonHandle.getJSONArray(wordJson,"$.video");
+        Word word = new Word(word_id,text,type,path,images,audios,0,videos);
         return word.createWord();
     }
     private static void downloadWordZip(String folder, int word_id){
