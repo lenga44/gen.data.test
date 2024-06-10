@@ -77,9 +77,7 @@ public class GenDataGameMgoActual {
         String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
         if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
             JSONArray jsonArray= JsonHandle.getJSONArray(json, jsonPath);
-            System.out.println(jsonArray);
             for (Object word_id: jsonArray){
-                System.out.println(word_id);
                 letters.put(genWordData(Integer.parseInt(word_id.toString()),folder,Constant.LETTER_TYPE));
             }
         }
@@ -120,12 +118,12 @@ public class GenDataGameMgoActual {
         getWordIdAndType(turn,"$.question_info",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn, "$.question_answer", word, folderAct, Constant.QUESTION_ANSWER_TYPE);
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
-        int right = getRightAnswer(turn,folderAct,"$.right_ans","$.main_word");
-        if(right==0){
-            right = getRightAnswer(turn,folderAct,"$.right_w");
+        List<Integer> right = getRightAnswers(turn,"$.right_ans","$.main_word");
+        if(right.size() == 0){
+            right = getRightAnswers(turn,folderAct,"$.right_w");
         }
         Turn newTurn = new Turn(word,getOder(turnObject.toString(),"$.order"),
-                getWordJsonFileByWordId(folderAct,right),
+                getWordJsonFileByWordIds(folderAct,right),
                 getWordJsonFileByWordId(folderAct,getWordIDInJsonConfigBy(json,folderAct,"$.phonic")));
         return newTurn.createTurns();
     }
@@ -151,6 +149,18 @@ public class GenDataGameMgoActual {
         }catch (Exception e){
             return new JSONObject();
         }
+    }
+    private static JSONArray getWordJsonFileByWordIds(String folder,List<Integer> word_ids){
+        /*JSONObject jsonObject = new JSONObject();*/
+        JSONArray array = new JSONArray();
+        try {
+            for(int word_id : word_ids){
+                array.put(JsonHandle.convertStringToJSONObject(FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH + "/" + folder + "/" + word_id + ".json")));
+            }
+
+        }catch (Exception e){
+        }
+        return array;
     }
     private static void getWordIdAndType(String json, String jsonPath, JSONArray array, String folder, String type){
         if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))){
@@ -225,6 +235,24 @@ public class GenDataGameMgoActual {
             }
         }
         return right;
+    }
+    private static List<Integer> getRightAnswers(String json,String... jsonPaths){
+        List<Integer> word_ids = new ArrayList<>(); //Khởi taok list
+        // B2: lấy string
+        String word_id = null;
+        for( String jsonPath : jsonPaths){
+            word_id = JsonHandle.getValue(json,jsonPath);
+        }
+        // b3: cắt các phần tử trong string
+        List<String> list_word_id = LogicHandle.convertStringToList(word_id);
+        // B4: lấy từng phần tử convert sang int
+         for(String item : list_word_id){
+             int word = Integer.parseInt(item);
+             word_ids.add(word);
+         }
+        // B5: add vào list
+        // B6: return list
+       return word_ids;
     }
     private static int getWordIDInJsonConfigBy(String json,String folder,String... jsonPaths){
         int right = 0;

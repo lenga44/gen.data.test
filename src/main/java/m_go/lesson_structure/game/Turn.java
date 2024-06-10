@@ -5,14 +5,14 @@ import org.json.JSONObject;
 
 public class Turn {
     private JSONArray word;
-    private JSONObject right_answer;
+    private JSONArray right_answer;
     private int order;
     private JSONObject phonic;
     private JSONObject story_name;
     private JSONObject thumb_start;
     private JSONObject thumb_end;
 
-    public Turn(JSONArray word, int order, JSONObject right_answer,JSONObject phonic) {
+    public Turn(JSONArray word, int order, JSONArray right_answer,JSONObject phonic) {
         this.word = word;
         this.right_answer = right_answer;
         this.order = order;
