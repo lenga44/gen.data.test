@@ -45,7 +45,7 @@ public class GenDataGameMgoActual {
         String gameName = Common.getGameName(id);
         JSONArray acts = new JSONArray();
         for (JsonElement act: listAct) {
-            String path = JsonHandle.getValue(act.toString(),"$.f").toString();
+            String path = JsonHandle.getValue(act.toString(),"$.f");
             String fileName = LogicHandle.getFileName(path);
             String resourceFolder = id+"/"+fileName.replace(".zip","");
             Common.downloadAndUnzipFile(Constant.DOMAIN_URL+path,fileName,String.valueOf(id));
@@ -227,7 +227,7 @@ public class GenDataGameMgoActual {
     private static int getRightAnswer(String json,String folder,String... jsonPaths){
         int right = 0;
         for (String jsonPath:jsonPaths) {
-            if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", "")) == true) {
+            if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
                 right = Integer.parseInt(JsonHandle.getValue(json, jsonPath));
             }
             if (right!=0) {
@@ -236,28 +236,34 @@ public class GenDataGameMgoActual {
         }
         return right;
     }
-    private static List<Integer> getRightAnswers(String json,String... jsonPaths){
-        List<Integer> word_ids = new ArrayList<>(); //Khởi taok list
-        // B2: lấy string
-        String word_id = null;
-        for( String jsonPath : jsonPaths){
-            word_id = JsonHandle.getValue(json,jsonPath);
+    private static List<Integer> getRightAnswers(String json,String... jsonPaths) {
+        List<Integer> word_ids = new ArrayList<>(); //Khởi tao list
+        try {
+            // B2: lấy string
+            String word_id = null;
+            for (String jsonPath : jsonPaths) {
+                word_id = JsonHandle.getValue(json, jsonPath);
+                System.out.println(word_id);
+            }
+            // b3: cắt các phần tử trong string
+            List<String> list_word_id = LogicHandle.convertStringToList(word_id);
+            // B4: lấy từng phần tử convert sang int
+            for (String item : list_word_id) {
+                int word = Integer.parseInt(item);
+                word_ids.add(word);
+            }
+            // B5: add vào list
+            // B6: return list
+
+        }catch (Exception e){
+
         }
-        // b3: cắt các phần tử trong string
-        List<String> list_word_id = LogicHandle.convertStringToList(word_id);
-        // B4: lấy từng phần tử convert sang int
-         for(String item : list_word_id){
-             int word = Integer.parseInt(item);
-             word_ids.add(word);
-         }
-        // B5: add vào list
-        // B6: return list
        return word_ids;
     }
     private static int getWordIDInJsonConfigBy(String json,String folder,String... jsonPaths){
         int right = 0;
         for (String jsonPath:jsonPaths) {
-            if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", "")) == true) {
+            if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
                 right = Integer.parseInt(JsonHandle.getValue(json, jsonPath));
             }
             if (right!=0) {
