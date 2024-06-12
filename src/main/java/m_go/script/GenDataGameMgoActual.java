@@ -122,9 +122,9 @@ public class GenDataGameMgoActual {
         right = getRightAnswers(turn,"$.right_ans","$.main_word");
         if(right.size() == 0){
             right = getRightAnswers(turn,folderAct,"$.right_w");
-            if(right.size()==0){
+            /*if(right.size()==0){
                 right.add(getRightAnswer(turn,"$.question_data"));
-            }
+            }*/
         }
         Turn newTurn = new Turn(word,getOder(turnObject.toString(),"$.order"),
                 getWordJsonFileByWordIds(folderAct,right),
