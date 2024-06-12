@@ -118,14 +118,21 @@ public class GenDataGameMgoActual {
         getWordIdAndType(turn,"$.question_info",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn, "$.question_answer", word, folderAct, Constant.QUESTION_ANSWER_TYPE);
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
-        List<Integer> right = getRightAnswers(turn,"$.right_ans","$.main_word");
+        List<Integer> right = new ArrayList<>();
+        right = getRightAnswers(turn,"$.right_ans","$.main_word");
         if(right.size() == 0){
             right = getRightAnswers(turn,folderAct,"$.right_w");
+            if(right.size()==0){
+                right.add(getRightAnswer(turn,"$.question_data"));
+            }
         }
         Turn newTurn = new Turn(word,getOder(turnObject.toString(),"$.order"),
                 getWordJsonFileByWordIds(folderAct,right),
                 getWordJsonFileByWordId(folderAct,getWordIDInJsonConfigBy(json,folderAct,"$.phonic")));
         return newTurn.createTurns();
+
+
+
     }
     private static JSONObject genTurnDataStory(String json,String folderAct, Object turnObject){
         JSONArray word = new JSONArray();
@@ -224,7 +231,7 @@ public class GenDataGameMgoActual {
     public static String getConfigJsonFile(String folder){
         return FileHelpers.readFile(folder+"/"+Constant.CONFIG_FILE);
     }
-    private static int getRightAnswer(String json,String folder,String... jsonPaths){
+    private static int getRightAnswer(String json,String... jsonPaths){
         int right = 0;
         for (String jsonPath:jsonPaths) {
             if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
