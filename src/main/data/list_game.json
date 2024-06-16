@@ -74,5 +74,10 @@
   {
     "id": 1000126,
     "game":"BEPV04DragLetters(Clone)"
+  },
+  {
+    "id": 1000120,
+    "game": "MJ.VI01VideoInteractive(Clone)"
   }
+
 ]
