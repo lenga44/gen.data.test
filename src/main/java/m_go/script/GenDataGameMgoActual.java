@@ -1,5 +1,6 @@
 package m_go.script;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import common.Common;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static common.Common.unzipFile;
@@ -118,21 +120,25 @@ public class GenDataGameMgoActual {
         getWordIdAndType(turn,"$.question_info",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn, "$.question_answer", word, folderAct, Constant.QUESTION_ANSWER_TYPE);
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
+        getWordIdAndType(turn,"$.chunk",word,folderAct,Constant.CHUNK_TYPE);
+
         List<Integer> right = new ArrayList<>();
         right = getRightAnswers(turn,"$.right_ans","$.main_word");
         if(right.size() == 0){
             right = getRightAnswers(turn,folderAct,"$.right_w");
             if(right.size()==0){
-                right.add(getRightAnswer(turn,"$.question_data"));
+                right.add(getRightAnswer(turn,"$.right_w"));
             }
+            /*if(right.size()==0){
+                right.add(getRightAnswer(turn,"$.question_data"));
+            }*/
         }
+
         Turn newTurn = new Turn(word,getOder(turnObject.toString(),"$.order"),
                 getWordJsonFileByWordIds(folderAct,right),
                 getWordJsonFileByWordId(folderAct,getWordIDInJsonConfigBy(json,folderAct,"$.phonic")));
+
         return newTurn.createTurns();
-
-
-
     }
     private static JSONObject genTurnDataStory(String json,String folderAct, Object turnObject){
         JSONArray word = new JSONArray();
@@ -185,6 +191,7 @@ public class GenDataGameMgoActual {
             }
         }
     }
+
     private static int getOder(String json,String jsonPath){
         int order = 0;
         if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))){
@@ -263,7 +270,6 @@ public class GenDataGameMgoActual {
             // B6: return list
 
         }catch (Exception e){
-
         }
        return word_ids;
     }
