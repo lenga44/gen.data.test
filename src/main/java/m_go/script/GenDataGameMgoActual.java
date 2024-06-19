@@ -2,6 +2,7 @@ package m_go.script;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import common.Common;
 import common.Constant;
 import helper.*;
@@ -15,6 +16,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static common.Common.unzipFile;
 
@@ -26,10 +28,23 @@ public class GenDataGameMgoActual {
         List<Integer> gameIDs = getListGameID(idGame);
         for (int id: gameIDs) {
             downLoadDataActivity(id);
+            /*if(id==1000126){
+                addKeyValue(id);
+            }*/
         }
         genDataGamesFile();
     }
     private static void genDataGamesFile(){
+
+    }
+    private static void addKeyValue(int id){
+        String json = FileHelpers.readFile("D:\\gen.data.test\\src\\main\\java\\m_go\\data\\game\\"+id+".json");
+        List<JsonElement> listAct = JsonHandle.getJsonArray(json, "$[*].turn[*].word[*]").asList();
+        for (JsonElement element: listAct){
+            JsonObject jsonObject = element.getAsJsonObject();
+            jsonObject.addProperty("size", Objects.requireNonNull(JsonHandle.getValue(element.toString(), "$.text")).length());
+        }
+        JSONArray listAct1 = JsonHandle.getJSONArray(json, "$[*]");
 
     }
     private static List<Integer> getListGameID(int... ids){
