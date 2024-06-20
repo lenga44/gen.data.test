@@ -25,7 +25,7 @@ public class GenDataAISpeakLessonActual {
         //region Download course install
         System.out.println("Step1: Download course install\n");
         //String url = "https://app.monkeyuni.net/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=4793864&os=ios&profile_id=1&subversion=78";
-        String url = "https://api.dev.monkeyuni.com/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=4793864&os=ios&profile_id=1&subversion=102";
+        String url = "https://api.dev.monkeyuni.com/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=4793864&os=ios&profile_id=1&subversion=123";
         String json = RequestEx.request(url);
         String courseFile = getValueFromJson(json,"$.data.p_i.c.108.p");
         Common.downloadAndUnzipFileCourseInstall(courseFile);

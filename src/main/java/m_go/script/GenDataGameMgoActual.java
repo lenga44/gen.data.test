@@ -121,6 +121,8 @@ public class GenDataGameMgoActual {
         getWordIdAndType(turn, "$.question_answer", word, folderAct, Constant.QUESTION_ANSWER_TYPE);
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.chunk",word,folderAct,Constant.CHUNK_TYPE);
+        getWordIdAndType(turn,"$.blending",word,folderAct,Constant.BLENDING_TYPE);
+        getWordIdAndType(turn,"$.phonic",word,folderAct,Constant.PHONIC_TYPE);
 
         List<Integer> right = new ArrayList<>();
         right = getRightAnswers(turn,"$.right_ans","$.main_word");
