@@ -14,6 +14,7 @@ import static io.restassured.RestAssured.given;
 
 public class RequestEx {
     public static String request(String url) throws IOException, InterruptedException {
+        System.out.println(url);
         HttpRequest request = HttpRequest
                 .newBuilder()
                 .uri(URI.create(url))
@@ -22,7 +23,7 @@ public class RequestEx {
                 .build();
         HttpClient client = HttpClient
                 .newBuilder()
-                .connectTimeout(Duration.ofMillis(500))
+                .connectTimeout(Duration.ofMillis(1000))
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         return response.body();
