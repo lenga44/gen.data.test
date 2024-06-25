@@ -17,6 +17,7 @@ public class Constant {
 
     public static final String GAME_LIST = FileHelpers.getProjectPath()+"/src/main/data/list_game.json";
     public static final String QUESTION_TYPE = "question";
+    public static final String PHONIC_TYPE = "phonic";
     public static final String CHUNK_TYPE = "chunk";
     public static final String QUESTION_ANSWER_TYPE = "question_answer";
     public static final String ANSWER_TYPE = "answer";

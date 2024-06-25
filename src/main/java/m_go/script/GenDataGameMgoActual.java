@@ -133,6 +133,8 @@ public class GenDataGameMgoActual {
         getWordIdAndType(turn,"$.question_info",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn, "$.question_answer", word, folderAct, Constant.QUESTION_ANSWER_TYPE);
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
+        getWordIdAndType(turn,"$.blending",word,folderAct,Constant.QUESTION_TYPE);
+        getWordIdAndType(turn,"$.phonic",word,folderAct,Constant.PHONIC_TYPE);
         List<Integer> right = new ArrayList<>();
         right = getRightAnswers(turn,"$.right_ans","$.main_word");
         if(right.size() == 0){
@@ -145,9 +147,6 @@ public class GenDataGameMgoActual {
                 getWordJsonFileByWordIds(folderAct,right),
                 getWordJsonFileByWordId(folderAct,getWordIDInJsonConfigBy(json,folderAct,"$.phonic")));
         return newTurn.createTurns();
-
-
-
     }
     private static JSONObject genTurnDataStory(String json,String folderAct, Object turnObject){
         JSONArray word = new JSONArray();
