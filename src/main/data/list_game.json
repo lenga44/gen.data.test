@@ -9,7 +9,7 @@
   },
   {
     "id": 1000084,
-    "game": "BE.PS04SpeakingCompetition(Clone)"
+    "game": "BE.PS04SpeakingCompetition_MJ5(Clone)"
   },
   {
     "id": 1000101,
@@ -30,6 +30,10 @@
   {
     "id": 1000081,
     "game": "MC.RS01DienThe(Clone)"
+  },
+  {
+    "id": 1000116,
+    "game":"BEPV03(Clone)"
   },
   {
 	"id": 1000119,
@@ -80,6 +84,14 @@
     "game":"BE.RV06_MultipleChoice(Clone)"
   },
   {
+    "id": 1000132,
+    "game":"MG.TB02(Clone)"
+  },
+  {
+    "id": 1000135,
+    "game":"BEFS01IntroSentence(Clone)"
+  },
+  {
     "id": 1000121,
     "game":"MG.VD01(Clone)"
   },
@@ -106,5 +118,13 @@
   {
     "id": 1000063,
     "game":"MSP.WordFishing(Clone)"
+  },
+  {
+    "id": 1000140,
+    "game":"EEIW01Multisensory(Clone)"
+  },
+  {
+    "id": 1000144,
+    "game":"EEIV01Flashcard(Clone)"
   }
 ]
