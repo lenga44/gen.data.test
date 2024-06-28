@@ -124,6 +124,14 @@
     "game":"EEIW01Multisensory(Clone)"
   },
   {
+    "id": 1000141,
+    "game":"EEIW04TapTheBalloon(Clone)"
+  },
+  {
+    "id": 1000143,
+    "game":"EERV01MultipleChoice(Clone)"
+  },
+  {
     "id": 1000144,
     "game":"EEIV01Flashcard(Clone)"
   }
