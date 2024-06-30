@@ -135,10 +135,14 @@ public class GenDataGameMgoActual {
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.blending",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.phonic",word,folderAct,Constant.PHONIC_TYPE);
+        //getWordIdAndType(turn,"$.main_w",word,folderAct,Constant.ANSWER_DATA_TYPE);
         List<Integer> right = new ArrayList<>();
         right = getRightAnswers(turn,"$.right_ans","$.main_word");
         if(right.size() == 0){
-            right = getRightAnswers(turn,folderAct,"$.right_w");
+            right = getRightAnswers(turn,"$.right_w");
+            if(right.size()==0){
+                right.add(getRightAnswer(turn,"$.main_w"));
+            }
             /*if(right.size()==0){
                 right.add(getRightAnswer(turn,"$.question_data"));
             }*/
