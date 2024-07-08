@@ -139,9 +139,15 @@ public class GenDataGameMgoActual {
         List<Integer> right = new ArrayList<>();
         right = getRightAnswers(turn,"$.right_ans","$.main_word");
         if(right.size() == 0){
-            right = getRightAnswers(turn,"$.right_w");
-            if(right.size()==0){
-                right.add(getRightAnswer(turn,"$.main_w"));
+            right=getRightAnswers(turn,"$.right_w");
+            if(right.size()==0) {
+                int r = getRightAnswer(turn,"$.right_w");
+                if(r>0) {
+                    right.add(r);
+                }
+                if (right.size() == 0) {
+                        right.add(getRightAnswer(turn, "$.main_w"));
+                }
             }
             /*if(right.size()==0){
                 right.add(getRightAnswer(turn,"$.question_data"));
