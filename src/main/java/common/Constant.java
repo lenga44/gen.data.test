@@ -24,6 +24,7 @@ public class Constant {
     public static final String LETTER_TYPE = "letter";
     public static final String ANSWER_DATA_TYPE = "answer_data";
     public static final String WORD_BK_TYPE = "word_bk";
+    public static final String RIGHT_ANSWER = "right";
     @Description("cho biết game sẽ chơi từ nào")
     public static final String CONFIG_FILE = "config.json";
     @Description("list_word là dùng để download word về")

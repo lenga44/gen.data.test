@@ -135,6 +135,7 @@ public class GenDataGameMgoActual {
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.blending",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn,"$.phonic",word,folderAct,Constant.PHONIC_TYPE);
+        getWordIdAndType(turn,"$.main_w",word,folderAct,Constant.RIGHT_ANSWER);
         //getWordIdAndType(turn,"$.main_w",word,folderAct,Constant.ANSWER_DATA_TYPE);
         List<Integer> right = new ArrayList<>();
         right = getRightAnswers(turn,"$.right_ans","$.main_word");
@@ -228,17 +229,19 @@ public class GenDataGameMgoActual {
         return word.createWord();
     }
     private static void downloadWordZip(String folder, int word_id){
-        String path;
-        String list_word = getListWordJsonFile(folder);
-        JsonArray array = JsonHandle.getJSONArray(list_word);
-        for(JsonElement document: array) {
-            try {
-                if (Integer.parseInt(JsonHandle.getValue(document.toString(), "$.id")) == word_id) {
-                    path = String.valueOf(JsonHandle.getValue(document.toString(), "$.path"));
-                    downloadAndUnzipFileInFolder(Constant.WORD_INSTALL_URL, path, folder);
+        if(word_id!=0) {
+            String path;
+            String list_word = getListWordJsonFile(folder);
+            JsonArray array = JsonHandle.getJSONArray(list_word);
+            for (JsonElement document : array) {
+                try {
+                    if (Integer.parseInt(JsonHandle.getValue(document.toString(), "$.id")) == word_id) {
+                        path = String.valueOf(JsonHandle.getValue(document.toString(), "$.path"));
+                        downloadAndUnzipFileInFolder(Constant.WORD_INSTALL_URL, path, folder);
+                    }
+                } catch (Exception E) {
+                    System.out.println("This object doesn't contain key 'id' ");
                 }
-            } catch (Exception E) {
-                System.out.println("This object doesn't contain key 'id' ");
             }
         }
     }
