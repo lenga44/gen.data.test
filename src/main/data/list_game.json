@@ -106,5 +106,34 @@
   {
     "id": 1000086,
     "game":"Report_BE.GV03_Puzzle(Clone)"
+  },
+  {
+    "id": 1000117,
+    "game":"EEPS01SpeakingSentence(Clone)"
+  },
+  {
+    "id": 1000136,
+    "game":"BE.RS01BrickLayer(Clone)"
+  },
+  {
+    "id": 1000130,
+    "game":"BE.RV06_MultipleChoice(Clone)"
+  },
+  {
+    "id": 1000083,
+    "game":"BE.PV02(Clone)"
+  },
+  {
+    "id": 1000140,
+    "game":"EEIW01Multisensory(Clone)"
+  }
+,
+  {
+    "id": 1000129,
+    "game":"BE.RV03 - Listen and choose picture(Clone)"
+  },
+  {
+    "id": 1000139,
+    "game":"Report_BERST02MCSRightW(Clone)"
   }
 ]
