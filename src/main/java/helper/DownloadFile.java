@@ -7,6 +7,7 @@ import java.net.URLConnection;
 public class DownloadFile {
     public static void downloadFileStatus( String fileURL,String folderDownload) {
         try {
+            System.out.println(fileURL);
             downloadFile(fileURL, folderDownload);
         } catch (IOException e) {
             System.out.println("Error downloading the file: " + e.getMessage());
