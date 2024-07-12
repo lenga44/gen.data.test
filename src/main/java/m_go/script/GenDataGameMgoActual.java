@@ -56,6 +56,7 @@ public class GenDataGameMgoActual {
     }
     private static void downLoadDataActivity(int id) throws IOException, InterruptedException {
        String json = RequestEx.request(Constant.DATA_ACTIVITY_BY_GAME_URL+id);
+        System.out.println(json);
         List<JsonElement> listAct = JsonHandle.getJsonArray(json, "$.data").asList();
         String gameName = Common.getGameName(id);
         JSONArray acts = new JSONArray();
@@ -76,13 +77,20 @@ public class GenDataGameMgoActual {
                 JSONArray letters = genLetterArray(resourceFolder,"$.letter");
                 Activity activity = new Activity(id,gameName,turns,fileName,"",actID,letters);
                 acts.put(activity.createActivityHasLetter());
-            }else  {
+            }
+            else  {
                 JSONArray turns = getTurns(resourceFolder,"$.data");
                 if(turns.length()==0){
                     turns = getTurns(resourceFolder,"$.question_data");
                 }
-                Activity activity = new Activity(id,gameName,turns,fileName,"",actID);
-                acts.put(activity.createActivityGame());
+                JSONArray words = genLetterArray(resourceFolder,"$.word");
+                if(words.length()==0) {
+                    Activity activity = new Activity(id, gameName, turns, fileName, "", actID);
+                    acts.put(activity.createActivityGame());
+                }else {
+                    Activity activity = new Activity(id, gameName, turns, fileName, "",words, actID);
+                    acts.put(activity.createActivityGameForThreeOptionGame());
+                }
             }
         }
         saveArrayToFile(acts,id);

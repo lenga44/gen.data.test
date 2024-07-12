@@ -135,5 +135,21 @@
   {
     "id": 1000139,
     "game":"Report_BERST02MCSRightW(Clone)"
+  },
+  {
+    "id": 1000101,
+    "game":"Chunking1Speaking_MJ5(Clone)"
+  },
+  {
+    "id": 1000063,
+    "game":"MSP.WordFishing(Clone)"
+  },
+  {
+    "id": 1000116,
+    "game":"BEPV03(Clone)"
+  },
+  {
+    "id": 1000145,
+    "game":"EE.IV04 - Tap three options(Clone)"
   }
 ]

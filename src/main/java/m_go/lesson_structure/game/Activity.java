@@ -14,6 +14,7 @@ public class Activity {
     private JSONObject thumb_start;
     private JSONObject thumb_end;
     private JSONArray letters;
+    private JSONArray words;
 
     public Activity(int id, String gameName, JSONArray turn, String file_zip, String background,
                     int actID, JSONObject story_name, JSONObject thumb_start, JSONObject thumb_end) {
@@ -46,7 +47,15 @@ public class Activity {
         this.actID = actID;
         this.letters = letters;
     }
-
+    public Activity(int id, String gameName, JSONArray turns, String fileName, String background,JSONArray words,int actID) {
+        this.id = id;
+        this.gameName = gameName;
+        this.turn = turns;
+        this.file_zip = fileName;
+        this.background = background;
+        this.words = words;
+        this.actID = actID;
+    }
     public JSONObject createActivity(){
         JSONObject json = new JSONObject();
         json.put("id", id);
@@ -63,6 +72,17 @@ public class Activity {
         json.put("file_zip", file_zip);
         json.put("background",background);
         json.put("act_id",actID);
+        json.put("turn", turn);
+        return json;
+    }
+    public JSONObject createActivityGameForThreeOptionGame(){
+        JSONObject json = new JSONObject();
+        json.put("id", id);
+        json.put("name", gameName);
+        json.put("file_zip", file_zip);
+        json.put("background",background);
+        json.put("act_id",actID);
+        json.put("words", words);
         json.put("turn", turn);
         return json;
     }
