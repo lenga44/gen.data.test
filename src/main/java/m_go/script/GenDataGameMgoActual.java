@@ -3,6 +3,7 @@ package m_go.script;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import common.Common;
 import common.Constant;
 import helper.*;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static common.Common.unzipFile;
 
@@ -28,10 +30,23 @@ public class GenDataGameMgoActual {
         List<Integer> gameIDs = getListGameID(idGame);
         for (int id: gameIDs) {
             downLoadDataActivity(id);
+            /*if(id==1000126){
+                addKeyValue(id);
+            }*/
         }
         genDataGamesFile();
     }
     private static void genDataGamesFile(){
+
+    }
+    private static void addKeyValue(int id){
+        String json = FileHelpers.readFile("D:\\gen.data.test\\src\\main\\java\\m_go\\data\\game\\"+id+".json");
+        List<JsonElement> listAct = JsonHandle.getJsonArray(json, "$[*].turn[*].word[*]").asList();
+        for (JsonElement element: listAct){
+            JsonObject jsonObject = element.getAsJsonObject();
+            jsonObject.addProperty("size", Objects.requireNonNull(JsonHandle.getValue(element.toString(), "$.text")).length());
+        }
+        JSONArray listAct1 = JsonHandle.getJSONArray(json, "$[*]");
 
     }
     private static List<Integer> getListGameID(int... ids){
@@ -43,6 +58,7 @@ public class GenDataGameMgoActual {
     }
     private static void downLoadDataActivity(int id) throws IOException, InterruptedException {
        String json = RequestEx.request(Constant.DATA_ACTIVITY_BY_GAME_URL+id);
+        System.out.println(json);
         List<JsonElement> listAct = JsonHandle.getJsonArray(json, "$.data").asList();
         String gameName = Common.getGameName(id);
         JSONArray acts = new JSONArray();
@@ -63,13 +79,20 @@ public class GenDataGameMgoActual {
                 JSONArray letters = genLetterArray(resourceFolder,"$.letter");
                 Activity activity = new Activity(id,gameName,turns,fileName,"",actID,letters);
                 acts.put(activity.createActivityHasLetter());
-            }else  {
+            }
+            else  {
                 JSONArray turns = getTurns(resourceFolder,"$.data");
                 if(turns.length()==0){
                     turns = getTurns(resourceFolder,"$.question_data");
                 }
-                Activity activity = new Activity(id,gameName,turns,fileName,"",actID);
-                acts.put(activity.createActivityGame());
+                JSONArray words = genLetterArray(resourceFolder,"$.word");
+                if(words.length()==0) {
+                    Activity activity = new Activity(id, gameName, turns, fileName, "", actID);
+                    acts.put(activity.createActivityGame());
+                }else {
+                    Activity activity = new Activity(id, gameName, turns, fileName, "",words, actID);
+                    acts.put(activity.createActivityGameForThreeOptionGame());
+                }
             }
         }
         saveArrayToFile(acts,id);
@@ -120,18 +143,23 @@ public class GenDataGameMgoActual {
         getWordIdAndType(turn,"$.question_info",word,folderAct,Constant.QUESTION_TYPE);
         getWordIdAndType(turn, "$.question_answer", word, folderAct, Constant.QUESTION_ANSWER_TYPE);
         getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
-        getWordIdAndType(turn,"$.chunk",word,folderAct,Constant.CHUNK_TYPE);
-        getWordIdAndType(turn,"$.blending",word,folderAct,Constant.BLENDING_TYPE);
-        getWordIdAndType(turn,"$.phonic",word,folderAct,Constant.PHONIC_TYPE);
-        getWordIdAndType(turn,"$.main_w",word,folderAct,Constant.MAIN_W_TYPE);
-        getWordIdAndType(turn,"$.sentence",word,folderAct,Constant.SENTENCE_TYPE);
 
+        getWordIdAndType(turn,"$.blending",word,folderAct,Constant.QUESTION_TYPE);
+        getWordIdAndType(turn,"$.phonic",word,folderAct,Constant.PHONIC_TYPE);
+        getWordIdAndType(turn,"$.main_w",word,folderAct,Constant.RIGHT_ANSWER);
+        //getWordIdAndType(turn,"$.main_w",word,folderAct,Constant.ANSWER_DATA_TYPE);
         List<Integer> right = new ArrayList<>();
         right = getRightAnswers(turn,"$.right_ans","$.main_word");
         if(right.size() == 0){
-            right = getRightAnswers(turn,folderAct,"$.right_w");
-            if(right.size()==0){
-                right.add(getRightAnswer(turn,"$.right_w"));
+            right=getRightAnswers(turn,"$.right_w");
+            if(right.size()==0) {
+                int r = getRightAnswer(turn,"$.right_w");
+                if(r>0) {
+                    right.add(r);
+                }
+                if (right.size() == 0) {
+                        right.add(getRightAnswer(turn, "$.main_w"));
+                }
             }
 
             /*if(right.size()==0){
@@ -216,17 +244,19 @@ public class GenDataGameMgoActual {
         return word.createWord();
     }
     private static void downloadWordZip(String folder, int word_id){
-        String path;
-        String list_word = getListWordJsonFile(folder);
-        JsonArray array = JsonHandle.getJSONArray(list_word);
-        for(JsonElement document: array) {
-            try {
-                if (Integer.parseInt(JsonHandle.getValue(document.toString(), "$.id")) == word_id) {
-                    path = String.valueOf(JsonHandle.getValue(document.toString(), "$.path"));
-                    downloadAndUnzipFileInFolder(Constant.WORD_INSTALL_URL, path, folder);
+        if(word_id!=0) {
+            String path;
+            String list_word = getListWordJsonFile(folder);
+            JsonArray array = JsonHandle.getJSONArray(list_word);
+            for (JsonElement document : array) {
+                try {
+                    if (Integer.parseInt(JsonHandle.getValue(document.toString(), "$.id")) == word_id) {
+                        path = String.valueOf(JsonHandle.getValue(document.toString(), "$.path"));
+                        downloadAndUnzipFileInFolder(Constant.WORD_INSTALL_URL, path, folder);
+                    }
+                } catch (Exception E) {
+                    System.out.println("This object doesn't contain key 'id' ");
                 }
-            } catch (Exception E) {
-                System.out.println("This object doesn't contain key 'id' ");
             }
         }
     }
