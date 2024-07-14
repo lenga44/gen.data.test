@@ -85,11 +85,26 @@ public class GenDataGameMgoActual {
                 }
                 JSONArray words = genLetterArray(resourceFolder,"$.word");
                 if(words.length()==0) {
-                    Activity activity = new Activity(id, gameName, turns, fileName, "", actID);
-                    acts.put(activity.createActivityGame());
+                    JSONObject story_name = genStoryInfo(resourceFolder,"$.story_name");
+                    JSONObject thumb_start = genStoryInfo(resourceFolder,"$.thumb_start");
+                    JSONObject thumb_end = genStoryInfo(resourceFolder,"$.thumb_end");
+                    if(!story_name.isEmpty() && !thumb_end.isEmpty() && !thumb_start.isEmpty()){
+                        Activity activity = new Activity(id, gameName, turns, fileName, "",actID,story_name,thumb_start,thumb_end);
+                        acts.put(activity.createActivityGameTypeStory());
+                    }else {
+                        Activity activity = new Activity(id, gameName, turns, fileName, "", actID);
+                        acts.put(activity.createActivityGame());
+                    }
                 }else {
                     Activity activity = new Activity(id, gameName, turns, fileName, "",words, actID);
                     acts.put(activity.createActivityGameForThreeOptionGame());
+                }
+                JSONObject story_name = genStoryInfo(resourceFolder,"$.story_name");
+                JSONObject thumb_start = genStoryInfo(resourceFolder,"$.thumb_start");
+                JSONObject thumb_end = genStoryInfo(resourceFolder,"$.thumb_end");
+                if(!story_name.isEmpty() && !thumb_end.isEmpty() && !thumb_start.isEmpty()){
+                    Activity activity = new Activity(id, gameName, turns, fileName, "",actID,story_name,thumb_start,thumb_end);
+                    acts.put(activity.createActivityGameTypeStory());
                 }
             }
         }
@@ -105,6 +120,28 @@ public class GenDataGameMgoActual {
             }
         }
         return letters;
+    }
+    private static JSONObject genStoryInfo(String folder,String jsonPath){
+        JSONObject storyInfo = new JSONObject();
+        String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
+        if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
+            int word_id= JsonHandle.getValueJson(json, jsonPath);
+            storyInfo = genWordData(word_id,folder,Constant.LETTER_TYPE);
+        }
+        return storyInfo;
+    }
+    private static void genStoryInfo(String folder, String jsonPath, int id, String gameName, JSONArray turns, String fileName, int actID, JSONArray acts){
+        String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
+        if(JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
+            JSONObject name_story = getWordJsonFileByWordId(folder, JsonHandle.getValueJson(json, "$.story_name"));
+            JSONObject thumb_start = getWordJsonFileByWordId(folder, JsonHandle.getValueJson(json, "$.thumb_start"));
+            JSONObject thumb_end = getWordJsonFileByWordId(folder, JsonHandle.getValueJson(json, "$.thumb_end"));
+            Activity activity = new Activity(id, gameName, turns, fileName, "", actID, name_story,thumb_start,thumb_end);
+            acts.put(activity.createActivityGameForThreeOptionGame());
+         /* int id, String gameName, JSONArray turn, String file_zip, String background,
+                    int actID, JSONObject story_name, JSONObject thumb_start, JSONObject thumb_end*/
+
+        }
     }
     private static JSONArray getTurns(String folder,String jsonPath){
         JSONArray turns = new JSONArray();
@@ -166,16 +203,6 @@ public class GenDataGameMgoActual {
                 getWordJsonFileByWordIds(folderAct,right),
                 getWordJsonFileByWordId(folderAct,getWordIDInJsonConfigBy(json,folderAct,"$.phonic")));
         return newTurn.createTurns();
-    }
-    private static JSONObject genTurnDataStory(String json,String folderAct, Object turnObject){
-        JSONArray word = new JSONArray();
-        String turn = turnObject.toString();
-        getWordIdAndType(turn,"$.question_data",word,folderAct,Constant.QUESTION_TYPE);
-
-        Turn newTurn = new Turn(word, getWordJsonFileByWordId(folderAct,getWordIDInJsonConfigBy(json,folderAct,"$.story_name"))
-                ,getWordJsonFileByWordId(folderAct,getWordIDInJsonConfigBy(json,folderAct,"$.thumb_start"))
-                ,getWordJsonFileByWordId(folderAct,getWordIDInJsonConfigBy(json,folderAct,"$.thumb_end")));
-        return newTurn.createTurnsHasStory();
     }
 
     private static JsonArray getDataJsonElement(JsonElement json){
