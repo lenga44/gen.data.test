@@ -54,7 +54,7 @@ public class GenDataGameMgoActual {
         }
         return gameIDs;
     }
-    private static void downLoadDataActivity(int id) throws IOException, InterruptedException {
+    public static void downLoadDataActivity(int id) throws IOException, InterruptedException {
        String json = RequestEx.request(Constant.DATA_ACTIVITY_BY_GAME_URL+id);
         System.out.println(json);
         List<JsonElement> listAct = JsonHandle.getJsonArray(json, "$.data").asList();

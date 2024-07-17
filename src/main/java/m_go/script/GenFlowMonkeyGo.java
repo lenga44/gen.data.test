@@ -2,7 +2,6 @@ package m_go.script;
 
 import ai.speak.course.lesson_structure.Activity;
 import ai.speak.course.lesson_structure.Lesson;
-import ai.speak.course.lesson_structure.Turn;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import common.Common;
@@ -17,6 +16,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static ai.speak.course.script.TopicHasLesson.genLevelTopicLessonFile;
+import static m_go.script.GenDataGameMgoActual.downLoadDataActivity;
 
 public class GenFlowMonkeyGo {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -56,7 +56,7 @@ public class GenFlowMonkeyGo {
                             String lessonName = JsonHandle.getValue(lessonElement.toString(), "$.t");
                             String user = JsonHandle.getValue(lessonElement.toString(), "$.f");
                             if (user.equals("0")) {
-                                JSONArray acts = getActSData(lessonElement);
+                                JSONArray acts = getActsData(lessonElement);
                                 JSONObject lesson = genLessonData(lessonName, topic, category, level, acts, getMapIndex(map.get(level), topic));
                                 lessons.put(lesson);
                             }
@@ -93,10 +93,12 @@ public class GenFlowMonkeyGo {
         String objects = JsonHandle.getValue(json,"$.as");
         return JsonHandle.getJSONArray(objects);
     }
-    private static JSONArray getActSData(JsonElement lessonElement){
+    private static JSONArray getActsData(JsonElement lessonElement) throws IOException, InterruptedException {
         JSONArray acts = new JSONArray();
         for (JsonElement actElement: getActArray(lessonElement.toString())) {
             int gameId = Integer.valueOf(JsonHandle.getValue(actElement.toString(),"$.g_i"));
+            downLoadDataActivity(gameId);
+            int actId = Integer.valueOf(JsonHandle.getValue(actElement.toString(),"$.i"));
             String resource = JsonHandle.getValue(actElement.toString(),"$.f");
             String error = downloadAct(resource);
             String background = JsonHandle.getValue(actElement.toString(),"$.g_c.b");
