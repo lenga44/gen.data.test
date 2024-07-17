@@ -110,6 +110,64 @@ public class GenDataGameMgoActual {
         }
         saveArrayToFile(acts,id);
     }
+    public static JSONObject downLoadDataActivity(int id,int expected) throws IOException, InterruptedException {
+        String json = RequestEx.request(Constant.DATA_ACTIVITY_BY_GAME_URL+id);
+        List<JsonElement> listAct = JsonHandle.getJsonArray(json, "$.data").asList();
+        String gameName = Common.getGameName(id);
+        //JSONArray acts = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+        for (JsonElement act: listAct) {
+            String path = JsonHandle.getValue(act.toString(), "$.f");
+            String fileName = LogicHandle.getFileName(path);
+            String resourceFolder = id + "/" + fileName.replace(".zip", "");
+            int actID = Integer.parseInt(LogicHandle.splitString(fileName, "-"));
+            if(actID==expected) {
+                Common.downloadAndUnzipFile(Constant.DOMAIN_URL + path, fileName, String.valueOf(id));
+                if (JsonHandle.getValue(json, "$.data[0].n").contains("story")) {
+                    JSONObject name_story = getWordJsonFileByWordId(resourceFolder, getWordID(resourceFolder, "$.story_name"));
+                    JSONObject thumb_start = getWordJsonFileByWordId(resourceFolder, getWordID(resourceFolder, "$.thumb_start"));
+                    JSONObject thumb_end = getWordJsonFileByWordId(resourceFolder, getWordID(resourceFolder, "$.thumb_end"));
+                    Activity activity = new Activity(id, gameName, getTurns(resourceFolder, "$.data"), fileName, "", actID, name_story, thumb_start, thumb_end);
+                    jsonObject = activity.createActivityGameTypeStory();
+                    //acts.put(activity.createActivityGameTypeStory());
+                } else if (JsonHandle.getValue(json, "$.data[0].n").contains("letters")) {
+                    JSONArray turns = getTurns(resourceFolder, "$.data");
+                    JSONArray letters = genLetterArray(resourceFolder, "$.letter");
+                    Activity activity = new Activity(id, gameName, turns, fileName, "", actID, letters);
+                    jsonObject = activity.createActivityHasLetter();
+                    //  acts.put(activity.createActivityHasLetter());
+                } else {
+                    JSONArray turns = getTurns(resourceFolder, "$.data");
+                    if (turns.length() == 0) {
+                        turns = getTurns(resourceFolder, "$.question_data");
+                    }
+                    JSONArray words = genLetterArray(resourceFolder, "$.word");
+                    JSONObject story_name = genStoryInfo(resourceFolder, "$.story_name");
+                    JSONObject thumb_start = genStoryInfo(resourceFolder, "$.thumb_start");
+                    JSONObject thumb_end = genStoryInfo(resourceFolder, "$.thumb_end");
+                    if (words.length() == 0) {
+                        if (!story_name.isEmpty() && !thumb_end.isEmpty() && !thumb_start.isEmpty()) {
+                            Activity activity = new Activity(id, gameName, turns, fileName, "", actID, story_name, thumb_start, thumb_end);
+                            jsonObject =activity.createActivityGameTypeStory();
+                        } else {
+                            Activity activity = new Activity(id, gameName, turns, fileName, "", actID);
+                            jsonObject =activity.createActivityGame();
+                        }
+                    } else {
+                        Activity activity = new Activity(id, gameName, turns, fileName, "", words, actID);
+                        jsonObject =activity.createActivityGameForThreeOptionGame();
+                    }
+                    if (!story_name.isEmpty() && !thumb_end.isEmpty() && !thumb_start.isEmpty()) {
+                        Activity activity = new Activity(id, gameName, turns, fileName, "", actID, story_name, thumb_start, thumb_end);
+                        jsonObject = activity.createActivityGameTypeStory();
+                        //acts.put(activity.createActivityGameTypeStory());
+                    }
+                }
+                break;
+            }
+        }
+        return jsonObject;
+    }
     private static JSONArray genLetterArray(String folder,String jsonPath){
         JSONArray letters = new JSONArray();
         String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);

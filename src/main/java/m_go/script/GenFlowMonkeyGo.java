@@ -60,9 +60,13 @@ public class GenFlowMonkeyGo {
                                 JSONObject lesson = genLessonData(lessonName, topic, category, level, acts, getMapIndex(map.get(level), topic));
                                 lessons.put(lesson);
                             }
+                            break;
                         }
+                        break;
                     }
+                    break;
                 }
+                break;
             }
             saveArrayToFile(lessons);
         }catch (Exception e){
@@ -98,11 +102,11 @@ public class GenFlowMonkeyGo {
         for (JsonElement actElement: getActArray(lessonElement.toString())) {
             int gameId = Integer.valueOf(JsonHandle.getValue(actElement.toString(),"$.g_i"));
             int actId = Integer.valueOf(JsonHandle.getValue(actElement.toString(),"$.i"));
-            //downLoadDataActivity(gameId,actID);
+            //downLoadDataActivity(gameId,actId);
             String resource = JsonHandle.getValue(actElement.toString(),"$.f");
             String error = downloadAct(resource);
             String background = JsonHandle.getValue(actElement.toString(),"$.g_c.b");
-            acts.put(genActData(getActResourceFolder(resource),error,gameId,resource,background));
+            acts.put(downLoadDataActivity(gameId,actId));
         }
         return acts;
     }
