@@ -97,8 +97,8 @@ public class GenFlowMonkeyGo {
         JSONArray acts = new JSONArray();
         for (JsonElement actElement: getActArray(lessonElement.toString())) {
             int gameId = Integer.valueOf(JsonHandle.getValue(actElement.toString(),"$.g_i"));
-            downLoadDataActivity(gameId);
             int actId = Integer.valueOf(JsonHandle.getValue(actElement.toString(),"$.i"));
+            //downLoadDataActivity(gameId,actID);
             String resource = JsonHandle.getValue(actElement.toString(),"$.f");
             String error = downloadAct(resource);
             String background = JsonHandle.getValue(actElement.toString(),"$.g_c.b");
