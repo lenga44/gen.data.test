@@ -87,7 +87,7 @@ public class JsonHandle {
     public static JSONArray getJSONArray(String json, String jsonPath){
         try {
             JSONArray jsonArray = new JSONArray();
-            String array = getValue(json, jsonPath);
+            String array = LogicHandle.replaceString(getValue(json, jsonPath),"=",":");
             jsonArray.put(array);
             return new JSONArray(array);
         }catch (Exception e){

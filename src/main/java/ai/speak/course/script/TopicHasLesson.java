@@ -18,11 +18,42 @@ public class TopicHasLesson {
             JSONArray array = JsonHandle.getJSONArray(aiStruct, "$.lvs");
             JSONArray levels = new JSONArray();
             for (Object level : array) {
+                JSONObject levelData = getLevel(level);
+                if(levelData!=null) {
+                    levels.put(levelData);
+                }
+            }
+            String content = "{\"lvs\":" + levels + "}";
+            FileHelpers.writeFile(content,Constant.DATA_AI_FOLDER+"/structure.json");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void genLevelTopicLessonFile(String path){
+        try {
+            String aiStruct = getCourseInstallFile();
+            JSONArray array = JsonHandle.getJSONArray(aiStruct, "$.lvs");
+            JSONArray levels = new JSONArray();
+            for (Object level : array) {
                 levels.put(getLevel(level));
             }
             System.out.println(levels);
             String content = "{\"lvs\":" + levels + "}";
-            FileHelpers.writeFile(content,Constant.DATA_AI_FOLDER+"/structure.json");
+            FileHelpers.writeFile(content,path+"/structure.json");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void genLevelTopicLessonFile(String path,String jsonPath){
+        try {
+            String aiStruct = getCourseInstallFile();
+            JSONArray array = JsonHandle.getJSONArray(aiStruct, jsonPath);
+            JSONArray levels = new JSONArray();
+            for (Object level : array) {
+                levels.put(getLevel(level));
+            }
+            String content = "{\"lvs\":" + levels + "}";
+            FileHelpers.writeFile(content,path+"/structure.json");
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -44,13 +75,17 @@ public class TopicHasLesson {
         return categoryStructure.createCategoryStructure();
     }
     private static JSONObject getLevel(Object level){
-        JSONArray categorys = new JSONArray();
-        String levelName = JsonHandle.getValue(level.toString(),"$.n");
-        JSONArray array = JsonHandle.getJSONArray(level.toString(),"$.cs");
-        for(Object category: array){
-            categorys.put(getCategory(category));
+        try {
+            JSONArray categorys = new JSONArray();
+            String levelName = JsonHandle.getValue(level.toString(), "$.n");
+            JSONArray array = JsonHandle.getJSONArray(level.toString(), "$.cs");
+            for (Object category : array) {
+                categorys.put(getCategory(category));
+            }
+            LevelStructure levelStructure = new LevelStructure(levelName, categorys);
+            return levelStructure.createLevel();
+        }catch (Exception e){
+            return null;
         }
-        LevelStructure levelStructure = new LevelStructure(levelName,categorys);
-        return levelStructure.createLevel();
     }
 }
