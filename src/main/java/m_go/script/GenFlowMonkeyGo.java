@@ -48,25 +48,23 @@ public class GenFlowMonkeyGo {
             JsonArray levels = getLevelArray(courseInstallJson);
             for (JsonElement levelElement : levels) {
                 String level = JsonHandle.getValue(levelElement.toString(), "$.n");
-                for (JsonElement categoryElement : getCategoryArray(levelElement.toString())) {
-                    String category = JsonHandle.getValue(categoryElement.toString(), "$.n");
-                    for (JsonElement topicElement : getTopicArray(categoryElement.toString())) {
-                        String topic = JsonHandle.getValue(topicElement.toString(), "$.t");
-                        for (JsonElement lessonElement : getLessonArray(topicElement.toString())) {
-                            String lessonName = JsonHandle.getValue(lessonElement.toString(), "$.t");
-                            String user = JsonHandle.getValue(lessonElement.toString(), "$.f");
-                            if (user.equals("0")) {
-                                JSONArray acts = getActsData(lessonElement);
-                                JSONObject lesson = genLessonData(lessonName, topic, category, level, acts, getMapIndex(map.get(level), topic));
-                                lessons.put(lesson);
+                if(!level.equals("Level 5")) {
+                    for (JsonElement categoryElement : getCategoryArray(levelElement.toString())) {
+                        String category = JsonHandle.getValue(categoryElement.toString(), "$.n");
+                        for (JsonElement topicElement : getTopicArray(categoryElement.toString())) {
+                            String topic = JsonHandle.getValue(topicElement.toString(), "$.t");
+                            for (JsonElement lessonElement : getLessonArray(topicElement.toString())) {
+                                String lessonName = JsonHandle.getValue(lessonElement.toString(), "$.t");
+                                String user = JsonHandle.getValue(lessonElement.toString(), "$.f");
+                                if (user.equals("0")) {
+                                    JSONArray acts = getActsData(lessonElement);
+                                    JSONObject lesson = genLessonData(lessonName, topic, category, level, acts, getMapIndex(map.get(level), topic));
+                                    lessons.put(lesson);
+                                }
                             }
-                            break;
                         }
-                        break;
                     }
-                    break;
                 }
-                break;
             }
             saveArrayToFile(lessons);
         }catch (Exception e){
