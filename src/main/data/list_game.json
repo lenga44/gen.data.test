@@ -193,5 +193,15 @@
     "id": 1000144,
     "name": "",
     "game": "EEIV01Flashcard(Clone)"
+  },
+  {
+    "id": 267,
+    "name": "Trace the letter",
+    "game": "BEGP05TracingLetter(Clone)"
+  },
+  {
+    "id": 1000132,
+    "name": "Tap the bubbles",
+    "game": "MG.TB02(Clone)"
   }
 ]
