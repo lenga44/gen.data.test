@@ -1,167 +1,197 @@
 [
   {
+    "name": "Intro dialog",
     "id": 1000091,
     "game": "BE.ID01IntroDialog(Clone)"
   },
   {
     "id": 1000083,
+    "name": "Cat teaching AI",
     "game": "BE.PV02AiSpeakingWords(Clone)"
   },
   {
     "id": 1000084,
+    "name": "Speaking competition",
     "game": "BE.PS04SpeakingCompetition(Clone)"
   },
   {
     "id": 1000101,
+    "name": "Chunking speaking",
     "game": "Chunking1Speaking(Clone)"
   },
   {
     "id": 1000103,
+    "name": "MSP.ChW(Clone)",
     "game": "MSP.ChW(Clone)"
   },
   {
     "id": 1000102,
-    "game":"VideoCall"
+    "name": "Video Call",
+    "game": "VideoCall"
   },
   {
     "id": 1000088,
+    "name": "Brick layer",
     "game": "BrickLayer.BE.RS01(Clone)"
   },
   {
     "id": 1000081,
+    "name": "Điền thế",
     "game": "MC.RS01DienThe(Clone)"
   },
   {
     "id": 1000119,
-    "game":"BE.GP06_SoundVocabMatching(Clone)"
+    "name": "Sound vocab matching",
+    "game": "BE.GP06_SoundVocabMatching(Clone)"
   },
   {
     "id": 1000123,
-    "game":"BE.RP05MultipleChoice(Clone)"
+    "name": "Multiple choice (cho audio chọn ảnh)",
+    "game": "BE.RP05MultipleChoice(Clone)"
   },
   {
     "id": 1000092,
-    "game":""
+    "name": "Multiple choice story 1",
+    "game": "BERST02MCSRightsW(Clone)"
   },
   {
     "id": 1000060,
-    "game":"GS01LetterFishing(Clone)"
+    "name": "Letter fishing",
+    "game": "GS01LetterFishing(Clone)"
   },
   {
     "id": 1000124,
-    "game":"BEPP01BlendingSound(Clone)"
+    "name": "Blending sound",
+    "game": "BEPP01BlendingSound(Clone)"
   },
   {
     "id": 1000096,
-    "game":"BE.IST01ReadTheStory(Clone)"
+    "name": "Read the story",
+    "game": "BE.IST01ReadTheStory(Clone)"
   },
   {
     "id": 1000137,
-    "game":"BE.RS02WordMachine(Clone)"
+    "name": "Word machine",
+    "game": "BE.RS02WordMachine(Clone)"
   },
   {
     "id": 1000121,
-    "game":"MG.VD01(Clone)"
+    "name": "Video thường",
+    "game": "MG.VD01(Clone)"
   },
   {
     "id": 1000125,
-    "game":"BE.GV05 - Match the card(Clone)"
+    "name": "Match the cards",
+    "game": "BE.GV05 - Match the card(Clone)"
   },
   {
     "id": 1000122,
-    "game":"BE.IP02(Clone)"
+    "name": "Egg cracking",
+    "game": "BE.IP02(Clone)"
   },
   {
     "id": 1000126,
-    "game":"BEPV04DragLetters(Clone)"
+    "name": "Drag letters to build word",
+    "game": "BEPV04DragLetters(Clone)"
   },
   {
     "id": 1000120,
+    "name": "Video interactive",
     "game": "MJ.VI01VideoInteractive(Clone)"
   },
   {
     "id": 1000138,
+    "name": "Jumbled pages",
     "game": "BE.RVS02JumbledPages(Clone)"
   },
   {
     "id": 1000118,
-    "game":"EE.GS03(Clone)"
+    "name": "Drag letters to build word EE",
+    "game": "EE.GS03(Clone)"
   },
   {
     "id": 1000134,
-    "game":"BE.RV08(Clone)"
+    "name": "Catching fireflies",
+    "game": "BE.RV08(Clone)"
   },
   {
     "id": 1000131,
-    "game":"BE.IV01DinosaurChasing(Clone)"
+    "name": "Dinosaur chasing",
+    "game": "BE.IV01DinosaurChasing(Clone)"
   },
   {
     "id": 1000133,
-    "game":"BE.GP01 - Car phonic(Clone)"
+    "name": "Xe oto phonic",
+    "game": "BE.GP01 - Car phonic(Clone)"
   },
   {
     "id": 1000135,
-    "game":"BEFS01IntroSentence(Clone)"
+    "name": "Điền thế",
+    "game": "BEFS01IntroSentence(Clone)"
   },
   {
     "id": 1000086,
-    "game":"BE.GV03_Puzzle(Clone)"
+    "name": "Puzzle",
+    "game": "BE.GV03_Puzzle(Clone)"
   },
   {
     "id": 1000117,
-    "game":"EEPS01SpeakingSentence(Clone)"
+    "name": "Speaking sentence (AI)",
+    "game": "EEPS01SpeakingSentence(Clone)"
   },
   {
     "id": 1000136,
-    "game":"BE.RS01BrickLayer(Clone)"
+    "name": "Brick layer",
+    "game": "BE.RS01BrickLayer(Clone)"
   },
   {
     "id": 1000130,
-    "game":"BE.RV06_MultipleChoice(Clone)"
-  },
-  {
-    "id": 1000083,
-    "game":"BE.PV02(Clone)"
+    "name": "Multiple choice (cho audio chọn text)",
+    "game": "BE.RV06_MultipleChoice(Clone)"
   },
   {
     "id": 1000140,
-    "game":"EEIW01Multisensory(Clone)"
-  }
-,
+    "name": "Multisensory",
+    "game": "EEIW01Multisensory(Clone)"
+  },
   {
     "id": 1000129,
-    "game":"BE.RV03 - Listen and choose picture(Clone)"
+    "name": "Listen and choose picture",
+    "game": "BE.RV03 - Listen and choose picture(Clone)"
   },
   {
     "id": 1000139,
-    "game":"BERST02MCSRightW(Clone)"
+    "name": "Multiple choice story 2",
+    "game": "BERST02MCSRightW(Clone)"
   },
   {
     "id": 1000101,
-    "game":"Chunking1Speaking_MJ5(Clone)"
+    "name": "",
+    "game": "Chunking1Speaking_MJ5(Clone)"
   },
   {
     "id": 1000063,
-    "game":"MSP.WordFishing(Clone)"
+    "name": "Word Fishing",
+    "game": "MSP.WordFishing(Clone)"
   },
   {
     "id": 1000116,
-    "game":"BEPV03(Clone)"
+    "name": "Robot teaching AI",
+    "game": "BEPV03(Clone)"
   },
   {
     "id": 1000145,
-    "game":"EE.IV04 - Tap three options(Clone)"
-  },
-  {
-    "id": 1000133,
-    "game":"BE.GP01 - Car phonic(Clone)"
+    "name": "",
+    "game": "EE.IV04 - Tap three options(Clone)"
   },
   {
     "id": 1000148,
-    "game":"MJST01Stories(Clone)"
+    "name": "",
+    "game": "MJST01Stories(Clone)"
   },
   {
     "id": 1000144,
-    "game":"EEIV01Flashcard(Clone)"
+    "name": "",
+    "game": "EEIV01Flashcard(Clone)"
   }
 ]

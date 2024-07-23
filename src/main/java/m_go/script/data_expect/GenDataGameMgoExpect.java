@@ -82,4 +82,7 @@ public class GenDataGameMgoExpect {
     private static void saveArrayToFile(JSONArray jsonArray){
         FileHelpers.writeFile(jsonArray.toString(), "D:\\gen.data.test\\src\\main\\java\\m_go\\data\\level_to_topic.json");
     }
+    private static void getListGameIntoFlow(){
+
+    }
 }
