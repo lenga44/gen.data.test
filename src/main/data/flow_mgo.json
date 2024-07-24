@@ -1,40 +1,348 @@
-[
-  {
-    "flow": 1,
-    "word_type":"Phonics",
-    "lesson": [
-      {
-        "lesson_name": 1,
-        "act": [
-          {
-            "game": [
-              "Report_Egg.cracking",
-              "Report_Sound.vocab.matching"
-            ]
-          },
-          {
-            "game": [
-              "interactive"
-            ]
-          }
-        ]
-      },
-      {
-        "lesson_name": 2,
-        "act": [
-          {
-            "game": [
-              "Report_Egg.cracking",
-              "Report_Sound.vocab.matching"
-            ]
-          },
-          {
-            "game": [
-              "interactive"
-            ]
-          }
-        ]
-      }
-    ]
-  }
-]
+{
+  "flow": [
+    {
+      "name": 0,
+      "lesson": [
+        {
+          "name_lesson": 1,
+          "act": [
+            {
+              "game": [
+                "BE.IP02(Clone)",
+                "BE.GP06_SoundVocabMatching(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "MJ.VI01VideoInteractive(Clone)",
+                "MG.VD01(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.RP05MultipleChoice(Clone)"
+              ]
+            }
+          ]
+        },
+        {
+          "name_lesson": 2,
+          "act": [
+            {
+              "game": [
+                "GS01LetterFishing(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BEGP05TracingLetter(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.GP01 - Car phonic(Clone)",
+                "BEPP01BlendingSound(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.PV02AiSpeakingWords(Clone)",
+                "BEPV03(Clone)"
+              ]
+            }
+          ]
+        },
+        {
+          "name_lesson": 3,
+          "act": [
+            {
+              "game": [
+                "MG.VD01(Clone)"
+              ]
+            }
+          ]
+        },
+        {
+          "name_lesson": 4,
+          "act": [
+            {
+              "game": [
+                "MG.TB02(Clone)",
+                "BE.IV01DinosaurChasing(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.RV03 - Listen and choose picture(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.RV08(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.RV06_MultipleChoice(Clone)",
+                "BERP04ListenAndChoose(Clone)"
+              ]
+            }
+          ]
+        },
+        {
+          "name_lesson": 5,
+          "act": [
+            {
+              "game": [
+                "BE.GV05 - Match the card(Clone)",
+                "BE.GV03_Puzzle(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.RV03 - Listen and choose picture(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.RP05MultipleChoice(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "MSP.WordFishing(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BEPV04DragLetters(Clone)",
+                "EE.GS03(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "Speaking competition"
+              ]
+            }
+          ]
+        },
+        {
+          "name_lesson": 6,
+          "act": [
+            {
+              "game": [
+                "BEFS01IntroSentence(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.RS01BrickLayer(Clone)",
+                "BE.RS02WordMachine(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "EEPS01SpeakingSentence(Clone)"
+              ]
+            }
+          ]
+        },
+        {
+          "name_lesson": 7,
+          "act": [
+            {
+              "game": [
+                "BE.ID01IntroDialog(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "Chunking1Speaking(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.PD01Dialogue_MJ(Clone)"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": 1,
+      "lesson": [
+        {
+          "name_lesson": 1,
+          "act": [
+            {
+              "game": [
+                "BE.IP02(Clone)",
+                "BE.GP06_SoundVocabMatching(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "MJ.VI01VideoInteractive(Clone)",
+                "MG.VD01(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.RP05MultipleChoice(Clone)"
+              ]
+            }
+          ]
+        },
+        {
+          "name_lesson": 2,
+          "act": [
+            {
+              "game": [
+                "GS01LetterFishing(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BEGP05TracingLetter(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.GP01 - Car phonic(Clone)",
+                "BEPP01BlendingSound(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.PV02AiSpeakingWords(Clone)",
+                "BEPV03(Clone)"
+              ]
+            }
+          ]
+        },
+        {
+          "name_lesson": 3,
+          "act": [
+            {
+              "game": [
+                "BE.IST01ReadTheStory(Clone)",
+                "BERST02MCSRightsW(Clone)"
+              ]
+            }
+          ]
+        },
+        {
+          "name_lesson": 4,
+          "act": [
+            {
+              "game": [
+                "MG.TB02(Clone)",
+                "BE.IV01DinosaurChasing(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.RV03 - Listen and choose picture(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.RV08(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.RV06_MultipleChoice(Clone)",
+                "BERP04ListenAndChoose(Clone)"
+              ]
+            }
+          ]
+        },
+        {
+          "name_lesson": 5,
+          "act": [
+            {
+              "game": [
+                "BE.GV05 - Match the card(Clone)",
+                "BE.GV03_Puzzle(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "MG.MC02(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "MSP.WordFishing(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BEPV04DragLetters(Clone)",
+                "EE.GS03(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.PS04SpeakingCompetition(Clone)"
+              ]
+            }
+          ]
+        },
+        {
+          "name_lesson": 6,
+          "act": [
+            {
+              "game": [
+                "BE.IST01ReadTheStory(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BERST02MCSRightW(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.RVS02JumbledPages(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BEFS01IntroSentence(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.RS01BrickLayer(Clone)",
+                "BE.RS02WordMachine(Clone)"
+              ]
+            }
+          ]
+        },
+        {
+          "name_lesson": 7,
+          "act": [
+            {
+              "game": [
+                "BE.ID01IntroDialog(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "Chunking1Speaking(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BE.PD01Dialogue_MJ(Clone)"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

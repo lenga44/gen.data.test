@@ -203,5 +203,10 @@
     "id": 1000132,
     "name": "Tap the bubbles",
     "game": "MG.TB02(Clone)"
+  },
+  {
+    "id": 1000091,
+    "name": "Dialog 1",
+    "game": "BE.PD01Dialogue_MJ(Clone)"
   }
 ]
