@@ -27,7 +27,6 @@ public class Flow {
                 break;
             }
         }
-        System.out.println("is story "+story);
         return story;
     }
 }

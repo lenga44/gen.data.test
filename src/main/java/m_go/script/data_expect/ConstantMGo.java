@@ -9,4 +9,5 @@ public class ConstantMGo {
     public static final int LEVEL_COLUM = 1;
     public static final int TOPIC_COLUM = 3;
     public static final String DATA_GAME_FOLDER = FileHelpers.getProjectPath() + "\\src\\main\\java\\m_go\\data\\game\\";
+    public static final String DATA_FOLDER = FileHelpers.getProjectPath() + "\\src\\main\\java\\m_go\\data\\";
 }

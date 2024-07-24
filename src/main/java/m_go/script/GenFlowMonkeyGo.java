@@ -4,11 +4,14 @@ import ai.speak.course.lesson_structure.Activity;
 import ai.speak.course.lesson_structure.Lesson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import common.Common;
 import common.Constant;
 import helper.FileHelpers;
 import helper.JsonHandle;
+import helper.LogicHandle;
 import helper.RequestEx;
+import m_go.script.data_expect.ConstantMGo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -66,11 +69,36 @@ public class GenFlowMonkeyGo {
                     }
                 }
             }
+            lessons = addFlowInActs(lessons);
             saveArrayToFile(lessons);
         }catch (Exception e){
             System.out.printf("downloadLesson "+e.getMessage());
             e.printStackTrace();
         }
+    }
+    private static JSONArray addFlowInActs(JSONArray jsonArray){
+        int flow= 0;
+        JSONArray array = new JSONArray();
+        String unitHasFlow = FileHelpers.readFile(ConstantMGo.DATA_FOLDER +"level_to_topic.json");
+        System.out.println(unitHasFlow);
+        for (int i =0; i<jsonArray.length();i++){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject = jsonArray.getJSONObject(i);
+            String level = JsonHandle.getValue(jsonObject.toString(),"$.level");
+            String unit = JsonHandle.getValue(jsonObject.toString(),"$.topic");
+            if(!level.equals("Level 0")){
+                    flow = Integer.parseInt(LogicHandle.removeString(
+                            LogicHandle.removeString(
+                            JsonHandle.getValue(unitHasFlow, "$.[?(@.level=="
+                            + LogicHandle.removeString(level, "Level ") + ")].unit[?(@.name=='"
+                            + unit + "')].topic[*].flow"),"[")
+                            ,"]"));
+            }else {
+                flow=2;
+            }
+            array.put(JsonHandle.addKeyValue(jsonObject,"flow",flow));
+        }
+        return array;
     }
     private static void saveArrayToFile(JSONArray jsonArray){
         FileHelpers.writeFile(jsonArray.toString(),Constant.MGO_LESSON_FILE);

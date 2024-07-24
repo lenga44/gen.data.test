@@ -183,4 +183,12 @@ public class JsonHandle {
         JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
         return new JSONObject(jsonObject.toString());
     }
+    public static JsonArray convertArrayFromJson(String json,String jsonPath){
+        String objects = JsonHandle.getValue(json,jsonPath);
+        return JsonHandle.getJSONArray(objects);
+    }
+    public static JSONObject addKeyValue(JSONObject json,String key,int value){
+        json.put(key,value);
+        return json;
+    }
 }

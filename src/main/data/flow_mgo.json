@@ -343,6 +343,60 @@
           ]
         }
       ]
+    },
+    {
+      "name": 2,
+      "lesson": [
+        {
+          "name_lesson": 1,
+          "act": [
+            {
+              "game": [
+                "EEIW01Multisensory(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "EEIW04TapTheBalloon(Clone)",
+                "EE.RW08 - Multi bubbles(Clone)",
+                "EERV01MultipleChoice(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "EEIW01Multisensory(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "EEIW04TapTheBalloon(Clone)",
+                "EE.RW08 - Multi bubbles(Clone)",
+                "EERV01MultipleChoice(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "EEIV01Flashcard(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "EEIV01Flashcard(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "EE.IV04 - Tap three options(Clone)"
+              ]
+            },
+            {
+              "game": [
+                "BERP04ListenAndChoose(Clone)"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }
