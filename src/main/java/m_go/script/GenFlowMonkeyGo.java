@@ -51,7 +51,6 @@ public class GenFlowMonkeyGo {
             JsonArray levels = getLevelArray(courseInstallJson);
             for (JsonElement levelElement : levels) {
                 String level = JsonHandle.getValue(levelElement.toString(), "$.n");
-                if(!level.equals("Level 5")) {
                     for (JsonElement categoryElement : getCategoryArray(levelElement.toString())) {
                         String category = JsonHandle.getValue(categoryElement.toString(), "$.n");
                         for (JsonElement topicElement : getTopicArray(categoryElement.toString())) {
@@ -61,13 +60,12 @@ public class GenFlowMonkeyGo {
                                 String user = JsonHandle.getValue(lessonElement.toString(), "$.f");
                                 if (user.equals("0")) {
                                     JSONArray acts = getActsData(lessonElement);
-                                    JSONObject lesson = genLessonData(lessonName, topic, category, level, acts, getMapIndex(map.get(level), topic));
+                                    JSONObject lesson = genLessonData(lessonName, topic, category, level, acts, getIndexLesson(lessonName));
                                     lessons.put(lesson);
                                 }
                             }
                         }
                     }
-                }
             }
             lessons = addFlowInActs(lessons);
             saveArrayToFile(lessons);
@@ -154,6 +152,9 @@ public class GenFlowMonkeyGo {
             value = 2;
         }
         return value;
+    }
+    private static int getIndexLesson(String lessonName){
+        return (Integer.parseInt(LogicHandle.removeLetterAndSpace(lessonName))%4)+1;
     }
     private static String downloadAct(String resource){
         String error = null;

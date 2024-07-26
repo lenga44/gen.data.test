@@ -25,6 +25,9 @@ public class LogicHandle {
         }
         return str;
     }
+    public static String removeLetterAndSpace(String str){
+        return str.replaceAll("[^0-9]", "");
+    }
     public static String replaceString(String str,String oldStr,String newStr){
         if(str.contains(oldStr)){
             str = str.replace(oldStr,newStr);
