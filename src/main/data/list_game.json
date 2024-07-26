@@ -20,6 +20,10 @@
     "game": "MSP.ChW(Clone)"
   },
   {
+    "id": 1000117,
+    "game": "EEPS01SpeakingSentence(Clone)"
+  },
+  {
     "id": 1000102,
     "game":"VideoCall"
   },
@@ -49,7 +53,7 @@
   },
   {
     "id": 1000090,
-    "game":"BE.PD01Dialogue(Clone)"
+    "game":"BE.PD01Dialogue_MJ(Clone)"
   },
   {
 	"id": 1000060,
