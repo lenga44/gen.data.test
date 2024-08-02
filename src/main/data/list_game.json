@@ -208,5 +208,10 @@
     "id": 1000091,
     "name": "Dialog 1",
     "game": "BE.PD01Dialogue_MJ(Clone)"
+  },
+  {
+    "id": 1000127,
+    "name": "Dialog 1",
+    "game": "BERP04ListenAndChoose(Clone)"
   }
 ]

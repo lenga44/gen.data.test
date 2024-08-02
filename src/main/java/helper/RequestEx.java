@@ -23,7 +23,7 @@ public class RequestEx {
                 .build();
         HttpClient client = HttpClient
                 .newBuilder()
-                .connectTimeout(Duration.ofMillis(5000))
+                .connectTimeout(Duration.ofMillis(30000))
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         return response.body();
