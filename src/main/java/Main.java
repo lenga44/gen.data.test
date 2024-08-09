@@ -19,7 +19,7 @@ public class Main {
             switch (number) {
                 case 1:
                     GenDataAISpeakLessonActual.run();
-                    GenDataAISpeakLessonExpect.run();
+                    //GenDataAISpeakLessonExpect.run();
                     break;
                 case 2:
                     System.out.println("Nhập game id: ");

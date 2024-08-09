@@ -331,7 +331,7 @@ public class GenDataAISpeakLessonActual {
         return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+folder+"/"+word_id+".json");
     }
     private String getListGameFile(){
-        return FileHelpers.readFile(Constant.GAME_LIST);
+        return FileHelpers.readFile(Constant.GAME_AI_LIST);
     }
     public static String getCourseInstallFile(){
         return FileHelpers.readFile(Constant.UNZIP_FOLDER_PATH+"/"+Constant.COURSE_INSTALL_FILE);

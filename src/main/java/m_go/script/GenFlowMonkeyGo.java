@@ -26,11 +26,11 @@ public class GenFlowMonkeyGo {
         run();
     }
     public static void run() throws IOException, InterruptedException {
-        System.out.println("Step1: Download course install\n");
-        String url = "https://api.dev.monkeyuni.com/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=60&os=ios&profile_id=1&subversion=49.0.0";
+        /*System.out.println("Step1: Download course install\n");
+        String url = "https://app.monkeyuni.net/user/api/v4/account/load-update?app_id=2&device_id=5662212&device_type=4&is_check_load_update=1&users_id=4793864&os=ios&profile_id=1";
         String json = RequestEx.request(url);
         String courseFile = JsonHandle.getValue(json,"$.data.p_i.c.201.p");
-        Common.downloadAndUnzipFileCourseInstall(courseFile);
+        Common.downloadAndUnzipFileCourseInstall(courseFile);*/
 
         genLevelTopicLessonFile(Constant.DATA_GO_FOLDER,"$.lvs");
         String structure = FileHelpers.readFile(Constant.DATA_GO_FOLDER+"/structure.json");

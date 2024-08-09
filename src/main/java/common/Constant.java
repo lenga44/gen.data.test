@@ -17,6 +17,7 @@ public class Constant {
     public static final String DATA_GO_FOLDER = FileHelpers.getProjectPath()+"/src/main/java/m_go/data";
 
     public static final String GAME_LIST = FileHelpers.getProjectPath()+"/src/main/data/list_game.json";
+    public static final String GAME_AI_LIST = FileHelpers.getProjectPath()+"/src/main/data/list_game_ai.json";
     public static final String QUESTION_TYPE = "question";
     public static final String PHONIC_TYPE = "phonic";
     public static final String CHUNK_TYPE = "chunk";
