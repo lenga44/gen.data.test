@@ -1,5 +1,4 @@
 import ai.speak.course.script.GenDataAISpeakLessonActual;
-import ai.speak.course.script.GenDataAISpeakLessonExpect;
 import m_go.script.GenDataGameMgoActual;
 
 import java.io.IOException;
