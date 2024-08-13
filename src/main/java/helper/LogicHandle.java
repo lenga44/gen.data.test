@@ -25,6 +25,12 @@ public class LogicHandle {
         }
         return str;
     }
+    public static String removeString(String str,List<String> replaces){
+        for (String replace:replaces){
+            str=removeString(str,replace);
+        }
+        return str;
+    }
     public static String removeLetterAndSpace(String str){
         return str.replaceAll("[^0-9]", "");
     }
@@ -39,6 +45,13 @@ public class LogicHandle {
             str = Arrays.stream(str.split(splitStr)).toList().get(0);
         }
         return str;
+    }
+    public static List<String> splitStrings(String str,String splitStr){
+        if(str.contains(splitStr)){
+            List<String> list = Arrays.stream(str.split(splitStr)).toList();
+            return list;
+        }
+        return new ArrayList<>();
     }
     private static String splitString(String str){
         String result = null;
@@ -57,5 +70,12 @@ public class LogicHandle {
             }
         }
         return resultList;
+    }
+    public static List<Integer> convertStringsToIntegers(List<String> list){
+        List<Integer> values = new ArrayList<>();
+        for(String item: list){
+            values.add(Integer.parseInt(item));
+        }
+        return values;
     }
 }

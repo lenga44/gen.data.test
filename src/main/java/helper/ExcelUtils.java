@@ -3,6 +3,8 @@ package helper;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExcelUtils {
     public static Sheet ExcelSheet;
@@ -14,6 +16,14 @@ public class ExcelUtils {
         try{
             FileInputStream ExcelFile = new FileInputStream(path);
             ExcelBook = new XSSFWorkbook(ExcelFile);
+        }catch (Throwable e){
+            System.out.println("Method setExcelFile: " +path);
+        }
+    }
+    public static void closeExcelFile(String path) {
+        try{
+            FileOutputStream file = new FileOutputStream(path);
+            file.close();
         }catch (Throwable e){
             System.out.println("Method setExcelFile: " +path);
         }
@@ -65,6 +75,38 @@ public class ExcelUtils {
             e.printStackTrace();
         }
         return "";
+    }
+    public static String getValueInCell( Cell cell){
+        try {
+            if (cell == null) {
+                return "";
+            }
+
+            String result;
+            switch (cell.getCellType()) {
+                case STRING:
+                    result = cell.getStringCellValue();
+                    break;
+                case NUMERIC:
+                    DataFormatter fmt = new DataFormatter();
+                    result = fmt.formatCellValue(cell);
+                    break;
+                case BOOLEAN:
+                    result = String.valueOf(cell.getBooleanCellValue());
+                    break;
+                case FORMULA:
+                    result = String.valueOf(cell.getCellFormula());
+                    break;
+                default:
+                    result = "";
+                    break;
+            }
+            return result;
+        } catch (Exception e) {
+            System.out.println("getValueInCell " + e.getMessage());
+            e.printStackTrace();
+            return "";
+        }
     }
     public static int getNumberValueInCell(String sheetName, int row, int colum){
         try {
@@ -125,5 +167,31 @@ public class ExcelUtils {
             e.printStackTrace();
             return 0;
         }
+    }
+    public static List<String> getValuesInColum(String sheetName,int colum,int start) throws IOException {
+        List<String> list = new ArrayList<>();
+        ExcelSheet = ExcelBook.getSheet(sheetName);
+        for(Row row: ExcelSheet){
+            if(row.getRowNum()>=start) {
+                Cell cell = row.getCell(colum);
+                String value = getValueInCell(cell);
+                if(value.contains("_")) {
+                    String part = LogicHandle.splitString(value, "_");
+                    if (!list.contains(part))
+                        list.add(part);
+                }
+            }
+        }
+        return list;
+    }
+    public static List<String> getListSheetName(String condition){
+        List<String> list =new ArrayList<>();
+        for (int i=0;i<ExcelBook.getNumberOfSheets();i++){
+            String sheetName = ExcelBook.getSheetAt(i).getSheetName();
+            if(sheetName.contains(condition)){
+                list.add(sheetName);
+            }
+        }
+        return list;
     }
 }
