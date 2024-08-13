@@ -1,10 +1,12 @@
 [
   {
+    "name": "Intro dialog",
     "id": 1000091,
     "game": "BE.ID01IntroDialog(Clone)"
   },
   {
     "id": 1000083,
+    "name": "Cat teaching AI",
     "game": "BE.PV02AiSpeakingWords(Clone)"
   },
   {
@@ -13,10 +15,12 @@
   },
   {
     "id": 1000101,
+    "name": "Chunking speaking",
     "game": "Chunking1Speaking(Clone)"
   },
   {
     "id": 1000103,
+    "name": "MSP.ChW(Clone)",
     "game": "MSP.ChW(Clone)"
   },
   {
@@ -25,14 +29,17 @@
   },
   {
     "id": 1000102,
-    "game":"VideoCall"
+    "name": "Video Call",
+    "game": "VideoCall"
   },
   {
     "id": 1000088,
+    "name": "Brick layer",
     "game": "BrickLayer.BE.RS01(Clone)"
   },
   {
     "id": 1000081,
+    "name": "Điền thế",
     "game": "MC.RS01DienThe(Clone)"
   },
   {
@@ -44,8 +51,9 @@
 	"game":"BE.GP06_SoundVocabMatching(Clone)"
   },
   {
-	"id": 1000123,
-	"game":"BE.RP05MultipleChoice(Clone)"
+    "id": 1000123,
+    "name": "Multiple choice (cho audio chọn ảnh)",
+    "game": "BE.RP05MultipleChoice(Clone)"
   },
   {
 	"id": 1000092,
@@ -56,8 +64,9 @@
     "game":"BE.PD01Dialogue_MJ(Clone)"
   },
   {
-	"id": 1000060,
-	"game":"GS01LetterFishing(Clone)"
+    "id": 1000060,
+    "name": "Letter fishing",
+    "game": "GS01LetterFishing(Clone)"
   },
   {
     "id": 1000127,
@@ -77,11 +86,13 @@
   },
   {
     "id": 1000096,
-    "game":"BE.IST01ReadTheStory(Clone)"
+    "name": "Read the story",
+    "game": "BE.IST01ReadTheStory(Clone)"
   },
   {
     "id": 1000137,
-    "game":"BE.RS02WordMachine(Clone)"
+    "name": "Word machine",
+    "game": "BE.RS02WordMachine(Clone)"
   },
   {
     "id": 1000130,
@@ -97,19 +108,23 @@
   },
   {
     "id": 1000121,
-    "game":"MG.VD01(Clone)"
+    "name": "Video thường",
+    "game": "MG.VD01(Clone)"
   },
   {
     "id": 1000125,
-    "game":"BE.GV05 - Match the card(Clone)"
+    "name": "Match the cards",
+    "game": "BE.GV05 - Match the card(Clone)"
   },
   {
     "id": 1000122,
-    "game":"BE.IP02(Clone)"
+    "name": "Egg cracking",
+    "game": "BE.IP02(Clone)"
   },
   {
     "id": 1000126,
-    "game":"BEPV04DragLetters(Clone)"
+    "name": "Drag letters to build word",
+    "game": "BEPV04DragLetters(Clone)"
   },
   {
     "id": 1000139,
@@ -121,7 +136,8 @@
   },
   {
     "id": 1000063,
-    "game":"MSP.WordFishing(Clone)"
+    "name": "Word Fishing",
+    "game": "MSP.WordFishing(Clone)"
   },
   {
     "id": 1000140,
@@ -145,6 +161,37 @@
   },
   {
     "id": 1000145,
-    "game":"EE.IV04 - Tap three options(Clone)"
+    "name": "",
+    "game": "EE.IV04 - Tap three options(Clone)"
+  },
+  {
+    "id": 1000148,
+    "name": "",
+    "game": "MJST01Stories(Clone)"
+  },
+  {
+    "id": 1000144,
+    "name": "",
+    "game": "EEIV01Flashcard(Clone)"
+  },
+  {
+    "id": 267,
+    "name": "Trace the letter",
+    "game": "BEGP05TracingLetter(Clone)"
+  },
+  {
+    "id": 1000132,
+    "name": "Tap the bubbles",
+    "game": "MG.TB02(Clone)"
+  },
+  {
+    "id": 1000091,
+    "name": "Dialog 1",
+    "game": "BE.PD01Dialogue_MJ(Clone)"
+  },
+  {
+    "id": 1000127,
+    "name": "Dialog 1",
+    "game": "BERP04ListenAndChoose(Clone)"
   }
 ]

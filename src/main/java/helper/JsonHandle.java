@@ -87,7 +87,7 @@ public class JsonHandle {
     public static JSONArray getJSONArray(String json, String jsonPath){
         try {
             JSONArray jsonArray = new JSONArray();
-            String array = getValue(json, jsonPath);
+            String array = LogicHandle.replaceString(getValue(json, jsonPath),"=",":");
             jsonArray.put(array);
             return new JSONArray(array);
         }catch (Exception e){
@@ -182,5 +182,13 @@ public class JsonHandle {
         String jsonString = gson.toJson(data);
         JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
         return new JSONObject(jsonObject.toString());
+    }
+    public static JsonArray convertArrayFromJson(String json,String jsonPath){
+        String objects = JsonHandle.getValue(json,jsonPath);
+        return JsonHandle.getJSONArray(objects);
+    }
+    public static JSONObject addKeyValue(JSONObject json,String key,int value){
+        json.put(key,value);
+        return json;
     }
 }

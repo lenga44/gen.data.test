@@ -58,13 +58,19 @@ public class GenDataGameMgoExpect {
         return units;
     }
     private static JSONObject getUnit(int unit) throws IOException {
-        UnitStructure unitStructure = new UnitStructure(unit,getTopics(unit));
+        UnitStructure unitStructure = new UnitStructure("Unit "+unit,getTopics(unit));
         return unitStructure.createUnit();
+    }
+    /*private static JSONObject getUnitHasFlow(int unit) throws IOException {
+        UnitStructure unitStructure = new UnitStructure(unit,getTopics(unit),getFlowByUnit(unit));
+        return unitStructure.createUnit();
+    }*/
+    private static int getFlowByUnit(int unit) throws IOException {
+        return 0;
     }
     private static JSONArray getTopics(int unit) throws IOException {
         int first = ExcelUtils.getStartValue(ConstantMGo.DATA_MGO_SHEET,ConstantMGo.UNIT_COLUM,String.valueOf(unit));
         int last = ExcelUtils.getTestStepCount(ConstantMGo.DATA_MGO_SHEET,ConstantMGo.UNIT_COLUM,String.valueOf(unit),first)-1;
-        System.out.println("----- "+unit);
         JSONArray topics = new JSONArray();
         for (int row = first;row<=last;row++){
             String topic = ExcelUtils.getValueInCell(ConstantMGo.DATA_MGO_SHEET,row,ConstantMGo.TOPIC_COLUM);
@@ -80,6 +86,9 @@ public class GenDataGameMgoExpect {
         return topicStructure.createFLowTopicStructure();
     }
     private static void saveArrayToFile(JSONArray jsonArray){
-        FileHelpers.writeFile(jsonArray.toString(), "D:\\gen.data.test\\src\\main\\java\\m_go\\data\\level_to_topic.json");
+        FileHelpers.writeFile(jsonArray.toString(), ConstantMGo.DATA_FOLDER +"level_to_topic.json");
+    }
+    private static void getListGameIntoFlow(){
+
     }
 }

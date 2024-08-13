@@ -25,6 +25,15 @@ public class LogicHandle {
         }
         return str;
     }
+    public static String removeLetterAndSpace(String str){
+        return str.replaceAll("[^0-9]", "");
+    }
+    public static String replaceString(String str,String oldStr,String newStr){
+        if(str.contains(oldStr)){
+            str = str.replace(oldStr,newStr);
+        }
+        return str;
+    }
     public static String splitString(String str,String splitStr){
         if(str.contains(splitStr)){
             str = Arrays.stream(str.split(splitStr)).toList().get(0);
