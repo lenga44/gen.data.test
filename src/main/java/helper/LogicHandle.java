@@ -74,6 +74,9 @@ public class LogicHandle {
                 break;
             }
         }
+        if (resultList.size()==0){
+            resultList.add(inputString);
+        }
         return resultList;
     }
     public static List<Integer> convertStringsToIntegers(List<String> list){

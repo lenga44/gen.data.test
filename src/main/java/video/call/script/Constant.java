@@ -23,4 +23,5 @@ public class Constant {
     public static final List<String> exceptionExcel = Arrays.asList("[","]","?","*","\\","/");
     public static final String VIDEO_CALL_FILE = FileHelpers.getProjectPath()+ "/src/main/java/video/call/data/video_call.json";
     public static final String I_DONT_KNOW_QUESTION = "I don't know";
+    public static final String USER_ASKS_QUESTION = "User asks:";
 }

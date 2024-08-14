@@ -55,7 +55,7 @@ public class GenDataAISpeakLessonActual {
             JsonArray levels = getLevelArray(courseInstallJson);
             for (JsonElement levelElement : levels) {
                 String level = getValueFromJson(levelElement.toString(), "$.n");
-                if(level.equals("4")) {
+                if(level.equals("3")) {
                     for (JsonElement categoryElement : getCategoryArray(levelElement.toString())) {
                         String category = getValueFromJson(categoryElement.toString(), "$.n");
                         for (JsonElement topicElement : getTopicArray(categoryElement.toString())) {

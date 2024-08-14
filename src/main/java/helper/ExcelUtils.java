@@ -227,6 +227,12 @@ public class ExcelUtils {
         }
         return iRowNum;
     }
+    public static int getRowContains(String condition, int colNum, String sheetName,int row)  {
+        if (ExcelUtils.getValueInCell(sheetName,row, colNum).contains(condition)) {
+            return row;
+        }
+        return 0;
+    }
     public static int getRowContains(String condition, int colNum, String sheetName,int start,int end)  {
         int iRowNum = start;
         try {
