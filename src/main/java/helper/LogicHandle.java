@@ -47,14 +47,19 @@ public class LogicHandle {
         return str;
     }
     public static List<String> splitStrings(String str,String splitStr){
-        if(str.contains(splitStr)){
-            List<String> list = Arrays.stream(str.split(splitStr)).toList();
-            return list;
+        List<String> list = new ArrayList<>();
+        if(str.contains(splitStr)) {
+            list = Arrays.stream(str.split(splitStr)).toList();
+        }else {
+            list.add(str);
         }
-        return new ArrayList<>();
+        return list;
+    }
+    public static String splitString(String str,String splitStr,int index){
+        return splitStrings(str,splitStr).get(index);
     }
     private static String splitString(String str){
-        String result = null;
+        String result = str;
         if(str.startsWith("[") && str.endsWith("]")){
             result = str.replace("[","").replace("]","");
         }

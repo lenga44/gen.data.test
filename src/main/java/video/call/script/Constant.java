@@ -21,5 +21,6 @@ public class Constant {
                                                                     "Level 2_Clothes 1_U2_This dress is beautiful!",
                                                                     "Level 2_Furniture 1_U2_It's a small chair.");
     public static final List<String> exceptionExcel = Arrays.asList("[","]","?","*","\\","/");
-
+    public static final String VIDEO_CALL_FILE = FileHelpers.getProjectPath()+ "/src/main/java/video/call/data/video_call.json";
+    public static final String I_DONT_KNOW_QUESTION = "I don't know";
 }

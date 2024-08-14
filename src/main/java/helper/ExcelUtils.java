@@ -130,11 +130,29 @@ public class ExcelUtils {
         }
         return iMumber;
     }
-    public static int getTestStepCount(String sheetName,int colum, String unit, int startTestStep) {
+    public static int getTestStepCount(String sheetName,int colum, String condition, int startTestStep) {
         try{
             for (int i = startTestStep;i< ExcelUtils.getRowCount(sheetName);i++){
                 String value = ExcelUtils.getValueInCell(sheetName,i,colum);
-                if(!unit.equals(value)){
+                if(!condition.equals(value)){
+                    int number = i;
+                    return number;
+                }
+            }
+            ExcelSheet = ExcelBook.getSheet(sheetName);
+            int number = ExcelSheet.getLastRowNum();
+            return number;
+        }catch (Throwable e){
+            System.out.println("Method getTestStepCount | Exception desc : " + e.getMessage());
+            e.printStackTrace();
+            return 0;
+        }
+    }
+    public static int getContainCount(String sheetName,int colum, String condition, int startTestStep) {
+        try{
+            for (int i = startTestStep;i< ExcelUtils.getRowCount(sheetName);i++){
+                String value = ExcelUtils.getValueInCell(sheetName,i,colum);
+                if(!value.contains(condition)){
                     int number = i;
                     return number;
                 }
@@ -193,5 +211,46 @@ public class ExcelUtils {
             }
         }
         return list;
+    }
+    public static int getRowContains(String condition, int colNum, String sheetName)  {
+        int iRowNum = 0;
+        try {
+            int rowCount = ExcelUtils.getRowCount(sheetName);
+            for (; iRowNum < rowCount; iRowNum++) {
+                if (ExcelUtils.getValueInCell(sheetName,iRowNum, colNum).contains(condition)) {
+                    break;
+                }
+            }
+        } catch (Throwable e) {
+            System.out.println("Method getRowContains: sTestCaseName[" + condition+"], colNum["+colNum+"], sheetName["+sheetName+"]");
+            System.out.println("Method getRowContains | Exception desc : " + e.getMessage());
+        }
+        return iRowNum;
+    }
+    public static int getRowContains(String condition, int colNum, String sheetName,int start,int end)  {
+        int iRowNum = start;
+        try {
+            for (; iRowNum < end; iRowNum++) {
+                if (ExcelUtils.getValueInCell(sheetName,iRowNum, colNum).contains(condition)) {
+                    break;
+                }
+            }
+        } catch (Throwable e) {
+            System.out.println("Method getRowContains: sTestCaseName[" + condition+"], colNum["+colNum+"], sheetName["+sheetName+"]");
+            System.out.println("Method getRowContains | Exception desc : " + e.getMessage());
+        }
+        return iRowNum;
+    }
+    public static int getRowContains(int condition, int colNum, String sheetName,int start)  {
+        int iRowNum = 0;
+        try {
+            if (ExcelUtils.getValueInCell(sheetName,start, colNum).equals(String.valueOf(condition))) {
+                iRowNum =start;
+            }
+        } catch (Throwable e) {
+            System.out.println("Method getRowContains: sTestCaseName[" + condition+"], colNum["+colNum+"], sheetName["+sheetName+"]");
+            System.out.println("Method getRowContains | Exception desc : " + e.getMessage());
+        }
+        return iRowNum;
     }
 }

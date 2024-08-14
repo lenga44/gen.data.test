@@ -55,17 +55,19 @@ public class GenDataAISpeakLessonActual {
             JsonArray levels = getLevelArray(courseInstallJson);
             for (JsonElement levelElement : levels) {
                 String level = getValueFromJson(levelElement.toString(), "$.n");
-                for (JsonElement categoryElement : getCategoryArray(levelElement.toString())) {
-                    String category = getValueFromJson(categoryElement.toString(), "$.n");
-                    for (JsonElement topicElement : getTopicArray(categoryElement.toString())) {
-                        String topic = getValueFromJson(topicElement.toString(), "$.t");
-                        for (JsonElement lessonElement : getLessonArray(topicElement.toString())) {
-                            String lessonName = getValueFromJson(lessonElement.toString(), "$.t");
-                            String user = getValueFromJson(lessonElement.toString(), "$.f");
-                            if (user.equals("0")) {
-                                JSONArray acts = getActSData(lessonElement);
-                                JSONObject lesson = genLessonData(lessonName, topic, category, level, acts, getMapIndex(map.get(level), topic));
-                                lessons.put(lesson);
+                if(level.equals("4")) {
+                    for (JsonElement categoryElement : getCategoryArray(levelElement.toString())) {
+                        String category = getValueFromJson(categoryElement.toString(), "$.n");
+                        for (JsonElement topicElement : getTopicArray(categoryElement.toString())) {
+                            String topic = getValueFromJson(topicElement.toString(), "$.t");
+                            for (JsonElement lessonElement : getLessonArray(topicElement.toString())) {
+                                String lessonName = getValueFromJson(lessonElement.toString(), "$.t");
+                                String user = getValueFromJson(lessonElement.toString(), "$.f");
+                                if (user.equals("0")) {
+                                    JSONArray acts = getActSData(lessonElement);
+                                    JSONObject lesson = genLessonData(lessonName, topic, category, level, acts, getMapIndex(map.get(level), topic));
+                                    lessons.put(lesson);
+                                }
                             }
                         }
                     }
@@ -176,7 +178,7 @@ public class GenDataAISpeakLessonActual {
             turns = getTurnsData(folder.replace(".zip",""),"$.data");
         }
         if(turns.length()>0) {
-            Activity activity = new Activity(gameID,Common.getGameName(gameID), turns, file_zip,background,error);
+            Activity activity = new Activity(gameID,Common.getGameName(gameID,Constant.GAME_AI_LIST), turns, file_zip,background,error);
             return activity.createActivity();
         }
         return null;

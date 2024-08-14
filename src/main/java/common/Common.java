@@ -64,4 +64,15 @@ public class Common {
         }
         return null;
     }
+    public static String getGameName(int gameId,String path){
+        String json = FileHelpers.readFile(path);
+        JsonArray array = JsonHandle.getJSONArray(json);
+        for (JsonElement game: array) {
+            int id = Integer.valueOf(JsonHandle.getValue(game.toString(), "$.id"));
+            if(id==gameId){
+                return JsonHandle.getValue(game.toString(), "$.game");
+            }
+        }
+        return null;
+    }
 }

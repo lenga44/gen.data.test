@@ -17,7 +17,7 @@ public class Constant {
     public static final String DATA_GO_FOLDER = FileHelpers.getProjectPath()+"/src/main/java/m_go/data";
 
     public static final String GAME_LIST = FileHelpers.getProjectPath()+"/src/main/data/list_game.json";
-    public static final String GAME_AI_LIST = FileHelpers.getProjectPath()+"/src/main/data/list_game_ai.json";
+    public static final String GAME_AI_LIST = FileHelpers.getProjectPath()+"/src/main/java/ai/speak/course/data/list_game_ai.json";
     public static final String QUESTION_TYPE = "question";
     public static final String PHONIC_TYPE = "phonic";
     public static final String CHUNK_TYPE = "chunk";
@@ -35,5 +35,5 @@ public class Constant {
     public static final String MGO_LESSON_FILE = FileHelpers.getProjectPath()+"/src/main/java/m_go/data/lesson.json";
     public static final String GAME_M_GO_FILE = FileHelpers.getProjectPath() + "\\src\\main\\java\\ai\\speak\\course\\data\\";
     public static String DATA_ACTIVITY_BY_GAME_URL = "https://api.dev.monkeyuni.com/platform_go/api/v1/activity?course_id=201&game_ids=";
-    public static final List<String> splits = Arrays.asList("\\|", "\\;",",",", ");
+    public static final List<String> splits = Arrays.asList("\\|", "\\;",",",", ","/");
 }
