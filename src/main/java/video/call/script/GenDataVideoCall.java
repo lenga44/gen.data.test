@@ -9,9 +9,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import video.call.struct.Activity;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -45,81 +45,174 @@ public class GenDataVideoCall {
                 getCorrectAnswer();
 
                 /*User answers the same meaning: I don't know or understand/ Can you repeat? */
-                getDontKnowAnswersCorrect();
-                getDontKnowAnswersWrong();
-                getDontKnowAnswersNextPart();
+                getDontKnowAnswers();
 
                 /*User ask:*/
-                getUserAskAnswersCorrect(Constant.USER_ASKS_QUESTION);
+                getUserAskAnswers(Constant.USER_ASKS_QUESTION);
+
+                /*silent*/
+                List<String> answers = new ArrayList<>();
+                answers.add("");
+                getSilent(answers);
+
+                /*wrong*/
+                getWrongAnswer();
                 break;
             }
             break;
         }
+        FileHelpers.writeFile("", Constant.VIDEO_CALL_FILE);
         FileHelpers.writeFile(acts.toString(), Constant.VIDEO_CALL_FILE);
     }
     //region I DON'T KNOW
-    private static void getDontKnowAnswersCorrect() {
+    private static void getDontKnowAnswers() {
         type = "I don't know_1";
+        current = ExcelUtils.getRowContains(Constant.I_DONT_KNOW_QUESTION,1,sheet,start,end);
+        List<String> answers = getDontKnowAnswers(ExcelUtils.getValueInCell(sheet,current,1));
+        teacher_answer1 = getTeacherAnswer1(current);
+        video_teacher1 = getVideoTeacher1(current);
+        if(isSkip()) {
+            getDontKnowAnswersCorrect(answers);
+            getDontKnowAnswersWrong();
+        }else {
+            type = "I don't know_3";
+            getNextPart(answers);
+        }
+    }
+    private static void getDontKnowAnswersCorrect(List<String> answers) {
         for (String correct:corrects){
             int row = ExcelUtils.getRowContains(correct,1,sheet);
-            getAnswers(Constant.I_DONT_KNOW_QUESTION,row,correct);
+            getAnswers(answers,row,correct);
         }
     }
     private static void getDontKnowAnswersWrong() {
         type = "I don't know_2";
-        int row = ExcelUtils.getRowContains("wrong_answer_2",1,sheet,start,end);
-        for (String correct:corrects){
-            for (String item:correct.split(" ")) {
-                getAnswers(Constant.I_DONT_KNOW_QUESTION,row, item);
+        current = ExcelUtils.getRowContains(Constant.I_DONT_KNOW_QUESTION, 1, sheet, start, end);
+        List<String> answers = getDontKnowAnswers(ExcelUtils.getValueInCell(sheet, current, 1));
+        if(isSkip()) {
+            int row = ExcelUtils.getRowContains("wrong_answer_2", 1, sheet, start, end);
+            for (String correct : corrects) {
+                for (String item : convertToStrings(correct.split(" "))) {
+                    getAnswers(answers, row, item);
+                }
             }
         }
-        getAnswers(Constant.I_DONT_KNOW_QUESTION,row);
     }
-    private static void getDontKnowAnswersNextPart() {
-        type = "I don't know_3";
-        if(!teacher_answer1.endsWith("?")) {
-            current = ExcelUtils.getRowContains(Constant.I_DONT_KNOW_QUESTION,1,sheet,start,end);
-            List<String> answers = getDontKnowAnswers(ExcelUtils.getValueInCell(sheet,current,1));
-            getActivity(answers);
-        }
+    private static void getNextPart(List<String> answers) {
+        getActivity(answers);
     }
     //endregion
 
     //region USER ASK
-    private static void getUserAskAnswersCorrect(String answer) {
+    private static void getUserAskAnswers(String answer) {
         type = "User ask_1";
         int row = ExcelUtils.getRowContains(answer,1,sheet,start,end);
-        getAnswers(corrects,row,getAnswer(ExcelUtils.getValueInCell(sheet,row,1)));
+        List<String> answers = getInCorrectAnswers(answer);
+        teacher_answer1 = getTeacherAnswer1(row);
+        video_teacher1 = getVideoTeacher1(row);
+        if(isSkip()) {
+            getAnswers(answers, corrects);
+            getUserAskAnswersWrong();
+        }else {
+            type = "User ask_3";
+            getNextPart(answers);
+        }
     }
     private static void getUserAskAnswersWrong() {
-        type += "2";
+        type = "User ask_2";
         int row = ExcelUtils.getRowContains("wrong_answer_2",1,sheet,start,end);
+        current = ExcelUtils.getRowContains(Constant.USER_ASKS_QUESTION,1,sheet,start,end);
+        List<String> answers = getInCorrectAnswers(Constant.USER_ASKS_QUESTION);
         for (String correct:corrects){
-            for (String item:correct.split(" ")) {
-                getAnswers(Constant.USER_ASKS_QUESTION,row, item);
+            for (String item:convertToStrings(correct.split(" "))) {
+                getAnswers(answers,row, item);
             }
         }
-        getAnswers(Constant.USER_ASKS_QUESTION,row);
     }
-    private static void getUserAskAnswersNextPart() {
-        type = "User ask_3";
-        if(!teacher_answer1.endsWith("?")) {
-            getNextPart();
+    private static String[] convertToStrings(String[] strings){
+        if(strings.length==1)
+            return new String[]{""+(char) ('a' + (new Random()).nextInt(26))};
+        return strings;
+    }
+    //endregion
+
+    //region SILENT
+    private static void getSilent(List<String> answers) {
+        type = "Silent_1";
+        current = ExcelUtils.getRowContains(Constant.SILENT_ANSWER+"1",1,sheet,start,end);
+        teacher_answer1 = getTeacherAnswer1(current);
+        video_teacher1 = getVideoTeacher1(current);
+        getSilentCorrect(answers);
+        getSilentAnswersWrong(answers);
+        getAllSilent();
+    }
+    private static void getAllSilent() {
+        type = "Silent_4";
+        current = ExcelUtils.getRowContains(Constant.SILENT_ANSWER+"2",1,sheet,start,end);
+        String teacher_answer2 = getTeacherAnswer2(current);
+        String video_teacher2 = getVideoTeacher2(current);
+        Activity act = new Activity(sheet,part,question,video_question,"",teacher_answer1,video_teacher1,"",teacher_answer2,video_teacher2,type);
+        acts.put(act.createActivity2());
+    }
+    private static void getSilentCorrect(List<String> answers) {
+        for (String correct:corrects){
+            int row = ExcelUtils.getRowContains(correct,1,sheet);
+            getAnswers(answers,row, correct);
+        }
+    }
+    private static void getSilentAnswersWrong(List<String> answers) {
+        type = "Silent_2";
+        int row = ExcelUtils.getRowContains("wrong_answer_2",1,sheet,start,end);
+        /*current = ExcelUtils.getRowContains(Constant.SILENT_ANSWER+"1",1,sheet,start,end);*/
+        for (String correct:corrects){
+            for (String item:convertToStrings(correct.split(" "))) {
+                getAnswers(answers,row, item);
+            }
         }
     }
     //endregion
-    private static void getNextPart() {
-        List<String> answers = new ArrayList<>();
-        for (String correct : corrects) {
-            for (String item : correct.split(" ")) {
-                answers.add(item);
+
+    //region WRONG_ANSWER
+    private static void getWrongAnswer() {
+        type = "wrong_answer_1";
+        int row = ExcelUtils.getRowContains(Constant.WRONG_ANSWER+1,1,sheet,start,end);
+        teacher_answer1 = getTeacherAnswer1(row);
+        video_teacher1 = getVideoTeacher1(row);
+        if(isSkip()) {
+            for (String correct : corrects) {
+                inCorrects = Arrays.stream(convertToStrings(correct.split(" "))).toList();
+                getWrongAnswerCorrect(inCorrects);
+                getAllWrong(inCorrects);
+            }
+        }else {
+            type = "wrong_answer_3";
+            getNextPart(inCorrects);
+        }
+    }
+    private static void getAllWrong(List<String> answers) {
+        type = "wrong_answer_2";
+        int row = ExcelUtils.getRowContains(Constant.WRONG_ANSWER+2,1,sheet);
+        for (String answer:answers){
+            getAnswers(answers,row, answer);
+        }
+    }
+    private static void getWrongAnswerCorrect(List<String> answers) {
+        for (String correct:corrects){
+            int row = ExcelUtils.getRowContains(correct,1,sheet);
+            getAnswers(answers,row, correct);
+        }
+    }
+    //endregion
+
+    private static boolean isSkip(){
+        boolean skip = false;
+        for (String str:Constant.SKIP_PART){
+            if(!teacher_answer1.endsWith(str)){
+                skip=true;
+                break;
             }
         }
-        answers.add(""+(char) ('a' + (new Random()).nextInt(26)));
-        for (String answer:answers){
-            Activity act = new Activity(sheet, part, question, video_question, answer, teacher_answer1, video_teacher1, type);
-            acts.put(act.createActivity1());
-        }
+        return skip;
     }
     private static void getActivity(List<String> answers) {
         for (String answer:answers){
@@ -127,9 +220,9 @@ public class GenDataVideoCall {
             acts.put(act.createActivity1());
         }
     }
-    private static void getDontKnowAnswers(int row_teacher,String answer_answer2) {
-        current = ExcelUtils.getRowContains(Constant.I_DONT_KNOW_QUESTION,1,sheet,start,end);
-        List<String> answers = getDontKnowAnswers(ExcelUtils.getValueInCell(sheet,current,1));
+    /*private static void getAnswers(String answer1,int row_teacher,String answer_answer2) {
+        current = ExcelUtils.getRowContains(answer1,1,sheet,start,end);
+        List<String> answers = getAnswers(ExcelUtils.getValueInCell(sheet,current,1));
         teacher_answer1 = getTeacherAnswer1(current);
         video_teacher1 = getVideoTeacher1(current);
         for (String answer: answers){
@@ -138,33 +231,29 @@ public class GenDataVideoCall {
             Activity act = new Activity(sheet,part,question,video_question,answer,teacher_answer1,video_teacher1,answer_answer2,teacher_answer2,video_teacher2,type);
             acts.put(act.createActivity2());
         }
-    }
-    private static void getAnswers(String answer1,int row_teacher,String answer_answer2) {
-        current = ExcelUtils.getRowContains(answer1,1,sheet,start,end);
-        List<String> answers = getDontKnowAnswers(ExcelUtils.getValueInCell(sheet,current,1));
-        teacher_answer1 = getTeacherAnswer1(current);
-        video_teacher1 = getVideoTeacher1(current);
-        for (String answer: answers){
+    }*/
+    private static void getAnswers(List<String> answers1,int row_teacher,String answer2) {
+        for (String answer: answers1){
             String teacher_answer2 = getTeacherAnswer2(row_teacher);
             String video_teacher2 = getVideoTeacher2(row_teacher);
-            Activity act = new Activity(sheet,part,question,video_question,answer,teacher_answer1,video_teacher1,answer_answer2,teacher_answer2,video_teacher2,type);
+            Activity act = new Activity(sheet,part,question,video_question,answer,teacher_answer1,video_teacher1,answer2,teacher_answer2,video_teacher2,type);
             acts.put(act.createActivity2());
         }
     }
-    private static void getAnswers(List<String> answers,int row_teacher,String answer1) {
-        teacher_answer1 = getTeacherAnswer1(row_teacher);
-        video_teacher1 = getVideoTeacher1(row_teacher);
-        for (String answer: answers){
-            row_teacher = ExcelUtils.getRowContains(answer,1,sheet,start,end);
-            String teacher_answer2 = getTeacherAnswer2(row_teacher);
-            String video_teacher2 = getVideoTeacher2(row_teacher);
-            Activity act = new Activity(sheet,part,question,video_question,answer1,teacher_answer1,video_teacher1,answer,teacher_answer2,video_teacher2,type);
-            acts.put(act.createActivity2());
+    private static void getAnswers(List<String> answers1,List<String> answers2) {
+        for (String answer : answers1) {
+            for (String answer2 : answers2) {
+                int row_teacher = ExcelUtils.getRowContains(answer2, 1, sheet, start, end);
+                String teacher_answer2 = getTeacherAnswer2(row_teacher);
+                String video_teacher2 = getVideoTeacher2(row_teacher);
+                Activity act = new Activity(sheet, part, question, video_question, answer, teacher_answer1, video_teacher1, answer2, teacher_answer2, video_teacher2, type);
+                acts.put(act.createActivity2());
+            }
         }
     }
-    private static void getAnswers(String answer1,int row_teacher) {
+    /*private static void getAnswers(String answer1,int row_teacher) {
         current = ExcelUtils.getRowContains(answer1,1,sheet,start,end);
-        List<String> answers = getDontKnowAnswers(ExcelUtils.getValueInCell(sheet,current,1));
+        List<String> answers = getAnswers(ExcelUtils.getValueInCell(sheet,current,1));
         teacher_answer1 = getTeacherAnswer1(current);
         video_teacher1 = getVideoTeacher1(current);
         for (String answer: answers){
@@ -174,21 +263,7 @@ public class GenDataVideoCall {
             Activity act = new Activity(sheet,part,question,video_question,answer,teacher_answer1,video_teacher1,answer_answer2,teacher_answer2,video_teacher2,type);
             acts.put(act.createActivity2());
         }
-    }
-    private static void getDontKnowAnswersWrong(String answer_answer2) {
-        current = ExcelUtils.getRowContains(Constant.I_DONT_KNOW_QUESTION,1,sheet,start,end);
-        List<String> answers = getDontKnowAnswers(ExcelUtils.getValueInCell(sheet,current,1));
-        String teacher_answer1 = getTeacherAnswer1(current);
-        String video_teacher1 = getVideoTeacher1(current);
-        int row = ExcelUtils.getRowContains(1,5,sheet,start);
-        String teacher_answer2 = getVideoTeacher2(row);
-        String video_teacher2 = getVideoTeacher2(row);
-        for (String answer: answers){
-            Activity act = new Activity(sheet,part,question,video_question,answer,teacher_answer1,video_teacher1,answer_answer2,teacher_answer2,video_teacher2,type);
-            acts.put(act.createActivity2());
-        }
-    }
-
+    }*/
     private static void getCorrectAnswer(){
         type = "correct_1";
         corrects = getCorrectAnswers();
@@ -235,7 +310,6 @@ public class GenDataVideoCall {
     private static String getVideoTeacher1(int row){
         return ExcelUtils.getValueInCell(sheet,row,4);
     }
-
     private static String getVideoTeacher2(int row){
         return ExcelUtils.getValueInCell(sheet,row,4);
     }
