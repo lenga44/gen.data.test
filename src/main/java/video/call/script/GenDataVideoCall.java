@@ -31,7 +31,9 @@ public class GenDataVideoCall {
         ExcelUtils.setExcelFile(Constant.CONFIG_TOPIC_FILE);
         for (String sheetName:sheetDest){
             sheet =sheetName.trim();
+            System.out.println(sheet);
             List<Integer> parts = getParts();
+            System.out.println(parts);
             for(Integer p:parts){
                 part =p;
                 start = startPart();
@@ -59,7 +61,7 @@ public class GenDataVideoCall {
                 getWrongAnswer();
                 break;
             }
-            break;
+            //break;
         }
         FileHelpers.writeFile("", Constant.VIDEO_CALL_FILE);
         FileHelpers.writeFile(acts.toString(), Constant.VIDEO_CALL_FILE);
@@ -287,10 +289,11 @@ public class GenDataVideoCall {
         List<String> sheets = ExcelUtils.getListSheetName("Leve");
         Workbook newWorkbook = new XSSFWorkbook();
         for(int i=0;i<Constant.topics_expected.size();i++){
-            String topic_name = getTopicName(Constant.topics_expected.get(i));
+            String topic_name = LogicHandle.removeString(getTopicName(Constant.topics_expected.get(i)),Constant.exceptionExcel);
             sheetDest.add(topic_name);
-            CloneSheetToOtherFile.cloneSheet(newWorkbook,Constant.CONFIG_FILE,sheets.get(i),Constant.CONFIG_TOPIC_FILE,LogicHandle.removeString(topic_name,Constant.exceptionExcel));
+            CloneSheetToOtherFile.cloneSheet(newWorkbook,Constant.CONFIG_FILE,sheets.get(i),Constant.CONFIG_TOPIC_FILE,topic_name);
         }
+
     }
     private static int startPart(){
         return ExcelUtils.getRowContains(part+"_",0,sheet);
