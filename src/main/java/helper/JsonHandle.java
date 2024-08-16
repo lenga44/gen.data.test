@@ -191,4 +191,9 @@ public class JsonHandle {
         json.put(key,value);
         return json;
     }
+    public static JsonArray getJsonsFormFile(String path){
+        String json = FileHelpers.readFile(path);
+        JsonParser jsonParser = new JsonParser();
+        return  (JsonArray) jsonParser.parse(json);
+    }
 }

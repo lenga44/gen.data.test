@@ -1,9 +1,8 @@
 package video.call.script;
 
-import helper.CloneSheetToOtherFile;
-import helper.ExcelUtils;
-import helper.FileHelpers;
-import helper.LogicHandle;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import helper.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
@@ -20,20 +19,23 @@ public class GenDataVideoCall {
     static int current;
     static List<String> corrects,inCorrects;
     static JSONArray acts = new JSONArray();
+    static JsonArray lessons = new JsonArray();
     static int start,end;
     static String question,video_question,teacher_answer1, video_teacher1;
     static String sheet;
     static int part;
     static String type;
     public static void main(String[] args) throws IOException {
+        genActs();
+        writeFile();
+    }
+    private static void genActs() throws IOException {
         ExcelUtils.setExcelFile(Constant.CONFIG_FILE);
         createExpectedFile();
         ExcelUtils.setExcelFile(Constant.CONFIG_TOPIC_FILE);
         for (String sheetName:sheetDest){
             sheet =sheetName.trim();
-            System.out.println(sheet);
             List<Integer> parts = getParts();
-            System.out.println(parts);
             for(Integer p:parts){
                 part =p;
                 start = startPart();
@@ -59,26 +61,84 @@ public class GenDataVideoCall {
 
                 /*wrong*/
                 getWrongAnswer();
-                break;
             }
-            //break;
         }
         FileHelpers.writeFile("", Constant.VIDEO_CALL_FILE);
         FileHelpers.writeFile(acts.toString(), Constant.VIDEO_CALL_FILE);
     }
+    private static void writeFile() throws IOException {
+        int index =-1;
+        JsonArray array = JsonHandle.getJsonsFormFile(Constant.VIDEO_CALL_FILE);
+        String json = FileHelpers.readFile(Constant.VIDEO_CALL_FILE);
+        int j = 0;
+        for (String sh: sheetDest){
+            part = 0;
+            List<Integer> parts = getParts();
+            JsonArray topics = JsonHandle.getJsonArray(json,"$.[?(@.topic_name==\""+sh+"\")]");
+            assert topics != null;
+            int z=0;
+            for (int i=0;i<topics.size();i++) {
+                if (z < topics.size()) {
+                    JsonElement element = topics.get(i);
+                    if (JsonHandle.getValueJson(element.toString(), "$.part").equals(parts.get(j)) && i > index) {
+                        index = i;
+                        lessons.add(element.getAsJsonObject());
+                        j = j + 1;
+                        z++;
+                        if (j == parts.size()) {
+                            index = 0;
+                            j = 0;
+                            i=0;
+                        }
+                    }
+                }else {
+                    adDataTest(parts,topics);
+                    break;
+                }
+            }
+            break;
+        }
+        FileHelpers.writeFile("", Constant.LESSON_VIDEO_CALL_FILE);
+        FileHelpers.writeFile(lessons.toString(), Constant.LESSON_VIDEO_CALL_FILE);
+    }
+    private static void adDataTest(List<Integer> parts,JsonArray topics){
+        int index =0;
+        for (int i = lessons.size()-1; i>=0;i--){
+            if(JsonHandle.getValueJson(lessons.get(i).toString(),"$.part").equals(parts.get(parts.size()-1))){
+                index=i+1;
+                break;
+            }
+        }
+        System.out.println(index);
+        JsonArray lesson2= new JsonArray();
+        if(index>0) {
+            for (; index < lessons.size(); index++) {
+
+                /*for (int part : parts) {
+                    if (Integer.parseInt(JsonHandle.getValueJson(lessons.get(index).toString(), "$.part").toString()) != part) {
+                        lessons.add(JsonHandle.getJsonArray(topics.toString(),"$.[?(@.part=="+part+")]").get(0));
+                    }
+                }*/
+            }
+        }
+    }
     //region I DON'T KNOW
     private static void getDontKnowAnswers() {
         type = "I don't know_1";
-        current = ExcelUtils.getRowContains(Constant.I_DONT_KNOW_QUESTION,1,sheet,start,end);
-        List<String> answers = getDontKnowAnswers(ExcelUtils.getValueInCell(sheet,current,1));
-        teacher_answer1 = getTeacherAnswer1(current);
-        video_teacher1 = getVideoTeacher1(current);
-        if(isSkip()) {
-            getDontKnowAnswersCorrect(answers);
-            getDontKnowAnswersWrong();
-        }else {
-            type = "I don't know_3";
-            getNextPart(answers);
+        for (String item: Constant.I_DONT_KNOW_QUESTION) {
+            current = ExcelUtils.getRowContains(item, 1, sheet, start, end);
+            if(current <end) {
+                List<String> answers = getDontKnowAnswers(ExcelUtils.getValueInCell(sheet, current, 1));
+                teacher_answer1 = getTeacherAnswer1(current);
+                video_teacher1 = getVideoTeacher1(current);
+                if (isSkip()) {
+                    getDontKnowAnswersCorrect(answers);
+                    getDontKnowAnswersWrong();
+                } else {
+                    type = "I don't know_3";
+                    getNextPart(answers);
+                }
+            }
         }
     }
     private static void getDontKnowAnswersCorrect(List<String> answers) {
@@ -89,13 +149,17 @@ public class GenDataVideoCall {
     }
     private static void getDontKnowAnswersWrong() {
         type = "I don't know_2";
-        current = ExcelUtils.getRowContains(Constant.I_DONT_KNOW_QUESTION, 1, sheet, start, end);
-        List<String> answers = getDontKnowAnswers(ExcelUtils.getValueInCell(sheet, current, 1));
-        if(isSkip()) {
-            int row = ExcelUtils.getRowContains("wrong_answer_2", 1, sheet, start, end);
-            for (String correct : corrects) {
-                for (String item : convertToStrings(correct.split(" "))) {
-                    getAnswers(answers, row, item);
+        for (String str: Constant.I_DONT_KNOW_QUESTION) {
+            current = ExcelUtils.getRowContains(str, 1, sheet, start, end);
+            if (current<end) {
+                List<String> answers = getDontKnowAnswers(ExcelUtils.getValueInCell(sheet, current, 1));
+                if (isSkip()) {
+                    int row = ExcelUtils.getRowContains("wrong_answer_2", 1, sheet, start, end);
+                    for (String correct : corrects) {
+                        for (String item : convertToStrings(correct.split(" "))) {
+                            getAnswers(answers, row, item);
+                        }
+                    }
                 }
             }
         }
@@ -290,8 +354,10 @@ public class GenDataVideoCall {
         Workbook newWorkbook = new XSSFWorkbook();
         for(int i=0;i<Constant.topics_expected.size();i++){
             String topic_name = LogicHandle.removeString(getTopicName(Constant.topics_expected.get(i)),Constant.exceptionExcel);
-            sheetDest.add(topic_name);
-            CloneSheetToOtherFile.cloneSheet(newWorkbook,Constant.CONFIG_FILE,sheets.get(i),Constant.CONFIG_TOPIC_FILE,topic_name);
+            if(!topic_name.contains("My new backpack!")) {
+                sheetDest.add(topic_name);
+                CloneSheetToOtherFile.cloneSheet(newWorkbook, Constant.CONFIG_FILE, sheets.get(i), Constant.CONFIG_TOPIC_FILE, topic_name);
+            }
         }
 
     }
@@ -302,27 +368,27 @@ public class GenDataVideoCall {
         return ExcelUtils.getContainCount(sheet,0,part+"_",start);
     }
     private static String getQuestion(){
-        return ExcelUtils.getValueInCell(sheet,start,3);
+        return ExcelUtils.getValueInCell(sheet,start,2);
     }
     private static String getVideoQuestion(){
-        return ExcelUtils.getValueInCell(sheet,start,4);
+        return ExcelUtils.getValueInCell(sheet,start,3);
     }
     private static String getTeacherAnswer1(int row){
-        return ExcelUtils.getValueInCell(sheet,row,3);
+        return ExcelUtils.getValueInCell(sheet,row,2);
     }
     private static String getVideoTeacher1(int row){
-        return ExcelUtils.getValueInCell(sheet,row,4);
+        return ExcelUtils.getValueInCell(sheet,row,3);
     }
     private static String getVideoTeacher2(int row){
-        return ExcelUtils.getValueInCell(sheet,row,4);
+        return ExcelUtils.getValueInCell(sheet,row,3);
     }
     private static String getTeacherAnswer2(int row){
-        return ExcelUtils.getValueInCell(sheet,row,3);
+        return ExcelUtils.getValueInCell(sheet,row,2);
     }
     private static List<String> getCorrectAnswers(){
         corrects = new ArrayList<>();
         for(int i =start;i<end;i++) {
-            current = ExcelUtils.getRowContains(1, 5, sheet,i);
+            current = ExcelUtils.getRowContains(1, 4, sheet,i);
             if(current!=0){
                 getAnswers(corrects,ExcelUtils.getValueInCell(sheet, current, 1));
             }
