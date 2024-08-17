@@ -9,10 +9,7 @@ import org.json.JSONArray;
 import video.call.struct.Activity;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class GenDataVideoCall {
     private static List<String> sheetDest = new ArrayList<>();
@@ -20,8 +17,9 @@ public class GenDataVideoCall {
     static List<String> corrects,inCorrects;
     static JSONArray acts = new JSONArray();
     static JsonArray lessons = new JsonArray();
-    static int start,end;
+    static int start,end,level;
     static String question,video_question,teacher_answer1, video_teacher1;
+    static Map<String,Integer> map = new HashMap<>();
     static String sheet;
     static int part;
     static String type;
@@ -35,6 +33,7 @@ public class GenDataVideoCall {
         ExcelUtils.setExcelFile(Constant.CONFIG_TOPIC_FILE);
         for (String sheetName:sheetDest){
             sheet =sheetName.trim();
+            level = map.get(sheet);
             List<Integer> parts = getParts();
             for(Integer p:parts){
                 part =p;
@@ -222,7 +221,7 @@ public class GenDataVideoCall {
         current = ExcelUtils.getRowContains(Constant.SILENT_ANSWER+"2",1,sheet,start,end);
         String teacher_answer2 = getTeacherAnswer2(current);
         String video_teacher2 = getVideoTeacher2(current);
-        Activity act = new Activity(sheet,part,question,video_question,"",teacher_answer1,video_teacher1,"",teacher_answer2,video_teacher2,type);
+        Activity act = new Activity(sheet,part,question,video_question,"",teacher_answer1,video_teacher1,"",teacher_answer2,video_teacher2,type,level);
         acts.put(act.createActivity2());
     }
     private static void getSilentCorrect(List<String> answers) {
@@ -287,27 +286,15 @@ public class GenDataVideoCall {
     }
     private static void getActivity(List<String> answers) {
         for (String answer:answers){
-            Activity act = new Activity(sheet, part, question, video_question, answer, teacher_answer1, video_teacher1, type);
+            Activity act = new Activity(sheet, part, question, video_question, answer, teacher_answer1, video_teacher1, type,level);
             acts.put(act.createActivity1());
         }
     }
-    /*private static void getAnswers(String answer1,int row_teacher,String answer_answer2) {
-        current = ExcelUtils.getRowContains(answer1,1,sheet,start,end);
-        List<String> answers = getAnswers(ExcelUtils.getValueInCell(sheet,current,1));
-        teacher_answer1 = getTeacherAnswer1(current);
-        video_teacher1 = getVideoTeacher1(current);
-        for (String answer: answers){
-            String teacher_answer2 = getTeacherAnswer2(row_teacher);
-            String video_teacher2 = getVideoTeacher2(row_teacher);
-            Activity act = new Activity(sheet,part,question,video_question,answer,teacher_answer1,video_teacher1,answer_answer2,teacher_answer2,video_teacher2,type);
-            acts.put(act.createActivity2());
-        }
-    }*/
     private static void getAnswers(List<String> answers1,int row_teacher,String answer2) {
         for (String answer: answers1){
             String teacher_answer2 = getTeacherAnswer2(row_teacher);
             String video_teacher2 = getVideoTeacher2(row_teacher);
-            Activity act = new Activity(sheet,part,question,video_question,answer,teacher_answer1,video_teacher1,answer2,teacher_answer2,video_teacher2,type);
+            Activity act = new Activity(sheet,part,question,video_question,answer,teacher_answer1,video_teacher1,answer2,teacher_answer2,video_teacher2,type,level);
             acts.put(act.createActivity2());
         }
     }
@@ -317,7 +304,7 @@ public class GenDataVideoCall {
                 int row_teacher = ExcelUtils.getRowContains(answer2, 1, sheet, start, end);
                 String teacher_answer2 = getTeacherAnswer2(row_teacher);
                 String video_teacher2 = getVideoTeacher2(row_teacher);
-                Activity act = new Activity(sheet, part, question, video_question, answer, teacher_answer1, video_teacher1, answer2, teacher_answer2, video_teacher2, type);
+                Activity act = new Activity(sheet, part, question, video_question, answer, teacher_answer1, video_teacher1, answer2, teacher_answer2, video_teacher2, type,level);
                 acts.put(act.createActivity2());
             }
         }
@@ -342,7 +329,7 @@ public class GenDataVideoCall {
             current = ExcelUtils.getRowContains(correct,1,sheet);
             teacher_answer1 = getTeacherAnswer1(current);
             video_teacher1 = getVideoTeacher1(current);
-            Activity act = new Activity(sheet,part,question,video_question,correct,teacher_answer1,video_teacher1,type);
+            Activity act = new Activity(sheet,part,question,video_question,correct,teacher_answer1,video_teacher1,type,level);
             acts.put(act.createActivity1());
         }
     }
@@ -358,13 +345,19 @@ public class GenDataVideoCall {
         List<String> sheets = ExcelUtils.getListSheetName("Leve");
         Workbook newWorkbook = new XSSFWorkbook();
         for(int i=0;i<Constant.topics_expected.size();i++){
-            String topic_name = LogicHandle.removeString(getTopicName(Constant.topics_expected.get(i)),Constant.exceptionExcel);
+            String sheetName = Constant.topics_expected.get(i);
+            String topic_name = LogicHandle.removeString(getTopicName(sheetName),Constant.exceptionExcel);
+            map.put(topic_name.trim(),getLevel(sheetName));
             if(!topic_name.contains("My new backpack!")) {
                 sheetDest.add(topic_name);
                 CloneSheetToOtherFile.cloneSheet(newWorkbook, Constant.CONFIG_FILE, sheets.get(i), Constant.CONFIG_TOPIC_FILE, topic_name);
             }
         }
 
+    }
+    private static int getLevel(String sheetName){
+        String level = LogicHandle.replaceString(LogicHandle.splitString(sheetName,"_",0),"","Level ","Leve ");
+        return Integer.valueOf(level);
     }
     private static int startPart(){
         return ExcelUtils.getRowContains(part+"_",0,sheet);

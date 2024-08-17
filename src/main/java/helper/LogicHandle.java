@@ -40,6 +40,14 @@ public class LogicHandle {
         }
         return str;
     }
+    public static String replaceString(String str,String newStr,String... oldStr){
+        for (String old: oldStr) {
+            if (str.contains(old)) {
+                str = str.replace(old, newStr);
+            }
+        }
+        return str;
+    }
     public static String splitString(String str,String splitStr){
         if(str.contains(splitStr)){
             str = Arrays.stream(str.split(splitStr)).toList().get(0);

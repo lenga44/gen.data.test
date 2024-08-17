@@ -28,4 +28,5 @@ public class Constant {
     public static final String WRONG_ANSWER = "wrong_answer_";
     public static final String USER_ASKS_QUESTION = "User asks:";
     public static final List<String> SKIP_PART = Arrays.asList("?","...");
+
 }
