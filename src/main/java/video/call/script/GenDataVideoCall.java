@@ -68,10 +68,10 @@ public class GenDataVideoCall {
     }
     private static void writeFile() throws IOException {
         int index =-1;
-        JsonArray array = JsonHandle.getJsonsFormFile(Constant.VIDEO_CALL_FILE);
         String json = FileHelpers.readFile(Constant.VIDEO_CALL_FILE);
         int j = 0;
         for (String sh: sheetDest){
+            System.out.println(sh +"\n");
             part = 0;
             List<Integer> parts = getParts();
             JsonArray topics = JsonHandle.getJsonArray(json,"$.[?(@.topic_name==\""+sh+"\")]");
@@ -92,33 +92,38 @@ public class GenDataVideoCall {
                         }
                     }
                 }else {
-                    adDataTest(parts,topics);
+                    adDataTest(parts);
                     break;
                 }
             }
-            break;
+/*            break;*/
         }
         FileHelpers.writeFile("", Constant.LESSON_VIDEO_CALL_FILE);
         FileHelpers.writeFile(lessons.toString(), Constant.LESSON_VIDEO_CALL_FILE);
     }
-    private static void adDataTest(List<Integer> parts,JsonArray topics){
-        int index =0;
-        for (int i = lessons.size()-1; i>=0;i--){
-            if(JsonHandle.getValueJson(lessons.get(i).toString(),"$.part").equals(parts.get(parts.size()-1))){
-                index=i+1;
-                break;
+    private static void adDataTest(List<Integer> parts){
+        int index =lessons.size() -(lessons.size()%parts.size());
+        JsonArray lesson2 = new JsonArray();
+        int i = index;
+        do{
+            for (int p: parts){
+                if( i<lessons.size() && Integer.valueOf(JsonHandle.getValue(lessons.get(i).toString(),"$.part").trim())==p){
+                    lesson2.add(lessons.get(i));
+                    i++;
+                }else {
+                    lesson2.add(JsonHandle.getJsonArray(lessons.toString(),"$.[?(@.part=="+p+")]").get(0));
+                }
             }
-        }
-        System.out.println(index);
-        JsonArray lesson2= new JsonArray();
-        if(index>0) {
-            for (; index < lessons.size(); index++) {
-
-                /*for (int part : parts) {
-                    if (Integer.parseInt(JsonHandle.getValueJson(lessons.get(index).toString(), "$.part").toString()) != part) {
-                        lessons.add(JsonHandle.getJsonArray(topics.toString(),"$.[?(@.part=="+part+")]").get(0));
-                    }
-                }*/
+        }while ((lesson2.size() % parts.get(parts.size()-1)) !=0);
+        replaceObjectInArray(lesson2,index);
+    }
+    private static void replaceObjectInArray(JsonArray lesson2,int index){
+        for (int i = 0;i<lesson2.size();i++){
+            if(index<lessons.size()) {
+                lessons.set(index, lesson2.get(i));
+                index++;
+            }else {
+                lessons.add(lesson2.get(i));
             }
         }
     }
