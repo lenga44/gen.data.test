@@ -14,10 +14,10 @@ public class Activity {
     private String teacher_answer2;
     private String video_teacher2;
     private String type;
-    private int level;
+    private int level,topicID;
 
     public Activity(String topic_name, int part, String question,String video_question, String answer_answer1, String teacher_answer1,
-                    String video_teacher1, String answer_answer2, String teacher_answer2, String video_teacher2,String type,int level) {
+                    String video_teacher1, String answer_answer2, String teacher_answer2, String video_teacher2,String type,int level,int topicID) {
         this.topic_name = topic_name;
         this.part = part;
         this.question = question;
@@ -30,9 +30,10 @@ public class Activity {
         this.video_teacher2 = video_teacher2;
         this.type = type;
         this.level = level;
+        this.topicID = topicID;
     }
     public Activity(String topic_name, int part, String question,String video_question, String answer_answer1,
-                    String teacher_answer1, String video_teacher1,String type,int level) {
+                    String teacher_answer1, String video_teacher1,String type,int level,int topicID) {
         this.topic_name = topic_name;
         this.part = part;
         this.question = question;
@@ -42,10 +43,12 @@ public class Activity {
         this.video_teacher1 = video_teacher1;
         this.type = type;
         this.level = level;
+        this.topicID = topicID;
     }
     public JSONObject createActivity2(){
         JSONObject json = new JSONObject();
         json.put("topic_name", topic_name);
+        json.put("topic_id", topicID);
         json.put("part", part);
         json.put("level", level);
         json.put("question", question);
@@ -62,6 +65,7 @@ public class Activity {
     public JSONObject createActivity1(){
         JSONObject json = new JSONObject();
         json.put("topic_name", topic_name);
+        json.put("topic_id", topicID);
         json.put("part", part);
         json.put("level", level);
         json.put("question", question);

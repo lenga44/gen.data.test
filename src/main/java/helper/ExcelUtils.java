@@ -227,6 +227,21 @@ public class ExcelUtils {
         }
         return iRowNum;
     }
+    public static int getRowEndWith(String condition, int colNum, String sheetName)  {
+        int iRowNum = 0;
+        try {
+            int rowCount = ExcelUtils.getRowCount(sheetName);
+            for (; iRowNum < rowCount; iRowNum++) {
+                if (condition.endsWith(ExcelUtils.getValueInCell(sheetName,iRowNum, colNum))) {
+                    break;
+                }
+            }
+        } catch (Throwable e) {
+            System.out.println("Method getRowContains: sTestCaseName[" + condition+"], colNum["+colNum+"], sheetName["+sheetName+"]");
+            System.out.println("Method getRowContains | Exception desc : " + e.getMessage());
+        }
+        return iRowNum;
+    }
     public static int getRowContains(String condition, int colNum, String sheetName,int row)  {
         if (ExcelUtils.getValueInCell(sheetName,row, colNum).contains(condition)) {
             return row;
