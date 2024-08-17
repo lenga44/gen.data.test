@@ -6,7 +6,9 @@ import helper.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import video.call.struct.Activity;
+import video.call.struct.Lesson;
 
 import java.io.IOException;
 import java.util.*;
@@ -27,6 +29,7 @@ public class GenDataVideoCall {
     public static void main(String[] args) throws IOException {
         genActs();
         writeFile();
+        mergeLessonByTopic();
     }
     private static void genActs() throws IOException {
         ExcelUtils.setExcelFile(Constant.CONFIG_FILE);
@@ -67,6 +70,26 @@ public class GenDataVideoCall {
         FileHelpers.writeFile("", Constant.VIDEO_CALL_FILE);
         FileHelpers.writeFile(acts.toString(), Constant.VIDEO_CALL_FILE);
     }
+    private static void mergeLessonByTopic() throws IOException {
+        JSONArray array = new JSONArray();
+        JSONArray acts = new JSONArray();
+        for (JsonElement element:lessons){
+            String json = element.toString();
+            String topic = JsonHandle.getValue(json,"$.topic_name");
+            List<Integer> parts = getParts(topic);
+            int topicID = Integer.parseInt(JsonHandle.getValue(json,"$.topic_id").trim());
+            int level = Integer.parseInt(JsonHandle.getValue(json,"$.level").trim());
+            int p = Integer.parseInt(JsonHandle.getValue(json,"$.part").trim());
+            acts.put(new JSONObject(element.toString()));
+            if(p==parts.get(parts.size()-1)){
+                Lesson lesson = new Lesson(topic,level,topicID,acts);
+                array.put(lesson.createLesson());
+                acts = new JSONArray();
+            }
+        }
+        FileHelpers.writeFile("", Constant.LESSON_VIDEO_CALL_FILE);
+        FileHelpers.writeFile(array.toString(), Constant.LESSON_VIDEO_CALL_FILE);
+    }
     private static void writeFile() throws IOException {
         int index =-1;
         String json = FileHelpers.readFile(Constant.VIDEO_CALL_FILE);
@@ -97,10 +120,9 @@ public class GenDataVideoCall {
                     break;
                 }
             }
-/*            break;*/
         }
-        FileHelpers.writeFile("", Constant.LESSON_VIDEO_CALL_FILE);
-        FileHelpers.writeFile(lessons.toString(), Constant.LESSON_VIDEO_CALL_FILE);
+        /*FileHelpers.writeFile("", Constant.LESSON_VIDEO_CALL_FILE);
+        FileHelpers.writeFile(lessons.toString(), Constant.LESSON_VIDEO_CALL_FILE);*/
     }
     private static void adDataTest(List<Integer> parts){
         int index =lessons.size() -(lessons.size()%parts.size());
@@ -341,6 +363,10 @@ public class GenDataVideoCall {
     }
     private static List<Integer> getParts() throws IOException {
         List<String> list = ExcelUtils.getValuesInColum(sheet,0,3);
+        return LogicHandle.convertStringsToIntegers(list);
+    }
+    private static List<Integer> getParts(String sheetName) throws IOException {
+        List<String> list = ExcelUtils.getValuesInColum(sheetName,0,3);
         return LogicHandle.convertStringsToIntegers(list);
     }
     private static void createExpectedFile(){
