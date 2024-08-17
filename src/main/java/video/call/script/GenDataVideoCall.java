@@ -26,7 +26,7 @@ public class GenDataVideoCall {
     static String sheet;
     static int part;
     static String type;
-    public static void main(String[] args) throws IOException {
+    public static void run() throws IOException {
         genActs();
         writeFile();
         mergeLessonByTopic();
