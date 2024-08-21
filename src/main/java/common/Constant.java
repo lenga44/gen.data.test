@@ -35,5 +35,6 @@ public class Constant {
     public static final String MGO_LESSON_FILE = FileHelpers.getProjectPath()+"/src/main/java/m_go/data/lesson.json";
     public static final String GAME_M_GO_FILE = FileHelpers.getProjectPath() + "\\src\\main\\java\\ai\\speak\\course\\data\\";
     public static String DATA_ACTIVITY_BY_GAME_URL = "https://api.dev.monkeyuni.com/platform_go/api/v1/activity?course_id=201&game_ids=";
-    public static final List<String> splits = Arrays.asList("\\|", "\\;",",",", ","/");
+    public static final List<String> splits = Arrays.asList("./ ","\\|", "\\;",",",", ","/");
+    public static final List<String> splits1 = Arrays.asList("./ ","\\|", "\\;","/");
 }

@@ -87,6 +87,33 @@ public class LogicHandle {
         }
         return resultList;
     }
+    public static List<String> convertStringToListSplit(String inputString){
+        inputString = splitString(inputString);
+        List<String> resultList = new ArrayList<>();
+        if(inputString.contains("Yes, I'm thirsty./ I have to drink")){
+            for (String spitStr : Constant.splits1) {
+                if (inputString.contains(spitStr)) {
+                    for (String text : inputString.split(spitStr)) {
+                        resultList.add(text.trim());
+                    }
+                    break;
+                }
+            }
+        }else {
+            for (String spitStr : Constant.splits1) {
+                if (inputString.contains(spitStr)) {
+                    for (String text : inputString.split(spitStr)) {
+                        resultList.add(text.trim());
+                    }
+                    break;
+                }
+            }
+        }
+        if (resultList.size()==0){
+            resultList.add(inputString);
+        }
+        return resultList;
+    }
     public static List<Integer> convertStringsToIntegers(List<String> list){
         List<Integer> values = new ArrayList<>();
         for(String item: list){

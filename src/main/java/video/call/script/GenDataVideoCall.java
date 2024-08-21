@@ -28,7 +28,7 @@ public class GenDataVideoCall {
     static String type;
     public static void run() throws IOException {
         genActs();
-        writeFile();
+        writeFile1();
         mergeLessonByTopic();
     }
     private static void genActs() throws IOException {
@@ -120,9 +120,52 @@ public class GenDataVideoCall {
                     break;
                 }
             }
+            break;
         }
-        /*FileHelpers.writeFile("", Constant.LESSON_VIDEO_CALL_FILE);
-        FileHelpers.writeFile(lessons.toString(), Constant.LESSON_VIDEO_CALL_FILE);*/
+        FileHelpers.writeFile("", Constant.LESSON_VIDEO_CALL_FILE);
+        FileHelpers.writeFile(lessons.toString(), Constant.LESSON_VIDEO_CALL_FILE);
+    }
+    private static void writeFile1() throws IOException {
+        int index =-1;
+        String json = FileHelpers.readFile(Constant.VIDEO_CALL_FILE);
+        int j = 0;
+        for (String sh: sheetDest){
+            System.out.println(sh +"\n");
+            part = 0;
+            List<Integer> parts = getParts();
+            JsonArray topics = JsonHandle.getJsonArray(json,"$.[?(@.topic_name==\""+sh+"\")]");
+            assert topics != null;
+            int z=0;
+            Map<Integer,JsonArray> map = new HashMap<>();
+            for(int p:parts){
+                map.put(p,JsonHandle.getJsonArray(topics.toString(),"$.[?(@.part=="+p+")]"));
+            }
+            int maxCount = 0;
+            int maxKey =0;
+            for (Map.Entry<Integer, JsonArray> entry : map.entrySet()) {
+                if (entry.getValue().size() > maxCount) {
+                    maxKey = entry.getKey();
+                    maxCount = entry.getValue().size();
+                }
+            }
+            for (Integer p :parts){
+                if(maxKey !=p){
+                    JsonArray array = map.get(p);
+                    Random rand = new Random();
+                    int size =array.size()-1;
+                    int value = rand.nextInt((size - 0) + 1) + 0;;
+                    do {
+                        array.add(map.get(p).get(value));
+                    }while (array.size()<maxCount);
+                }
+            }
+            for (int i =0;i<maxCount;i++){
+                for (Integer p: parts){
+                    lessons.add(map.get(p).get(i));
+                }
+            }
+        }
+
     }
     private static void adDataTest(List<Integer> parts){
         int index =lessons.size() -(lessons.size()%parts.size());
@@ -130,11 +173,11 @@ public class GenDataVideoCall {
         int i = index;
         do{
             for (int p: parts){
-                if( i<lessons.size() && Integer.valueOf(JsonHandle.getValue(lessons.get(i).toString(),"$.part").trim())==p){
+                if( i<lessons.size() && Integer.valueOf(JsonHandle.getValue(acts.get(i).toString(),"$.part").trim())==p){
                     lesson2.add(lessons.get(i));
                     i++;
                 }else {
-                    lesson2.add(JsonHandle.getJsonArray(lessons.toString(),"$.[?(@.part=="+p+")]").get(0));
+                    lesson2.add(JsonHandle.getJsonArray(acts.toString(),"$.[?(@.part=="+p+")]").get(0));
                 }
             }
         }while ((lesson2.size() % parts.get(parts.size()-1)) !=0);
@@ -439,14 +482,19 @@ public class GenDataVideoCall {
     }
     private static void getAnswers(List<String> answers, String value){
         value = LogicHandle.splitString(value,":",1).trim();
-        List<String> list = LogicHandle.convertStringToList(value);
+        List<String> list = new ArrayList<>();
+        if(value.contains("I have to drink")){
+            list = LogicHandle.convertStringToListSplit(value);
+        }else {
+            list = LogicHandle.convertStringToListSplit(value);
+        }
         for (String item:list){
             answers.add(item.trim());
         }
     }
     private static List<String> getDontKnowAnswers( String value){
         value = LogicHandle.splitString(value,":",1);
-        List<String> list = LogicHandle.convertStringToList(value);
+        List<String> list = LogicHandle.convertStringToListSplit(value);
         List<String> answers =new ArrayList<>();
         for (String item:list){
            if (item.contains("or")){

@@ -20,8 +20,9 @@ public class Constant {
                                                                     "Level 2_Transport 1_U2_It flies high in the sky.",
                                                                     "Level 2_Clothes 1_U2_This dress is beautiful!",
                                                                     "Level 2_Furniture 1_U2_It's a small chair.");
-    public static final List<String> exceptionExcel = Arrays.asList("[","]","?","*","\\","/");
+    public static final List<String> exceptionExcel = Arrays.asList("./ ","[","]","?","*","\\","/");
     public static final String VIDEO_CALL_FILE = FileHelpers.getProjectPath()+ "/src/main/java/video/call/data/video_call.json";
+    public static final String VIDEO_CALL_DATA_FOLDER = FileHelpers.getProjectPath()+ "/src/main/java/video/call/data/";
     public static final String LESSON_VIDEO_CALL_FILE = FileHelpers.getProjectPath()+ "/src/main/java/video/call/data/lesson_video_call.json";
     public static final List<String> I_DONT_KNOW_QUESTION = Arrays.asList("I don't know","I don't understand");
     public static final String SILENT_ANSWER = "silent_";
