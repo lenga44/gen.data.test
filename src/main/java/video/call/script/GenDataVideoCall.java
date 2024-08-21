@@ -202,12 +202,12 @@ public class GenDataVideoCall {
                 List<String> answers = getDontKnowAnswers(ExcelUtils.getValueInCell(sheet, current, 1));
                 teacher_answer1 = getTeacherAnswer1(current);
                 video_teacher1 = getVideoTeacher1(current);
-                if (isSkip()) {
-                    getDontKnowAnswersCorrect(answers);
-                    getDontKnowAnswersWrong();
-                } else {
+                if (isSkip()==true) {
                     type = "I don't know_3";
                     getNextPart(answers);
+                } else {
+                    getDontKnowAnswersCorrect(answers);
+                    getDontKnowAnswersWrong();
                 }
             }
         }
@@ -224,12 +224,10 @@ public class GenDataVideoCall {
             current = ExcelUtils.getRowContains(str, 1, sheet, start, end);
             if (current<end) {
                 List<String> answers = getDontKnowAnswers(ExcelUtils.getValueInCell(sheet, current, 1));
-                if (isSkip()) {
-                    int row = ExcelUtils.getRowContains("wrong_answer_2", 1, sheet, start, end);
-                    for (String correct : corrects) {
-                        for (String item : convertToStrings(correct.split(" "))) {
-                            getAnswers(answers, row, item);
-                        }
+                int row = ExcelUtils.getRowContains("wrong_answer_2", 1, sheet, start, end);
+                for (String correct : corrects) {
+                    for (String item : convertToStrings(correct.split(" "))) {
+                        getAnswers(answers, row, item);
                     }
                 }
             }
@@ -247,12 +245,12 @@ public class GenDataVideoCall {
         List<String> answers = getInCorrectAnswers(answer);
         teacher_answer1 = getTeacherAnswer1(row);
         video_teacher1 = getVideoTeacher1(row);
-        if(isSkip()) {
-            getAnswers(answers, corrects);
-            getUserAskAnswersWrong();
-        }else {
+        if(isSkip()==true) {
             type = "User ask_3";
             getNextPart(answers);
+        }else {
+            getAnswers(answers, corrects);
+            getUserAskAnswersWrong();
         }
     }
     private static void getUserAskAnswersWrong() {
@@ -315,7 +313,7 @@ public class GenDataVideoCall {
         int row = ExcelUtils.getRowContains(Constant.WRONG_ANSWER+1,1,sheet,start,end);
         teacher_answer1 = getTeacherAnswer1(row);
         video_teacher1 = getVideoTeacher1(row);
-        if(isSkip()) {
+        if(isSkip()==false) {
             for (String correct : corrects) {
                 inCorrects = Arrays.stream(convertToStrings(correct.split(" "))).toList();
                 getWrongAnswerCorrect(inCorrects);
@@ -342,10 +340,10 @@ public class GenDataVideoCall {
     //endregion
 
     private static boolean isSkip(){
-        boolean skip = false;
+        boolean skip = true;
         for (String str:Constant.SKIP_PART){
-            if(!teacher_answer1.endsWith(str)){
-                skip=true;
+            if(teacher_answer1.endsWith(str)){
+                skip=false;
                 break;
             }
         }
@@ -484,6 +482,9 @@ public class GenDataVideoCall {
         value = LogicHandle.splitString(value,":",1).trim();
         if(value.contains("more than 2 hands")){
             value = "3 hands";
+        }
+        if(value.contains("0 hand or 1 hand")){
+            value = "0 hand/ 1 hand";
         }
         List<String> list = LogicHandle.convertStringToListSplit(value);
         for (String item:list){
