@@ -482,12 +482,10 @@ public class GenDataVideoCall {
     }
     private static void getAnswers(List<String> answers, String value){
         value = LogicHandle.splitString(value,":",1).trim();
-        List<String> list = new ArrayList<>();
-        if(value.contains("I have to drink")){
-            list = LogicHandle.convertStringToListSplit(value);
-        }else {
-            list = LogicHandle.convertStringToListSplit(value);
+        if(value.contains("more than 2 hands")){
+            value = "3 hands";
         }
+        List<String> list = LogicHandle.convertStringToListSplit(value);
         for (String item:list){
             answers.add(item.trim());
         }
