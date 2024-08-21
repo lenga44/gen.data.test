@@ -60,7 +60,7 @@ public class GenDataVideoCall {
 
                 /*silent*/
                 List<String> answers = new ArrayList<>();
-                answers.add("");
+                answers.add(" ");
                 getSilent(answers);
 
                 /*wrong*/
@@ -391,7 +391,10 @@ public class GenDataVideoCall {
         type = "correct_1";
         corrects = getCorrectAnswers();
         for (String correct: corrects){
-            current = ExcelUtils.getRowContains(correct,1,sheet);
+            current = ExcelUtils.getRowContains(correct,1,sheet,start,end);
+            if(correct.equals("3 hands")){
+                current = 13;
+            }
             teacher_answer1 = getTeacherAnswer1(current);
             video_teacher1 = getVideoTeacher1(current);
             Activity act = new Activity(sheet,part,question,video_question,correct,teacher_answer1,video_teacher1,type,level,topicID);
@@ -447,7 +450,7 @@ public class GenDataVideoCall {
         return ExcelUtils.getValueInCell(sheet,start,3);
     }
     private static String getTeacherAnswer1(int row){
-        return ExcelUtils.getValueInCell(sheet,row,2);
+        return LogicHandle.deleteMultipleSpaces(ExcelUtils.getValueInCell(sheet,row,2));
     }
     private static String getVideoTeacher1(int row){
         return ExcelUtils.getValueInCell(sheet,row,3);
