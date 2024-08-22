@@ -121,4 +121,8 @@ public class LogicHandle {
         }
         return values;
     }
+    public static String deleteMultipleSpaces(String input){
+        input = input.replaceAll("\\s+", " ");
+        return input.trim();
+    }
 }
