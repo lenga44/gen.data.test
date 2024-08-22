@@ -343,6 +343,7 @@ public class GenDataVideoCall {
 
     private static boolean isSkip(){
         boolean skip = false;
+        teacher_answer1 =teacher_answer1.trim();
         for (String str:Constant.SKIP_PART){
             if(!teacher_answer1.endsWith(str)){
                 skip=true;
