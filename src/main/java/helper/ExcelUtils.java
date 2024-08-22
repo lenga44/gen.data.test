@@ -20,6 +20,19 @@ public class ExcelUtils {
             System.out.println("Method setExcelFile: " +path);
         }
     }
+    public static int getSheetIndex(String sheetName){
+        return ExcelBook.getSheetIndex(sheetName);
+    }
+    public static String getSheetName( List<String> sheets, String condition){
+        String result = "";
+        for (String sheet: sheets){
+            if(condition.contains(sheet)){
+                result=sheet;
+                break;
+            }
+        }
+        return result;
+    }
     public static void closeExcelFile(String path) {
         try{
             FileOutputStream file = new FileOutputStream(path);

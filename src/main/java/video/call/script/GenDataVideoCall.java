@@ -60,7 +60,7 @@ public class GenDataVideoCall {
 
                 /*silent*/
                 List<String> answers = new ArrayList<>();
-                answers.add("");
+                answers.add(" ");
                 getSilent(answers);
 
                 /*wrong*/
@@ -132,7 +132,7 @@ public class GenDataVideoCall {
         for (String sh: sheetDest){
             System.out.println(sh +"\n");
             part = 0;
-            List<Integer> parts = getParts();
+            List<Integer> parts = getParts(sh);
             JsonArray topics = JsonHandle.getJsonArray(json,"$.[?(@.topic_name==\""+sh+"\")]");
             assert topics != null;
             int z=0;
@@ -153,7 +153,7 @@ public class GenDataVideoCall {
                     JsonArray array = map.get(p);
                     Random rand = new Random();
                     int size =array.size()-1;
-                    int value = rand.nextInt((size - 0) + 1) + 0;;
+                    int value = rand.nextInt((size - 0) + 1) + 0;
                     do {
                         array.add(map.get(p).get(value));
                     }while (array.size()<maxCount);
@@ -394,7 +394,10 @@ public class GenDataVideoCall {
         type = "correct_1";
         corrects = getCorrectAnswers();
         for (String correct: corrects){
-            current = ExcelUtils.getRowContains(correct,1,sheet);
+            current = ExcelUtils.getRowContains(correct,1,sheet,start,end);
+            if(correct.equals("3 hands")){
+                current = ExcelUtils.getRowContains("more than 2 hands",1,sheet,start,end);
+            }
             teacher_answer1 = getTeacherAnswer1(current);
             video_teacher1 = getVideoTeacher1(current);
             Activity act = new Activity(sheet,part,question,video_question,correct,teacher_answer1,video_teacher1,type,level,topicID);
@@ -421,16 +424,19 @@ public class GenDataVideoCall {
             String topic_name = LogicHandle.removeString(getTopicName(sheetName),Constant.exceptionExcel);
             mapLevel.put(topic_name.trim(),getLevel(sheetName));
             getTopicID(sheetName,topic_name);
-            if(!topic_name.contains("My new backpack!")) {
-                sheetDest.add(topic_name);
-                CloneSheetToOtherFile.cloneSheet(newWorkbook, Constant.CONFIG_FILE, sheets.get(i), Constant.CONFIG_TOPIC_FILE, topic_name);
+            if(!sheetName.contains("Leve 1_School 1_U2_My new backpack!")) {
+                sheetName = LogicHandle.removeString(sheetName,"'");
+                String sheetActual = ExcelUtils.getSheetName(sheets,sheetName);
+                if (sheetName.contains(sheetActual)) {
+                    sheetDest.add(topic_name);
+                    CloneSheetToOtherFile.cloneSheet(newWorkbook, Constant.CONFIG_FILE, sheetActual, Constant.CONFIG_TOPIC_FILE, topic_name);
+                }
             }
         }
     }
+
     private static void getTopicID(String sheetName,String topic){
-        System.out.println(sheetName);
         int row = ExcelUtils.getRowEndWith(sheetName,2,Constant.LIST_SHEET);
-        System.out.println(row);
         mapTopicID.put(topic.trim(),Integer.parseInt(ExcelUtils.getValueInCell(Constant.LIST_SHEET,row,4).trim()));
     }
     private static int getLevel(String sheetName){
@@ -483,12 +489,22 @@ public class GenDataVideoCall {
     }
     private static void getAnswers(List<String> answers, String value){
         value = LogicHandle.splitString(value,":",1).trim();
-        List<String> list = new ArrayList<>();
-        if(value.contains("I have to drink")){
-            list = LogicHandle.convertStringToListSplit(value);
-        }else {
-            list = LogicHandle.convertStringToListSplit(value);
+        if(value.contains("more than 2 hands")){
+            value = "3 hands";
         }
+        if(value.equals("0 hand or 1 hand")){
+            value = "0 hand/1 hand";
+        }
+        if(value.contains("name of a dish")){
+            value="egg/ham/steak";
+        }
+        if(value.contains("grapes, orange, pineapple")){
+            value="grapes/orange/pineapple";
+        }
+        if(value.contains("too big or huge")){
+            value="too big/huge";
+        }
+        List<String> list = LogicHandle.convertStringToListSplit(value);
         for (String item:list){
             answers.add(item.trim());
         }
