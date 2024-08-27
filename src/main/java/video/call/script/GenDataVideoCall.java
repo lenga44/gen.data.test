@@ -59,9 +59,15 @@ public class GenDataVideoCall {
                 getUserAskAnswers(Constant.USER_ASKS_QUESTION);
 
                 /*silent*/
-                List<String> answers = new ArrayList<>();
-                answers.add(" ");
-                getSilent(answers);
+                /*if(sheetName.contains("I have a small plant.")){
+                    List<String> answers1 = new ArrayList<>();
+                    answers1.add(" ");
+                    getSilent(answers1);
+                }else {*/
+                    List<String> answers = new ArrayList<>();
+                    answers.add(" ");
+                    getSilent(answers);
+                //}
 
                 /*wrong*/
                 getWrongAnswer();
