@@ -259,7 +259,7 @@ public class GenDataVideoCall {
         current = ExcelUtils.getRowContains(Constant.USER_ASKS_QUESTION,1,sheet,start,end);
         List<String> answers = getInCorrectAnswers(Constant.USER_ASKS_QUESTION);
         for (String correct:corrects){
-            getUserAnswer(answers,correct,current);
+            getUserAnswer(answers,correct,row);
         }
     }
     private static String[] convertToStrings(String str){
@@ -373,7 +373,7 @@ public class GenDataVideoCall {
         }
     }
     private static void getAnswers(List<String> answers1,int row_teacher,String answer2) {
-        if(answer2.trim().equals("Yes")||answer2.trim().equals("Yes,")||answer2.trim().equals("No")||answer2.trim().equals("No,")){
+        if(answer2.trim().equals("Yes")||answer2.trim().equals("Yes,")||answer2.trim().equals("No")||answer2.trim().equals("No,") ||answer2.trim().equals("hands.")||answer2.trim().equals("plant")){
             type = "wrong_answer_1";
             row_teacher = ExcelUtils.getRowContains(answer2,1,sheet,start,end);
         }
@@ -388,6 +388,10 @@ public class GenDataVideoCall {
         for (String answer : answers1) {
             for (String answer2 : answers2) {
                 int row_teacher = ExcelUtils.getRowContains(answer2, 1, sheet, start, end);
+                if(answer2.trim().equals("Yes")||answer2.trim().equals("Yes,")||answer2.trim().equals("No")||answer2.trim().equals("No,")){
+                    type = "wrong_answer_1";
+                    row_teacher = ExcelUtils.getRowContains(answer2,1,sheet,start,end);
+                }
                 String teacher_answer2 = getTeacherAnswer2(row_teacher);
                 String video_teacher2 = getVideoTeacher2(row_teacher);
                 Activity act = new Activity(sheet, part, question, video_question, answer, teacher_answer1, video_teacher1, answer2, teacher_answer2, video_teacher2, type,level,topicID);
@@ -531,6 +535,9 @@ public class GenDataVideoCall {
         }
         if(value.contains("grapes, orange, pineapple")){
             value="grapes/orange/pineapple";
+        }
+        if(value.contains("wine, beer, alcohol, drug")){
+            value="wine/beer/alcohol/drug";
         }
         if(value.contains("too big or huge")){
             value="too big/huge";
