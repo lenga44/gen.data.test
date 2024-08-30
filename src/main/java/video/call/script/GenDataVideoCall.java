@@ -601,6 +601,7 @@ public class GenDataVideoCall {
         map.put("No, ","No, ");
         map.put("Yes","Yes");
         map.put("No","No");
+        map.put("beans","green beans");
         return map;
     }
     private static Map<String,String> mappingReturnCorrectAnswer(){
@@ -626,6 +627,7 @@ public class GenDataVideoCall {
         map.put("steak","name of a dish");
         map.put("juice","name of a drink (juice, coke, ...)");
         map.put("coke","name of a drink (juice, coke, ...)");
+        map.put("beans","green beans");
         return map;
     }
     private static List<String> getInCorrectAnswers(String condition){
