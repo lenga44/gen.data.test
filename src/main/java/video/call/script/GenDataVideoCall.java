@@ -615,6 +615,8 @@ public class GenDataVideoCall {
         map.put("No, ","No, ");
         map.put("Yes ","Yes");
         map.put("No ","No");
+        map.put("No","No");
+        map.put("Yes","Yes");
         map.put("hands.","They're hands.");
         map.put("apple","name of a fruit");
         map.put("noodle","Name of an eatable thing");
