@@ -54,10 +54,10 @@ public class Activity {
         json.put("question", question);
         json.put("video_question", video_question);
         json.put("answer_answer1",answer_answer1);
-        json.put("teacher_answer1", teacher_answer1);
+        json.put("teacher_answer1", teacher_answer1.trim());
         json.put("video_teacher1", video_teacher1);
         json.put("answer_answer2",answer_answer2);
-        json.put("teacher_answer2", teacher_answer2);
+        json.put("teacher_answer2", teacher_answer2.trim());
         json.put("video_teacher2", video_teacher2);
         json.put("type", type);
         return json;
@@ -71,7 +71,7 @@ public class Activity {
         json.put("question", question);
         json.put("video_question", video_question);
         json.put("answer_answer1",answer_answer1);
-        json.put("teacher_answer1", teacher_answer1);
+        json.put("teacher_answer1", teacher_answer1.trim());
         json.put("video_teacher1", video_teacher1);
         json.put("type", type);
         return json;
