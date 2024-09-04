@@ -83,9 +83,8 @@ public class ExcelUtils {
             }
             return result;
         }catch (Exception e){
-            System.out.println(row);
-            System.out.println("getValueInCell "+e.getMessage());
-            e.printStackTrace();
+            /*System.out.println(row);
+            System.out.println("getValueInCell "+e.getMessage());*/
         }
         return "";
     }
@@ -301,6 +300,21 @@ public class ExcelUtils {
             System.out.println("Method getRowContains | Exception desc : " + e.getMessage());
         }
         return iRowNum;
+    }
+    public static boolean isContains(String condition, int colNum, String sheetName,int start,int end)  {
+        boolean contain = false;
+        try {
+            for (int iRowNum = start; iRowNum < end; iRowNum++) {
+                if (ExcelUtils.getValueInCell(sheetName,iRowNum, colNum).contains(condition)) {
+                    contain = true;
+                    break;
+                }
+            }
+        } catch (Throwable e) {
+            System.out.println("Method getRowContains: sTestCaseName[" + condition+"], colNum["+colNum+"], sheetName["+sheetName+"]");
+            System.out.println("Method getRowContains | Exception desc : " + e.getMessage());
+        }
+        return contain;
     }
     public static int getRowContains(String condition, int colNum, String sheetName,String notEx,int start,int end)  {
         int iRowNum = start;

@@ -13,11 +13,11 @@ public class Activity {
     private String answer_answer2;
     private String teacher_answer2;
     private String video_teacher2;
-    private String type;
+    private String type,use_case;
     private int level,topicID;
 
     public Activity(String topic_name, int part, String question,String video_question, String answer_answer1, String teacher_answer1,
-                    String video_teacher1, String answer_answer2, String teacher_answer2, String video_teacher2,String type,int level,int topicID) {
+                    String video_teacher1, String answer_answer2, String teacher_answer2, String video_teacher2,String type,int level,int topicID,String use_case) {
         this.topic_name = topic_name;
         this.part = part;
         this.question = question;
@@ -31,9 +31,10 @@ public class Activity {
         this.type = type;
         this.level = level;
         this.topicID = topicID;
+        this.use_case=use_case;
     }
     public Activity(String topic_name, int part, String question,String video_question, String answer_answer1,
-                    String teacher_answer1, String video_teacher1,String type,int level,int topicID) {
+                    String teacher_answer1, String video_teacher1,String type,int level,int topicID,String use_case) {
         this.topic_name = topic_name;
         this.part = part;
         this.question = question;
@@ -44,6 +45,7 @@ public class Activity {
         this.type = type;
         this.level = level;
         this.topicID = topicID;
+        this.use_case = use_case;
     }
     public JSONObject createActivity2(){
         JSONObject json = new JSONObject();
@@ -60,6 +62,7 @@ public class Activity {
         json.put("teacher_answer2", teacher_answer2.trim());
         json.put("video_teacher2", video_teacher2);
         json.put("type", type);
+        json.put("use_case", use_case);
         return json;
     }
     public JSONObject createActivity1(){
@@ -74,6 +77,7 @@ public class Activity {
         json.put("teacher_answer1", teacher_answer1.trim());
         json.put("video_teacher1", video_teacher1);
         json.put("type", type);
+        json.put("use_case", use_case);
         return json;
     }
 }
