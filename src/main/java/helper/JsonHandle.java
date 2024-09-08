@@ -113,6 +113,10 @@ public class JsonHandle {
     public static JSONArray converStringToJSONArray(String json){
         return new JSONArray(json);
     }
+    public static JsonArray converStringToJsonArray(String json){
+        Gson gson = new Gson();
+        return gson.fromJson(json,JsonArray.class);
+    }
     public static JsonObject converStringToJsonObject(String json){
         return new Gson().fromJson(json, JsonObject.class);
     }
