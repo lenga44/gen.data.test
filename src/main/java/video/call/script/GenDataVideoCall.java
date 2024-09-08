@@ -32,7 +32,7 @@ public class GenDataVideoCall {
         genActs();
         writeFile();
         mergeLessonByTopic();
-        //removeActs();
+        removeActs();
     }
     private static void genActs() throws IOException {
         ExcelUtils.setExcelFile(Constant.CONFIG_FILE);
@@ -116,20 +116,10 @@ public class GenDataVideoCall {
                         array2.add(element1);
                     }
                 }
-                object.add("acts",array);
+                object.add("acts",array2);
                 array1.add(object);
-               /* do{
-                    String use_case = JsonHandle.getValueJson(array.get(i).toString(),"$.use_case");
-                    if(!use_case.isEmpty()) {
-                        if (!JsonHandle.getValueJson(array.get(i - 1).toString(), "$.sub_part").equals(use_case)) {
-                            i--;
-                            array.remove(i+1);
-                            object.remove("acts");
-                            break;
-                        }
-                    }
-                    i =i+1;
-                }while (i<array.size());*/
+            }else {
+                array1.add(element);
             }
         }
         FileHelpers.writeFile("", Constant.LESSON_VIDEO_CALL_FILE);
