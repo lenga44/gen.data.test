@@ -1,5 +1,6 @@
 package video.call.script;
 
+import ai.speak.course.script.GenDataAISpeakLessonActual;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -75,7 +76,19 @@ public class GenDataVideoCall {
         FileHelpers.writeFile("", Constant.VIDEO_CALL_FILE);
         FileHelpers.writeFile(acts.toString(), Constant.VIDEO_CALL_FILE);
     }
+    private static  Map<String,List<Object>> getListTopic(){
+        String structure = FileHelpers.readFile(common.Constant.DATA_AI_FOLDER+"/structure.json");
+        Map<String,List<Object>> map = new HashMap<>();
+        List<Object> listTopic = new ArrayList<>();
+        List<Object> listLevel = JsonHandle.getJSONArray(structure,"$.lvs[*].level").toList();
+        for (Object level: listLevel){
+            listTopic = JsonHandle.getJSONArray(structure,"$.lvs[?(@.level=='"+level+"')].category[*].topic[*].name").toList();
+            map.put(level.toString(),listTopic);
+        }
+        return map;
+    }
     private static void mergeLessonByTopic() throws IOException {
+        Map<String,List<Object>> map = getListTopic();
         JSONArray array = new JSONArray();
         JSONArray acts = new JSONArray();
         for (JsonElement element:lessons){
@@ -88,7 +101,7 @@ public class GenDataVideoCall {
             assert topic != null;
             acts.put(new JSONObject(element.toString()));
             if(p==parts.get(parts.size()-1)){
-                Lesson lesson = new Lesson(topic,level,topicID,acts);
+                Lesson lesson = new Lesson(topic,level,topicID,acts, GenDataAISpeakLessonActual.getMapIndex(map.get(String.valueOf(level)),topic));
                 array.put(lesson.createLesson());
                 acts = new JSONArray();
             }
@@ -104,11 +117,15 @@ public class GenDataVideoCall {
             if(JsonHandle.getValueJson(element.toString(),"$.topic_name").equals("My new backpack!")){
                 JsonArray array = JsonHandle.getJsonArray(element.toString(),"$.acts");
                 JsonArray array2 =new JsonArray();
-                for (int i = 0; i< Objects.requireNonNull(array).size(); i++) {
+                int size = Objects.requireNonNull(array).size();
+                for (int i = 0; i< size; i++) {
                     JsonElement element1 = array.get(i);
                     String use_case = JsonHandle.getValueJson(element1.toString(), "$.use_case");
                     if (!use_case.isEmpty()) {
                         int z =i-1;
+                        if(i==size-1){
+                            z = i-2;
+                        }
                         if(JsonHandle.getValueJson(array.get(z).toString(), "$.sub_part").equals(use_case)) {
                             array2.add(element1);
                         }
