@@ -8,6 +8,7 @@ import java.util.List;
 public class Constant {
     public static final String CONFIG_FILE = FileHelpers.getProjectPath()+"/src/main/java/video/call/data/Kịch bản video call.xlsx";
     public static final String CONFIG_TOPIC_FILE = FileHelpers.getProjectPath()+"/src/main/java/video/call/data/topics.xlsx";
+    public static final String CONFIG_TOPIC_ANSWER_FILE = FileHelpers.getProjectPath()+"/src/main/java/video/call/data/answers.xlsx";
     public static final List<String> topics_expected = Arrays.asList("Leve 1_School 1_U2_My new backpack!",
                                                                     "Leve 1_Body parts 1_U2_They're my hands.",
                                                                     "Leve 1_Food and drinks 1_U2_Here is some milk.",

@@ -291,7 +291,8 @@ public class ExcelUtils {
         int iRowNum = start;
         try {
             for (; iRowNum < end; iRowNum++) {
-                if (ExcelUtils.getValueInCell(sheetName,iRowNum, colNum).contains(condition)) {
+                String value = ExcelUtils.getValueInCell(sheetName,iRowNum, colNum);
+                if (value.contains(condition)) {
                     break;
                 }
             }

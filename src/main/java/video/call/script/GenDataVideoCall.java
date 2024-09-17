@@ -15,6 +15,8 @@ import video.call.struct.Lesson;
 import java.io.IOException;
 import java.util.*;
 
+import static helper.LogicHandle.convertStringToListSplit;
+
 public class GenDataVideoCall {
     private static List<String> sheetDest = new ArrayList<>();
     static int current;
@@ -33,7 +35,7 @@ public class GenDataVideoCall {
         genActs();
         writeFile();
         mergeLessonByTopic();
-        removeActs();
+        /*removeActs();*/
     }
     private static void genActs() throws IOException {
         ExcelUtils.setExcelFile(Constant.CONFIG_FILE);
@@ -58,19 +60,19 @@ public class GenDataVideoCall {
                 getCorrectAnswer();
 
                 /*User answers the same meaning: I don't know or understand/ Can you repeat? */
-                getDontKnowAnswers();
+                /*getDontKnowAnswers();
 
-                /*User ask:*/
+                *//*User ask:*//*
                 getUserAskAnswers(Constant.USER_ASKS_QUESTION);
 
-                /*silent*/
+                *//*silent*//*
                 List<String> answers = new ArrayList<>();
                 answers.add(" ");
                 getSilent(answers);
                 //}
 
-                /*wrong*/
-                getWrongAnswer();
+                *//*wrong*//*
+                getWrongAnswer();*/
             }
         }
         FileHelpers.writeFile("", Constant.VIDEO_CALL_FILE);
@@ -143,7 +145,6 @@ public class GenDataVideoCall {
         FileHelpers.writeFile(array1.toString(), Constant.LESSON_VIDEO_CALL_FILE);
     }
     private static void writeFile() throws IOException {
-        int index =-1;
         String json = FileHelpers.readFile(Constant.VIDEO_CALL_FILE);
         int j = 0;
         for (String sh: sheetDest){
@@ -238,7 +239,6 @@ public class GenDataVideoCall {
     }
     private static void getDontKnowAnswersCorrect(List<String> answers) {
         int row = 0;
-        Map<String,String> map = mappingReturnCorrectAnswer();
         for (String correct:corrects){
             getAnswers(answers,row,correct);
         }
@@ -254,8 +254,8 @@ public class GenDataVideoCall {
                     if(str.contains("understand")){
                         row = ExcelUtils.getRowContains("understand",1,sheet,start,end);
                     }
-                    for (String correct : corrects) {
-                        getUserAnswer(answers,correct,row,"They're my hands.");
+                    for (String inCorrect : inCorrects) {
+                        getAnswers(answers, row, inCorrect);
                     }
                 }
             }
@@ -270,25 +270,24 @@ public class GenDataVideoCall {
     private static void getUserAskAnswers(String answer) {
         type = "User ask_1";
         int row = ExcelUtils.getRowContains(answer,1,sheet,start,end);
-        List<String> answers = getInCorrectAnswers(answer);
         teacher_answer1 = getTeacherAnswer1(row);
         sub_part = getSubpart(row);
         video_teacher1 = getVideoTeacher1(row);
         if(isSkip()) {
-            getAnswers(answers, corrects);
+            getAnswers(inCorrects, corrects);
             getUserAskAnswersWrong();
         }else {
             type = "User ask_3";
-            getNextPart(answers);
+            getNextPart(inCorrects);
         }
     }
     private static void getUserAskAnswersWrong() {
         type = "User ask_2";
         int row = ExcelUtils.getRowContains("wrong_answer_2",1,sheet,start,end);
         current = ExcelUtils.getRowContains(Constant.USER_ASKS_QUESTION,1,sheet,start,end);
-        List<String> answers = getInCorrectAnswers(Constant.USER_ASKS_QUESTION);
+        //List<String> answers = getInCorrectAnswers(Constant.USER_ASKS_QUESTION);
         for (String correct:corrects){
-            getUserAnswer(answers,correct,row,"They're my hands.");
+            getUserAnswer(inCorrects,correct,row,"They're my hands.");
         }
     }
     private static String[] convertToStrings(String str){
@@ -314,17 +313,7 @@ public class GenDataVideoCall {
             }
         }
     }
-    private static List<String> getUserAnswer( String correct){
-        List<String> list = new ArrayList<>();
-        if(correct.contains(" ")){
-            for (String item : correct.split(" ")) {
-                list.add(item);
-            }
-        }else {
-            list = List.of(convertToStrings(correct));
-        }
-        return list;
-    }
+
     //endregion
 
     //region SILENT
@@ -372,7 +361,6 @@ public class GenDataVideoCall {
         video_teacher1 = getVideoTeacher1(row);
         if(isSkip()) {
             for (String correct : corrects) {
-                inCorrects = getUserAnswer(correct);
                 getWrongAnswerCorrect(inCorrects);
                 getAllWrong(inCorrects);
             }
@@ -399,6 +387,12 @@ public class GenDataVideoCall {
     }
     //endregion
 
+    private static void getIncorrectAnswer(){
+        inCorrects = new ArrayList<>();
+        int index = ExcelUtils.getRowContains(Constant.WRONG_ANSWER+"1",1,sheet,start,end);
+        String inCorrect = ExcelUtils.getValueInCell(sheet,index,9);
+        inCorrects = convertStringToListSplit(inCorrect);
+    }
     private static boolean isSkip(){
         boolean skip = false;
         teacher_answer1 =teacher_answer1.trim();
@@ -502,26 +496,12 @@ public class GenDataVideoCall {
         }
     }
     private static void getCorrectAnswer(){
-        Map<String,String> map = mappingCorrectAnswer();
         type = "correct_1";
         corrects = getCorrectAnswers();
         for (String correct: corrects){
-            current = ExcelUtils.getRowContains(correct,1,sheet,start,end);
-            if(!sheet.equals("What's your favorite fruit")) {
-                for (String key : map.keySet()) {
-                    int size1 = map.get(key).length();
-                    int size2 = correct.length();
-                    boolean stop = false;
-                    if (size1 > size2) {
-                        stop = getCurrent(map.get(key), correct, key);
-                    } else {
-                        stop = getCurrent(correct, map.get(key), key);
-                    }
-                    if (stop) {
-                        break;
-                    }
-                }
-            }
+            ExcelUtils.setExcelFile(Constant.CONFIG_TOPIC_ANSWER_FILE);
+            current = ExcelUtils.getRowContains(correct,8,sheet,start,end);
+            ExcelUtils.setExcelFile(Constant.CONFIG_TOPIC_FILE);
             teacher_answer1 = getTeacherAnswer1(current);
             sub_part = getSubpart(current);
             video_teacher1 = getVideoTeacher1(current);
@@ -601,14 +581,19 @@ public class GenDataVideoCall {
         return ExcelUtils.getValueInCell(sheet,row,0);
     }
     private static List<String> getCorrectAnswers(){
+        ExcelUtils.setExcelFile(Constant.CONFIG_TOPIC_ANSWER_FILE);
         corrects = new ArrayList<>();
-
-        for(int i =start;i<end;i++) {
-            current = ExcelUtils.getRowContains(1, 4, sheet,i);
-            if(current!=0){
-                getAnswers(corrects,ExcelUtils.getValueInCell(sheet, current, 1));
+        for (int i =start;i<=end;i++){
+            int index = ExcelUtils.getRowContains("1",4,sheet,i);
+            if(index>0){
+                String correct = ExcelUtils.getValueInCell(sheet,index,8);
+                for(String answer: convertStringToListSplit(correct)){
+                    corrects.add(answer);
+                }
             }
         }
+        getIncorrectAnswer();
+        ExcelUtils.setExcelFile(Constant.CONFIG_TOPIC_FILE);
         return corrects;
     }
     private static Map<String,String> mappingCorrectAnswer(){
@@ -670,8 +655,8 @@ public class GenDataVideoCall {
         map.put("peal","name of a veggie except tomatoes");
         return map;
     }
-    private static List<String> getInCorrectAnswers(String condition){
-        inCorrects = new ArrayList<>();
+   /* private static List<String> getInCorrectAnswers(String condition){
+        inCorrects = new ArrayList<>()
         for(int i =start;i<end;i++) {
             current = ExcelUtils.getRowContains(condition, 1, sheet,i);
             if(current!=0){
@@ -679,7 +664,7 @@ public class GenDataVideoCall {
             }
         }
         return inCorrects;
-    }
+    }*/
     private static void getAnswers(List<String> answers, String value){
         value = LogicHandle.splitString(value,":",1).trim();
         Map<String,String> mapAnswer = mappingCorrectAnswer();
@@ -689,14 +674,14 @@ public class GenDataVideoCall {
                 break;
             }
         }
-        List<String> list = LogicHandle.convertStringToListSplit(value);
+        List<String> list = convertStringToListSplit(value);
         for (String item:list){
             answers.add(item.trim());
         }
     }
     private static List<String> getDontKnowAnswers( String value){
         value = LogicHandle.splitString(value,":",1);
-        List<String> list = LogicHandle.convertStringToListSplit(value);
+        List<String> list = convertStringToListSplit(value);
         List<String> answers =new ArrayList<>();
         for (String item:list){
            if (item.contains("or")){
