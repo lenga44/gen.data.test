@@ -66,9 +66,9 @@ public class GenDataVideoCall {
                 getUserAskAnswers(Constant.USER_ASKS_QUESTION);
 
                 /*silent*/
-                List<String> answers = new ArrayList<>();
-                answers.add(" ");
-                getSilent(answers);
+//                List<String> answers = new ArrayList<>();
+//                answers.add(" ");
+//                getSilent(answers);
                 //}
 
                 /*wrong*/
@@ -286,8 +286,8 @@ public class GenDataVideoCall {
         int row = ExcelUtils.getRowContains("wrong_answer_2",1,sheet,start,end);
         current = ExcelUtils.getRowContains(Constant.USER_ASKS_QUESTION,1,sheet,start,end);
         //List<String> answers = getInCorrectAnswers(Constant.USER_ASKS_QUESTION);
-        for (String correct:corrects){
-            getUserAnswer(inCorrects,correct,row,"They're my hands.");
+        for (String inCorrect : inCorrects) {
+            getAnswers(answers, row, inCorrect);
         }
     }
     private static String[] convertToStrings(String str){
