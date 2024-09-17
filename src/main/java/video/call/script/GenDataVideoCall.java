@@ -35,7 +35,7 @@ public class GenDataVideoCall {
         genActs();
         writeFile();
         mergeLessonByTopic();
-        /*removeActs();*/
+        removeActs();
     }
     private static void genActs() throws IOException {
         ExcelUtils.setExcelFile(Constant.CONFIG_FILE);
@@ -60,19 +60,19 @@ public class GenDataVideoCall {
                 getCorrectAnswer();
 
                 /*User answers the same meaning: I don't know or understand/ Can you repeat? */
-                /*getDontKnowAnswers();
+                getDontKnowAnswers();
 
-                *//*User ask:*//*
+                /*User ask:*/
                 getUserAskAnswers(Constant.USER_ASKS_QUESTION);
 
-                *//*silent*//*
+                /*silent*/
                 List<String> answers = new ArrayList<>();
                 answers.add(" ");
                 getSilent(answers);
                 //}
 
-                *//*wrong*//*
-                getWrongAnswer();*/
+                /*wrong*/
+                /*getWrongAnswer();*/
             }
         }
         FileHelpers.writeFile("", Constant.VIDEO_CALL_FILE);
@@ -452,18 +452,13 @@ public class GenDataVideoCall {
                 row_teacher = ExcelUtils.getRowContains(Constant.WRONG_ANSWER + 2, 1, sheet, start, end);
             }
         }
-        String[] expects = {"easy", "hard.", "hard","1", "0","juice"};
         for (String answer : answers1) {
-            if (!Arrays.stream(expects).toList().contains(answer)) {
-                String teacher_answer2 = getTeacherAnswer2(row_teacher);
-                sub_part = getSubpart(row_teacher);
-                String video_teacher2 = getVideoTeacher2(row_teacher);
-                Activity act = new Activity(sheet, part, question, video_question, answer, teacher_answer1, video_teacher1, answer2, teacher_answer2, video_teacher2, type, level, topicID,use_case,sub_part);
-                acts.put(act.createActivity2());
-            }
+            String teacher_answer2 = getTeacherAnswer2(row_teacher);
+            sub_part = getSubpart(row_teacher);
+            String video_teacher2 = getVideoTeacher2(row_teacher);
+            Activity act = new Activity(sheet, part, question, video_question, answer, teacher_answer1, video_teacher1, answer2, teacher_answer2, video_teacher2, type, level, topicID,use_case,sub_part);
+            acts.put(act.createActivity2());
         }
-
-
     }
     private static int getRow(String sheetName,int row_teacher,String answer2,String... expects){
         if(sheet.equals(sheetName)){
