@@ -301,7 +301,7 @@ public class GenDataVideoCall {
         type = "User ask_2";
         int row = ExcelUtils.getRowContains("wrong_answer_2",1,sheet,start,end);
         for (String inCorrect : inCorrects) {
-            getAnswers(answers, row, inCorrect);
+            getAnswers(answers, inCorrect,row);
         }
     }
     private static List<String> getUserAsk(int row){
