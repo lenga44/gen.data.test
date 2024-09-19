@@ -123,17 +123,30 @@ public class GenDataVideoCall {
                 for (int i = 0; i< size; i++) {
                     JsonElement element1 = array.get(i);
                     String use_case = JsonHandle.getValueJson(element1.toString(), "$.use_case");
-                    if (!use_case.isEmpty() && !use_case.equals("else")) {
-                        int z =i-1;
-                        if(i==size-1){
-                            z = i-2;
+                    if (!use_case.isEmpty()) {
+                        if(!use_case.equals("else")) {
+                            int z = i - 1;
+                            if (i == size - 1) {
+                                z = i - 2;
+                            }
+                            if (JsonHandle.getValueJson(array.get(z).toString(), "$.sub_part").equals(use_case)) {
+                                array2.add(element1);
+                            }
+                        }else {
+                            int z=i-1;
+                            int z1=i-2;
+                            JsonElement element2 = array.get(z);
+                            JsonElement element3 = array.get(z1);
+                            String use_case2 = JsonHandle.getValueJson(element2.toString(), "$.use_case");
+                            String use_case3 = JsonHandle.getValueJson(element3.toString(), "$.use_case");
+                            if (!use_case2.equals(use_case2)) {
+                                array2.add(element1);
+                            }
                         }
-                        if(JsonHandle.getValueJson(array.get(z).toString(), "$.sub_part").equals(use_case)) {
+                    }else
+                        {
                             array2.add(element1);
                         }
-                    }else {
-                        array2.add(element1);
-                    }
                 }
                 JsonArray array3 =new JsonArray();
                 for (int i=0;i<array2.size();i++){
