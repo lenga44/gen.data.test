@@ -135,13 +135,19 @@ public class GenDataVideoCall {
                         array2.add(element1);
                     }
                 }
-                object.add("acts",array2);
+                JsonArray array3 =new JsonArray();
+                for (int i=0;i<array2.size();i++){
+                    JsonObject object1 = array2.get(i).getAsJsonObject();
+                    object1.addProperty("part",i+1);
+                    array3.add(object1);
+                }
+                object.add("acts",array3);
                 array1.add(object);
             }else {
                 array1.add(element);
             }
         }
-        JsonArray array2 = new JsonArray();
+        /*JsonArray array2 = new JsonArray();
         for (JsonElement element: array1){
             JsonArray array3 = new JsonArray();
             JsonObject object1 = element.getAsJsonObject();
@@ -159,9 +165,9 @@ public class GenDataVideoCall {
             }else {
                 array2.add(object1);
             }
-        }
+        }*/
         FileHelpers.writeFile("", Constant.LESSON_VIDEO_CALL_FILE);
-        FileHelpers.writeFile(array2.toString(), Constant.LESSON_VIDEO_CALL_FILE);
+        FileHelpers.writeFile(array1.toString(), Constant.LESSON_VIDEO_CALL_FILE);
     }
     private static void writeFile() throws IOException {
         String json = FileHelpers.readFile(Constant.VIDEO_CALL_FILE);
