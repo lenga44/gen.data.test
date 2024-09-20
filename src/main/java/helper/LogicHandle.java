@@ -88,6 +88,9 @@ public class LogicHandle {
         return resultList;
     }
     public static List<String> convertStringToListSplit(String inputString){
+        if(inputString.equals("no/ No, I can't draw./ Drawing is hard.")){
+            System.out.println("1");
+        }
         inputString = splitString(inputString);
         List<String> resultList = new ArrayList<>();
         for (String spitStr : Constant.splits1) {

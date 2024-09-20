@@ -414,11 +414,14 @@ public class GenDataVideoCall {
         }
     }
     private static void getWrongAnswerCorrect(List<String> answers) {
-        for (String correct:corrects){
+        /*for (String correct:corrects){
             ExcelUtils.setExcelFile(Constant.CONFIG_TOPIC_ANSWER_FILE);
             int row = ExcelUtils.getRowContains(correct,8,sheet,start,end);
             ExcelUtils.setExcelFile(Constant.CONFIG_TOPIC_FILE);
             getAnswers(answers, row, correct);
+        }*/
+        for (String correct:corrects){
+            getAnswersCorrect(answers,correct);
         }
     }
     //endregion
