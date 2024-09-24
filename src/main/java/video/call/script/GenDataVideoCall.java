@@ -617,9 +617,15 @@ public class GenDataVideoCall {
         return Integer.valueOf(level);
     }
     private static int startPart(){
+        if(sheet.equals("This dress is beautiful!")&& part==2){
+            System.out.println("1");
+        }
         return ExcelUtils.getRowContains(part+"_",0,sheet);
     }
     private static int endPart(){
+        if(sheet.equals("This dress is beautiful!")){
+            System.out.println("1");
+        }
         return ExcelUtils.getContainCount(sheet,0,part+"_",start);
     }
     private static String getQuestion(){
