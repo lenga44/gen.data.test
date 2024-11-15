@@ -56,58 +56,58 @@ public class GenDataGameMgoActual {
     }
     public static void downLoadDataActivity(int id) throws IOException, InterruptedException {
        String json = RequestEx.request(Constant.DATA_ACTIVITY_BY_GAME_URL+id);
-        List<JsonElement> listAct = JsonHandle.getJsonArray(json, "$.data").asList();
-        String gameName = Common.getGameName(id);
-        JSONArray acts = new JSONArray();
-        for (JsonElement act: listAct) {
-            String path = JsonHandle.getValue(act.toString(),"$.f");
-            String fileName = LogicHandle.getFileName(path);
-            String resourceFolder = id+"/"+fileName.replace(".zip","");
-            Common.downloadAndUnzipFile(Constant.DOMAIN_URL+path,fileName,String.valueOf(id));
-            int actID =Integer.parseInt(LogicHandle.splitString(fileName,"-"));
-            if(JsonHandle.getValue(json,"$.data[0].n").contains("story")) {
-                JSONObject name_story = getWordJsonFileByWordId(resourceFolder, getWordID(resourceFolder,"$.story_name"));
-                JSONObject thumb_start = getWordJsonFileByWordId(resourceFolder, getWordID(resourceFolder,"$.thumb_start"));
-                JSONObject thumb_end = getWordJsonFileByWordId(resourceFolder, getWordID(resourceFolder,"$.thumb_end"));
-                Activity activity = new Activity(id, gameName, getTurns(resourceFolder, "$.data"), fileName, "", actID, name_story, thumb_start, thumb_end);
-                acts.put(activity.createActivityGameTypeStory());
-            }else if(JsonHandle.getValue(json,"$.data[0].n").contains("letters")){
-                JSONArray turns = getTurns(resourceFolder,"$.data");
-                JSONArray letters = genLetterArray(resourceFolder,"$.letter");
-                Activity activity = new Activity(id,gameName,turns,fileName,"",actID,letters);
-                acts.put(activity.createActivityHasLetter());
-            }
-            else  {
-                JSONArray turns = getTurns(resourceFolder,"$.data");
-                if(turns.length()==0){
-                    turns = getTurns(resourceFolder,"$.question_data");
-                }
-                JSONArray words = genLetterArray(resourceFolder,"$.word");
-                if(words.length()==0) {
-                    JSONObject story_name = genStoryInfo(resourceFolder,"$.story_name");
-                    JSONObject thumb_start = genStoryInfo(resourceFolder,"$.thumb_start");
-                    JSONObject thumb_end = genStoryInfo(resourceFolder,"$.thumb_end");
-                    if(!story_name.isEmpty() && !thumb_end.isEmpty() && !thumb_start.isEmpty()){
-                        Activity activity = new Activity(id, gameName, turns, fileName, "",actID,story_name,thumb_start,thumb_end);
-                        acts.put(activity.createActivityGameTypeStory());
-                    }else {
-                        Activity activity = new Activity(id, gameName, turns, fileName, "", actID);
-                        acts.put(activity.createActivityGame());
-                    }
-                }else {
-                    Activity activity = new Activity(id, gameName, turns, fileName, "",words, actID);
-                    acts.put(activity.createActivityGameForThreeOptionGame());
-                }
-                JSONObject story_name = genStoryInfo(resourceFolder,"$.story_name");
-                JSONObject thumb_start = genStoryInfo(resourceFolder,"$.thumb_start");
-                JSONObject thumb_end = genStoryInfo(resourceFolder,"$.thumb_end");
-                if(!story_name.isEmpty() && !thumb_end.isEmpty() && !thumb_start.isEmpty()){
-                    Activity activity = new Activity(id, gameName, turns, fileName, "",actID,story_name,thumb_start,thumb_end);
-                    acts.put(activity.createActivityGameTypeStory());
-                }
-            }
-        }
-        saveArrayToFile(acts,id);
+           List<JsonElement> listAct = JsonHandle.getJsonArray(json, "$.data").asList();
+           String gameName = Common.getGameName(id);
+           JSONArray acts = new JSONArray();
+           for (JsonElement act : listAct) {
+               String path = JsonHandle.getValue(act.toString(), "$.f");
+               String fileName = LogicHandle.getFileName(path);
+               String resourceFolder = id + "/" + fileName.replace(".zip", "");
+               Common.downloadAndUnzipFile(Constant.DOMAIN_URL + path, fileName, String.valueOf(id));
+               int actID = Integer.parseInt(LogicHandle.splitString(fileName, "-"));
+
+               if (JsonHandle.getValue(json, "$.data[0].n").contains("story") && !JsonHandle.getValue(json, "$.data[0].n").contains("Unscramble word")) {
+                   JSONObject name_story = getWordJsonFileByWordId(resourceFolder, getWordID(resourceFolder, "$.story_name"));
+                   JSONObject thumb_start = getWordJsonFileByWordId(resourceFolder, getWordID(resourceFolder, "$.thumb_start"));
+                   JSONObject thumb_end = getWordJsonFileByWordId(resourceFolder, getWordID(resourceFolder, "$.thumb_end"));
+                   Activity activity = new Activity(id, gameName, getTurns(resourceFolder, "$.data", "$.word_bk","$.phonic"), fileName, "", actID, name_story, thumb_start, thumb_end);
+                   acts.put(activity.createActivityGameTypeStory());
+               } else if (JsonHandle.getValue(json, "$.data[0].n").contains("letters") || JsonHandle.getValue(json, "$.data[0].n").contains("Unscramble word")) {
+                   JSONArray turns = getTurns(resourceFolder, "$.data");
+                   JSONArray letters = genLetterArray(resourceFolder, "$.letter");
+                   Activity activity = new Activity(id, gameName, turns, fileName, "", actID, letters);
+                   acts.put(activity.createActivityHasLetter());
+               }else {
+                   JSONArray turns = getTurns(resourceFolder, "$.data");
+                   if (turns.length() == 0) {
+                       turns = getTurns(resourceFolder, "$.question_data");
+                   }
+                   JSONArray words = genLetterArray(resourceFolder, "$.word");
+                   if (words.length() == 0) {
+                       JSONObject story_name = genStoryInfo(resourceFolder, "$.story_name");
+                       JSONObject thumb_start = genStoryInfo(resourceFolder, "$.thumb_start");
+                       JSONObject thumb_end = genStoryInfo(resourceFolder, "$.thumb_end");
+                       if (!story_name.isEmpty() && !thumb_end.isEmpty() && !thumb_start.isEmpty()) {
+                           Activity activity = new Activity(id, gameName, turns, fileName, "", actID, story_name, thumb_start, thumb_end);
+                           acts.put(activity.createActivityGameTypeStory());
+                       } else {
+                           Activity activity = new Activity(id, gameName, turns, fileName, "", actID);
+                           acts.put(activity.createActivityGame());
+                       }
+                   } else {
+                       Activity activity = new Activity(id, gameName, turns, fileName, "", words, actID);
+                       acts.put(activity.createActivityGameForThreeOptionGame());
+                   }
+                   JSONObject story_name = genStoryInfo(resourceFolder, "$.story_name");
+                   JSONObject thumb_start = genStoryInfo(resourceFolder, "$.thumb_start");
+                   JSONObject thumb_end = genStoryInfo(resourceFolder, "$.thumb_end");
+                   if (!story_name.isEmpty() && !thumb_end.isEmpty() && !thumb_start.isEmpty()) {
+                       Activity activity = new Activity(id, gameName, turns, fileName, "", actID, story_name, thumb_start, thumb_end);
+                       acts.put(activity.createActivityGameTypeStory());
+                   }
+               }
+           }
+           saveArrayToFile(acts, id);
     }
     public static JSONObject downLoadDataActivity(int id,int expected) throws IOException, InterruptedException {
         String json = RequestEx.request(Constant.DATA_ACTIVITY_BY_GAME_URL+id);
@@ -215,6 +215,23 @@ public class GenDataGameMgoActual {
         }
         return turns;
     }
+    private static JSONArray getTurns(String folder,String... jsonPaths){
+        JSONArray turns = new JSONArray();
+        String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
+        for (String jsonPath:jsonPaths) {
+            if (JsonHandle.jsonObjectContainKey(json, jsonPath.replace("$.", ""))) {
+                JSONArray jsonArray = JsonHandle.getJSONArray(json, jsonPath);
+                if (jsonArray == null) {
+                    jsonArray = new JSONArray();
+                    jsonArray.put(json);
+                }
+                for (Object turn : jsonArray) {
+                    turns.put(genTurnData(json, folder, turn));
+                }
+            }
+        }
+        return turns;
+    }
     private static int getWordID(String folder,String jsonPath){
         String json = getConfigJsonFile(Constant.UNZIP_FOLDER_PATH+"/"+folder);
         jsonPath =jsonPath.replace("$.", "");
@@ -228,38 +245,42 @@ public class GenDataGameMgoActual {
     private static JSONObject genTurnData(String json,String folderAct, Object turnObject){
         JSONArray word = new JSONArray();
         String turn = turnObject.toString();
-        getWordIdAndType(turn,"$.answer_w",word,folderAct,Constant.ANSWER_TYPE);
-        getWordIdAndType(turn,"$.answer_data",word,folderAct,Constant.ANSWER_DATA_TYPE);
-        getWordIdAndType(turn,"$.work_bk",word,folderAct,Constant.WORD_BK_TYPE);
-        getWordIdAndType(turn,"$.question_data",word,folderAct,Constant.QUESTION_TYPE);
-        getWordIdAndType(turn,"$.question_info",word,folderAct,Constant.QUESTION_TYPE);
-        getWordIdAndType(turn, "$.question_answer", word, folderAct, Constant.QUESTION_ANSWER_TYPE);
-        getWordIdAndType(turn,"$.word_id",word,folderAct,Constant.QUESTION_TYPE);
-        getWordIdAndType(turn,"$.blending",word,folderAct,Constant.QUESTION_TYPE);
-        getWordIdAndType(turn,"$.phonic",word,folderAct,Constant.PHONIC_TYPE);
-        getWordIdAndType(turn,"$.main_w",word,folderAct,Constant.RIGHT_ANSWER);
-        //getWordIdAndType(turn,"$.main_w",word,folderAct,Constant.ANSWER_DATA_TYPE);
-        List<Integer> right = new ArrayList<>();
-        right = getRightAnswers(turn,"$.right_ans","$.main_word");
-        if(right.size() == 0){
-            right=getRightAnswers(turn,"$.right_w");
-            if(right.size()==0) {
-                int r = getRightAnswer(turn,"$.right_w");
-                if(r>0) {
-                    right.add(r);
-                }
+        if(!LogicHandle.isNumeric(turn)) {
+            getWordIdAndType(turn, "$.answer_w", word, folderAct, Constant.ANSWER_TYPE);
+            getWordIdAndType(turn, "$.answer_data", word, folderAct, Constant.ANSWER_DATA_TYPE);
+            getWordIdAndType(turn, "$.work_bk", word, folderAct, Constant.WORD_BK_TYPE);
+            getWordIdAndType(turn, "$.question_data", word, folderAct, Constant.QUESTION_TYPE);
+            getWordIdAndType(turn, "$.question_info", word, folderAct, Constant.QUESTION_TYPE);
+            getWordIdAndType(turn, "$.question_answer", word, folderAct, Constant.QUESTION_ANSWER_TYPE);
+            getWordIdAndType(turn, "$.word_id", word, folderAct, Constant.QUESTION_TYPE);
+            getWordIdAndType(turn, "$.blending", word, folderAct, Constant.QUESTION_TYPE);
+            getWordIdAndType(turn, "$.phonic", word, folderAct, Constant.PHONIC_TYPE);
+            getWordIdAndType(turn, "$.main_w", word, folderAct, Constant.RIGHT_ANSWER);
+            //getWordIdAndType(turn,"$.main_w",word,folderAct,Constant.ANSWER_DATA_TYPE);
+        }else {
+            word.put(genWordData(Integer.parseInt(turn),folderAct,"word_bk"));
+        }
+            List<Integer> right = new ArrayList<>();
+            right = getRightAnswers(turn, "$.right_ans", "$.main_word");
+            if (right.size() == 0) {
+                right = getRightAnswers(turn, "$.right_w");
                 if (right.size() == 0) {
+                    int r = getRightAnswer(turn, "$.right_w");
+                    if (r > 0) {
+                        right.add(r);
+                    }
+                    if (right.size() == 0) {
                         right.add(getRightAnswer(turn, "$.main_w"));
+                    }
                 }
             }
             /*if(right.size()==0){
                 right.add(getRightAnswer(turn,"$.question_data"));
             }*/
-        }
-        Turn newTurn = new Turn(word,getOder(turnObject.toString(),"$.order"),
-                getWordJsonFileByWordIds(folderAct,right),
-                getWordJsonFileByWordId(folderAct,getWordIDInJsonConfigBy(json,folderAct,"$.phonic")));
-        return newTurn.createTurns();
+            Turn newTurn = new Turn(word, getOder(turnObject.toString(), "$.order"),
+                    getWordJsonFileByWordIds(folderAct, right),
+                    getWordJsonFileByWordId(folderAct, getWordIDInJsonConfigBy(json, folderAct, "$.phonic")));
+            return newTurn.createTurns();
     }
 
     private static JsonArray getDataJsonElement(JsonElement json){

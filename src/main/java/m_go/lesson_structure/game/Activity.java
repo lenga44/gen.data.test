@@ -97,6 +97,17 @@ public class Activity {
         json.put("turn", turn);
         return json;
     }
+    public JSONObject createActivityHasWorkBK(){
+        JSONObject json = new JSONObject();
+        json.put("id", id);
+        json.put("name", gameName);
+        json.put("file_zip", file_zip);
+        json.put("background",background);
+        json.put("act_id",actID);
+        json.put("work_bk", letters);
+        json.put("turn", turn);
+        return json;
+    }
     public JSONObject createActivityGameTypeStory(){
         JSONObject json = new JSONObject();
         json.put("id", id);

@@ -5,6 +5,7 @@ import common.Constant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class LogicHandle {
@@ -18,6 +19,13 @@ public class LogicHandle {
             }
         }
         return result;
+    }
+    public static boolean isNumeric(String strNum){
+        Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+        if (strNum == null) {
+            return false;
+        }
+        return pattern.matcher(strNum).matches();
     }
     public static String removeString(String str,String replace){
         if(str.contains(replace)){
